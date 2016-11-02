@@ -38,98 +38,128 @@ def merge_dicts(*dict_args):
         for dictionary in dict_int:
             result.update(dictionary)
     return result
-     
+
+    
+    
 #---------------Create Dictionary For All Types of Parameter Inputs---------------#  
 
+##---In the Below Dictionary, Stomatal Regulation is NOT a Function of Carboxylation Efficiency---##
 dict=[
-      {'s': np.zeros(shape=100)+0.02},
-      {'s_in':np.linspace(0.01,0.06,100)},
-#      {'s_de':np.linspace(0.06,0.01,100)},
-      {'ra':np.zeros(shape=100)+20.7}, 
-      {'ra_in':np.linspace(17,23,100)},
-#      {'ra_de':np.linspace(23,17,100)},
-      {'nm':np.zeros(shape=100)+0.045},
-      {'nm_in':np.linspace(0.04,0.06,100)},
-#      {'nm_de':np.linspace(0.06,0.04,100)},
-      {'flnr':np.zeros(shape=100)+0.7},
-      {'flnr_in':np.linspace(0.5,0.9,100)},
-#      {'flnr_de':np.linspace(0.9,0.5,100)},
-#      {'m':np.zeros(shape=100)+9},
-#      {'m_in':np.linspace(7,11,100)},
-#      {'m_de':np.linspace(11,7,100)},
-#      {'b':np.zeros(shape=100)+0.01},
-#      {'b_in':np.linspace(0,0.02,100)},
-#      {'b_de':np.linspace(0.02,0,100)}
+      [{'s_h':np.linspace(0.03,0.0309,3)},
+       {'ra_h':np.linspace(20.7,21.0,3)},
+       {'nm_h':np.linspace(0.04,0.05,3)},
+       {'flnr_h':np.linspace(0.625,0.675,3)},
+       {'m_h1':np.zeros(shape=3)+10.25},
+       {'m_h2':np.zeros(shape=3)+10.75},
+       {'m_l1':np.zeros(shape=3)+7.25},
+       {'m_l2':np.zeros(shape=3)+7.75}],
+      [{'s_l':np.linspace(0.01,0.0109,3)},
+       {'ra_l':np.linspace(19.7,20,3)},
+       {'nm_l':np.linspace(0.02,0.03,3)},
+       {'flnr_l':np.linspace(0.425,0.475,3)},
+       {'m_h1':np.zeros(shape=3)+10.25},
+       {'m_h2':np.zeros(shape=3)+10.75},
+       {'m_l1':np.zeros(shape=3)+7.25},
+       {'m_l2':np.zeros(shape=3)+7.75}]
         ]
+
+##---In the Below Dictionary, Stomatal Regulation is a Function of Carboxylation Efficiency---##
+
+#dict=[
+#      [{'s_h':np.zeros(shape=4)+0.06},
+#       {'ra_h':np.zeros(shape=4)+20.7},
+#       {'nm_h':np.linspace(0.06,0.08,4)},
+#       {'flnr_h':np.linspace(0.65,0.7,4)},
+#       {'m_h':np.linspace(10.25,10.75,4)},
+#        {'m_l':np.linspace(7.25,7.75,4)}],
+#      [{'s_l':np.zeros(shape=4)+0.025},
+#       {'ra_l':np.zeros(shape=4)+19.0},
+#       {'nm_l':np.linspace(0.02,0.04,4)},
+#       {'flnr_l':np.linspace(0.45,0.5,4)},
+#        {'m_h':np.linspace(10.25,10.75,4)},
+#        {'m_l':np.linspace(7.25,7.75,4)}]
+#   ]        
+        
 
 #---------------Define Number of Variable Parameters---------------#  
 
-num_params=4
+num_params=5
 
+leaf_params=[]
+
+#---------------Run For Loop of Different Dictionary Values---------------# 
+
+for i in range(len(dict)):
 
 #---------------Make Dictionaries that Contain All Combinations of Parameter Inputs---------------#  
 
-dict_combs_raw=[]
-for x in it.combinations(dict,num_params):
-    dict_combs_raw+=[x]
+    dict_combs_raw=[]
+    for x in it.combinations(dict[i],num_params):
+        dict_combs_raw+=[x]
 
-#merge dictionaries 
-dict_combs=[]
-for x in range(len(dict_combs_raw)):
-    dict_combs+=[merge_dicts(dict_combs_raw[x])]
+    #merge dictionaries 
+    dict_combs=[]
+    for x in range(len(dict_combs_raw)):
+        dict_combs+=[merge_dicts(dict_combs_raw[x])]
  
 
 #---------------Get Rid of Repeated Parameters (i.e. s_in & s) in Parameter Combination Dictionaries---------------#  
                  
-dict_combs_new=[]
+    dict_combs_new=[]
 
-for i in range(len(dict_combs)):
-    keys=dict_combs[i].keys()
-    key_param=[]
-    for ii in range(len(keys)):
-        key_param+=[keys[ii][0]]
-    if len(np.unique(key_param))<num_params:
-        continue
-    else:
-        dict_combs_new+=[dict_combs[i]]
+    for i in range(len(dict_combs)):
+        keys=dict_combs[i].keys()
+        key_param=[]
+        for ii in range(len(keys)):
+            key_param+=[keys[ii][0]]
+        if len(np.unique(key_param))<num_params:
+            continue
+        else:
+            dict_combs_new+=[dict_combs[i]]
 
 #---------------Rename All Parameters in Parameter Combination Dictionaries to Model Parameter Names---------------#  
 
+    params_int=[]
 
-leaf_params=[]
 
-for i in range(len(dict_combs_new)):
-    params=dict_combs_new[i].copy()
+    for i in range(len(dict_combs_new)):
+        params=dict_combs_new[i].copy()
 
-    if 's_in' in params.keys():
-        params['s']=params.pop('s_in')
-    if 's_de' in params.keys():
-        params['s']=params.pop('s_de')
-    
-    if 'ra_in' in params.keys():
-        params['ra']=params.pop('ra_in')
-    if 'ra_de' in params.keys():
-        params['ra']=params.pop('ra_de')
+        if 's_l' in params.keys():
+            params['s']=params.pop('s_l')
+        if 's_h' in params.keys():
+            params['s']=params.pop('s_h') 
         
-    if 'nm_in' in params.keys():
-        params['nm']=params.pop('nm_in')
-    if 'nm_de' in params.keys():
-        params['nm']=params.pop('nm_de')
-    
-    if 'flnr_in' in params.keys():
-        params['flnr']=params.pop('flnr_in')
-    if 'flnr_de' in params.keys():
-        params['flnr']=params.pop('flnr_de')
+        if 'ra_l' in params.keys():
+            params['ra']=params.pop('ra_l')
+        if 'ra_h' in params.keys():
+            params['ra']=params.pop('ra_h')
         
-    if 'm_in' in params.keys():
-        params['m']=params.pop('m_in')
-    if 'm_de' in params.keys():
-        params['m']=params.pop('m_de')
+        if 'nm_l' in params.keys():
+            params['nm']=params.pop('nm_l')
+        if 'nm_h' in params.keys():
+            params['nm']=params.pop('nm_h')
     
+        if 'flnr_l' in params.keys():
+            params['flnr']=params.pop('flnr_l')
+        if 'flnr_h' in params.keys():
+            params['flnr']=params.pop('flnr_h')
         
-    if 'b_in' in params.keys():
-        params['b']=params.pop('b_in')
-    if 'b_de' in params.keys():
-        params['b']=params.pop('b_de')
+        if 'm_l1' in params.keys():
+            params['m']=params.pop('m_l1')
+        if 'm_h1' in params.keys():
+            params['m']=params.pop('m_h1')
+        
+        if 'm_l2' in params.keys():
+            params['m']=params.pop('m_l2')
+        if 'm_h2' in params.keys():
+            params['m']=params.pop('m_h2')
+        
+        if 'm_l3' in params.keys():
+            params['m']=params.pop('m_l3')
+        if 'm_h3' in params.keys():
+            params['m']=params.pop('m_h3')            
+        
+        params_int+=[params]       
     
-    leaf_params+=[params]       
+    leaf_params+=params_int
