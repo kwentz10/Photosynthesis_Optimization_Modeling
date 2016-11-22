@@ -13,14 +13,16 @@ into 2 different models. The first model
 pretends that there is no intercept term in
 the Ball-Berry stomatal conductance model. The
 second model contains the intercept term.
-The end product is graphs of 
-the plant trait vs. NUE and WUE.
+The end product is graphs of NUE vs. WUE.
 
 
-Update: I am running a sensitivity analysis of 
-different plant traits in model
+Update: I am going to run the model for plants with 
+traits that are distinctive of the meadow moisture 
+gradient in the alpine tundra.
 
 """
+
+##LEAF ANGLE##
 
 #---------------Import Modules---------------#
 
@@ -29,6 +31,9 @@ from matplotlib import pyplot as plt
 
 #The line of code below is for if I want to input all combinations of changed parameters into my model:
 from leaf_parameter_inputs import leaf_params
+
+#The line of code below imports the temperature functions used in this model
+from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
 
 #---------------Initialize Plot---------------#
 
@@ -52,11 +57,9 @@ axA.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=23, fontname='Times New Roman'
 axA.set_title('Growth Response Across Four Plant Trait Assemblages', fontname='Times New Roman',fontsize=23,fontweight='bold')
 
 ##---Line Type for Each Plant---##
+n=16 #number of variable parameter combinations for each meadow type
 
-color=['g','g',
-'y','y',
-'b','b',
-'r','r']
+color=['k']*n+['r']*n+['y']*n+['g']*n+['b']*n
 
 #marker=[]
 #linestyle=[]
@@ -84,33 +87,40 @@ crc=chl_mass*rc
 ##---Rubisco Maximum Content---##
 rub_max=(chl_max*crc)/1000 #(umol RuBP/m2)
 
-##---Temperature---##
-t=25 #degrees C
+##---Air Temperature---##
+t=20 #degrees C
 
-##---Parameter Arrays for Model (Constant)---##
+##---Constant Parameter Arrays for Model---##
 
 #I have commented out parameters that I am assuming are variable (for the time being)
 
-#s=np.zeros(shape=100)+0.02 #specific leaf area (m2 C/g C)
-#ra=np.zeros(shape=100)+20.7 #specific rubisco activity (umol CO2/g Rub s)
-#nm=np.zeros(shape=100)+0.03 #leaf nitrogen (g N/ g C)
-#flnr=np.zeros(shape=100)+0.6 #fraction of leaf nitrogen in rubisco (g N Rub/g N leaf)
+s=np.zeros(shape=3)+0.019 #specific leaf area (m2 C/g C)
+ra=np.zeros(shape=3)+20.7 #specific rubisco activity (umol CO2/g Rub s)
+nm=np.zeros(shape=3)+0.035 #leaf nitrogen (g N/ g C)
+flnr=np.zeros(shape=3)+0.65 #fraction of leaf nitrogen in rubisco (g N Rub/g N leaf)
 frnr=np.zeros(shape=3)+6.25 #weight fraction of nitrogen in rubisco molecule (g Rub/g N Rub) 
-e_str=611*np.exp(17.27*t/(t+273.3)) #saturation vapor pressure (Pa)
-rh=np.zeros(shape=3)+0.6 #relative humidity (%)
-d=(e_str*(1-rh))*9.9 #vapor pressure deficit (umol/mol)-->multiply by 9.9 to get from Pa to umol/mol
-ca=np.zeros(shape=3)+410 #ambient carbon dioxide (umol/mol)
-gamma=np.zeros(shape=3)+29.6 #carbon dioxide compensation point (umol/mol)
-ko=np.zeros(shape=3)+296078 #325685 farquhar #kinetic coefficient for oxygen (umol/mol)
-kc=np.zeros(shape=3)+ 296 #454 farquhar #kinetic coefficient for carbon dioxide (umol/mol)
+ea_str=pa_con_atmfrac(611*np.exp(17.27*t/(t+273.3))) #saturation vapor pressure of air (Pa-->umol h20.mol air)
+rh=np.zeros(shape=3)+0.55 #relative humidity (kPa/kPa)
+ea=rh*ea_str #vapor pressure deficit (umol h2O/mol air)
+ca=np.zeros(shape=3)+410 #ambient carbon dioxide (umol CO2/mol air)
+tau25=np.zeros(shape=3)+2904.12 #specifity coefficient of tau at 25 C (unitless) 
+ko25=np.zeros(shape=3)+296100 #Michaelis-Menten kinetic coefficient for oxygen at 25 C(umol/mol) 
+kc25=np.zeros(shape=3)+ 296 #Michaelis-Menten kinetic coefficient for carbon dioxide at 25 C (umol/mol)
 o=np.zeros(shape=3)+210000 #concentration of ambient oxygen (umol/mol)
-#m=np.zeros(shape=9)+9 #Ball-Berry stomatal conductance slope parameter
-b=np.zeros(shape=3)+0.01 #Ball-Berry stomatal conductance intercept parameter
+#lamb=np.zeros(shape=3)+0.0074 #marginal WUE (umol CO2/umol H2O)
+b=np.zeros(shape=3)+0.0 #Ball-Berry stomatal conductance intercept parameter
 a=np.zeros(shape=3)+1.6 #Conversion Coefficient between stomatal conductance to water and carbon dioxide 
-chl=np.zeros(shape=3)+450 #Chlorophyll Content of leaves (umol/m2)
+chl=np.zeros(shape=3)+400 #Chlorophyll Content of the Leaf (umol chl/m2)
+tl=np.zeros(shape=3)+(31+273.15) #Temperature of the Leaf (K)
+vwc=np.zeros(shape=3)+0.15 #Soil Volumetric Water Content (cm3/cm3)
+vwc_min=0.08 #minimum soil water content for photosynthesis to occur (permanent wilting point) (cm3/cm3) 
+vwc_max=0.3 #maximum soil water content where increases in soil water do not affect photosynthesis (field capacity?) (cm3/cm3)
+q=0.2 #parameter for soil water affect on photosynthesis (unitless)
+ij=np.zeros(shape=3)+0.96 #leaf area & angle index--downregulates jmax
+m=np.zeros(shape=3)+15.0 #ball-berry parameter (unitless)
 
 
-##---Parameter Arrays for Model (Variable)---##
+##---Variable Parameter Arrays for Model---##
 
 for i in range(len(leaf_params)):
     for key,val in leaf_params[i].items():
@@ -118,20 +128,59 @@ for i in range(len(leaf_params)):
 
 
 ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-
+    tl_c=tl-273.15 #temperature of leaf in (C)
+    es_str=pa_con_atmfrac(611*np.exp(17.27*tl_c/(tl_c+273.3))) #calculate saturation vapor pressure of surface (Pa)
+    d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
+    
     l=1/s #leaf mass per unit area (g C/m2 C)
     na=nm*l #leaf nitrogen (g N/ m2 C)
+    
+    #below is commented out because I am no longer using a variable lambda parameter
+#    m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
+
     rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
-    j_m=j_m_max*(rub/rub_max) #find j_m slope based on ribulose bisphosphate content
+    j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
+    
+    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
 
+##---Temperature Effects on Parameters---##
+    
+    #parameters
+    tk_25=298.16; #absolute temperature at 25 C
+    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
+    eko=14500.0 #Activation energy for K of O2 (J mol-1)
+    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
+    ev=55000.0 #Activation energy for carboxylation (J mol-1)
+    ej=55000.0 #Activation energy for electron transport (J mol-1)
+    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
+    toptj=298.0 #Optimum temperature for maximum electron transport (K)
+    
+    #calculated parameters due to temperature
+    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
+    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
+    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
+##---Soil Moisture Effect on Parameters---##
+    
+    if all(vwc>=vwc_max):
+        Wfac==1
+    elif all(vwc<vwc_max):
+        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    
+    vmax=Wfac*vmax1
+    jmax=Wfac*jmax1
+    
 ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
     #rubisco limited
-    a1_r=frnr*flnr*ra*na
+    a1_r=vmax
     a2_r=kc*(1+(o/ko))
     #light limited
-    a1_l=((frnr*flnr*ra*na)*j_m+j_b)/4
+    a1_l=jmax/4
     a2_l=2*gamma
 
         
@@ -169,7 +218,7 @@ for i in range(len(leaf_params)):
                 A+=[A_l[xx]] #both light and rubisco limited
                 
         ##---Solve for Stomatal Conductance to Water---##
-        gsw=m*A*rh/ca #stomatal conductance to water (mol H2O/m2s)
+        gsw=m*A*rh/ca #stomatal conductance to water (mol air/m2s)
         
         ##---Solve for Evapotranspiration---##
         E=gsw*d #(umol H2O/m2s)
@@ -243,11 +292,13 @@ for i in range(len(leaf_params)):
         E=gsw*d #(umol H2O/m2s)
 
         
-#---------------Test for Nan Values---------------#       
-
+#---------------Test for Nan or Negative Values---------------#       
+    
+    print A
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
+            print '\n'
             break
         if A[xxx]<0.0:
             print "A array contains negative values"
@@ -268,15 +319,16 @@ for i in range(len(leaf_params)):
         
 #---------------WUE vs. NUE---------------#    
     
+    
     wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
     nue=np.diff(A)/np.diff(na)
 
     
 #---------------Test for Low NUE Values---------------#  
+
 #    if any(nue<15):
 #        break
     
-
 
 #---------------Plot NUE vs. WUE---------------#      
 
