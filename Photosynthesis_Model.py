@@ -9,14 +9,24 @@ Created on Sat Nov 26 16:37:08 2016
 from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
 import numpy as np
 
-def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b):
+#NOTE: For future incorporation of environmental factors in model, check out
+#Stewart (1988) model--in Dingman book
 
+def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b):
+    
+    tl=tl+273.15  
+    
+    if all(ij>1.0):
+        ij=1.0
+    else:
+        ij=ij
+    
     ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
     es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
     d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
     
     l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (g N/ m2 C)
+    na=nm*l #leaf nitrogen (mol H2O/m2s)
     
     #below is commented out because I am no longer using a variable lambda parameter
     #m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
@@ -30,7 +40,7 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
             
     vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
     jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
-
+    
     ##---Temperature Effects on Parameters---##
     
     #parameters
@@ -71,11 +81,11 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
     #light limited
     a1_l=jmax/4
     a2_l=2*gamma
-
+    
         
     ##---(1)Photosynthesis and Stomatal Conductance Models (b is not taken into account)---##
 
-    if any(b==0.0):
+    if all(b==0.0):
     
         #In order to generate this model I combined the following equations:
         #A=gsc*(ca-ci)
@@ -133,8 +143,8 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
         bb_r=b*(ca**2)+b*ca*a2_r-a1_r*m*rh*ca+a*ca*a1_r+a1_r*m*rh*gamma
         cc_r=a1_r*b*(ca**2)+gamma*b*ca*a1_r
 
-        A1_r=(-bb_r+np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
-        A2_r=(-bb_r-np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
+        A1_r=(-bb_r+np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r) #(umol CO2/m2s)
+        A2_r=(-bb_r-np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r) #(umol CO2/m2s)
                     
         #Choose Highest Values for Assimilation and Conductance
         A_r=[]
@@ -151,8 +161,8 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
         bb_l=b*(ca**2)+b*ca*a2_l-a1_l*m*rh*ca+a*ca*a1_l+a1_l*m*rh*gamma
         cc_l=a1_l*b*(ca**2)+gamma*b*ca*a1_l
 
-        A1_l=(-bb_l+np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
-        A2_l=(-bb_l-np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
+        A1_l=(-bb_l+np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l) #(umol CO2/m2s)
+        A2_l=(-bb_l-np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l) #(umol CO2/m2s)
             
         #Choose Highest Values for Assimilation and Conductance
         A_l=[]
@@ -175,33 +185,33 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
                 A+=[A_l[xx]] #both light and rubisco limited         
         
         ##---Solve for Stomatal Conductance to Water---##
-        gsw=m*A*rh/ca #stomatal conductance to water (mol H2O/m2s) #make array from list
+        gsw=(m*A*rh/ca)+b #stomatal conductance to water (mol H2O/m2s) #make array from list
             
         ##---Solve for Evapotranspiration---##
         E=gsw*d #(umol H2O/m2s)
 
         
         #---------------Test for Nan or Negative Values---------------#       
-            
+  
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
         if A[xxx]<0.0:
             print "A array contains negative values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
         if np.isnan(gsw[xxx]):
             print "gsw array contains nan values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
         if gsw[xxx]<0.0:
             print "gsw array contains negative values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
         if np.isnan(E[xxx]):
             print "E array contains nan values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
         if E[xxx]<0.0:
             print "E array contains negative values"
-            return -999,-999
+            return [-999,-999,-999,-999,-999,-999]
 
         
     #---------------WUE vs. NUE---------------#    
@@ -210,4 +220,8 @@ def photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,fln
     wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
     nue=np.diff(A)/np.diff(na)
     
-    return wue, nue
+    
+#    print 'nue',nue
+
+    
+    return wue, nue, A, gsw, E, na

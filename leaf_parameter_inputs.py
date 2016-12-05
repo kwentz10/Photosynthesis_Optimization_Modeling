@@ -49,46 +49,46 @@ def merge_dicts(*dict_args):
 
 #fellfield
 s_f=0.015 #specific leaf area (m2/g)
-nm_f=((s_f*(100.0**2))*0.077+20.25)/1000.0 #leaf N (gN/gC)
+nm_f=0.0253  #leaf N (gN/gC)
 flnr_f=0.55 #fraction of leaf nitrogen in rubisco (g leaf N/g rubisco)
 chl_f=200 #chlorophyll content (umol chl/m2)
-tl_f=35.0+273.15 #temp of leaf (K)-->f(leaf area,angle,height)
+tl_f=36.0 #temp of leaf (K)-->f(leaf area,angle,height)
 vwc_f=0.10 #soil volumetric water content (cm3/cm3)
 ij_f=0.92 #index of light penetration (low leaf area and high leaf angle) (unitless)-->f(leaf area & angle)
 
 #dry meadow
 s_d=0.017 #specific leaf area (m2/g)
-nm_d=((s_d*(100.0**2))*0.077+20.25)/1000.0 #leaf N (gN/gC)
+nm_d=0.0313 #leaf N (gN/gC)
 flnr_d=0.6 #fraction of leaf nitrogen in rubisco (g leaf N/g rubisco)
 chl_d=300 #chlorophyll content (umol chl/m2)
-tl_d=33.0+273.15 #temp of leaf (K)-->f(leaf area,angle,height)
+tl_d=32.0 #temp of leaf (K)-->f(leaf area,angle,height)
 vwc_d=0.16  #soil volumetric water content (cm3/cm3)
 ij_d=0.94 #index of light penetration (low medium leaf area and high medium leaf angle) (unitless)-->f(leaf area & angle)
 
 #moist meadow
 s_m=0.019 #specific leaf area (m2/g)
-nm_m=((s_m*(100.0**2))*0.077+20.25)/1000.0 #leaf N (gN/gC)
+nm_m=0.0372 #leaf N (gN/gC)
 flnr_m=0.65 #fraction of leaf nitrogen in rubisco (g leaf N/g rubisco)
 chl_m=400 #chlorophyll content (umol chl/m2)
-tl_m=31.0+273.15 #temp of leaf (K)-->f(leaf area,angle,height)
+tl_m=28.0 #temp of leaf (K)-->f(leaf area,angle,height)
 vwc_m=0.22 #soil volumetric water content (cm3/cm3)
 ij_m=0.96 #index of light penetration (medium leaf area and medium leaf angle) (unitless)-->f(leaf area & angle)
 
 #wet meadow
 s_w=0.022 #specific leaf area (m2/g)
-nm_w=((s_w*(100.0**2))*0.077+20.25)/1000.0 #leaf N (gN/gC)
+nm_w=0.0435#leaf N (gN/gC)
 flnr_w=0.7 #fraction of leaf nitrogen in rubisco (g leaf N/g rubisco)
 chl_w=500 #chlorophyll content (umol chl/m2)
-tl_w=29.0+273.15 #temp of leaf (K)-->f(leaf area,angle,height)
+tl_w=24.0 #temp of leaf (K)-->f(leaf area,angle,height)
 vwc_w=0.28 #soil volumetric water content (cm3/cm3)
 ij_w=0.98 #index of light penetration (high medium leaf area and low medium leaf angle) (unitless)-->f(leaf area & angle)
 
 #snowbed
 s_s=0.025 #specific leaf area (m2/g)
-nm_s=((s_s*(100.0**2))*0.077+20.25)/1000.0 #leaf N (gN/gC)
+nm_s=0.0495 #leaf N (gN/gC)
 flnr_s=0.75 #fraction of leaf nitrogen in rubisco (g leaf N/g rubisco)
 chl_s=600 #chlorophyll content (umol chl/m2)
-tl_s=27.0+273.15 #temp of leaf (K)-->f(leaf area,angle,height)
+tl_s=20.0 #temp of leaf (K)-->f(leaf area,angle,height)
 vwc_s=0.34 #soil volumetric water content (cm3/cm3)
 ij_s=1.0 #index of light penetration (high leaf area and low leaf angle) (unitless)-->f(leaf area & angle)
 
@@ -100,20 +100,44 @@ ij_s=1.0 #index of light penetration (high leaf area and low leaf angle) (unitle
 #lambda_l=400.0*(1.0/10.0**6) #low (umol CO2/umol H20)
 
 #ball berry parameter (sensitivity of stomatal conductance)
-m_f=25.0 #(unitless)
+m_f=24.0 #(unitless)
 m_d=20.0 #(unitless)
-m_m=15.0 #(unitless)
-m_w=10.0 #(unitless)
-m_s=5.0 #(unitless)
+m_m=16.0 #(unitless)
+m_w=12.0 #(unitless)
+m_s=8.0 #(unitless)
 
-##plasticity of traits
-s_range=np.abs(s_s-s_w)*0.1
-nm_range=np.abs(nm_s-nm_w)*0.1
-chl_range=np.abs(chl_s-chl_w)*0.1
-tl_range=np.abs(tl_s-tl_w)*0.1
-vwc_range=np.abs(vwc_s-vwc_w)*0.0 #assume no range in this value (not a trait)
-m_range=np.abs(m_s-m_w)*0.1
-ij_range=np.abs(ij_s-ij_w)*0.1
+std_s=np.std([s_f,s_d,s_m,s_w,s_s])*0.1
+std_nm=np.std([nm_f,nm_d,nm_m,nm_w,nm_s])*0.2
+std_chl=np.std([chl_f,chl_d,chl_m,chl_w,chl_s])*0.1
+std_tl=np.std([tl_f,tl_d,tl_m,tl_w,tl_s])*0.1
+std_m=np.std([m_f,m_d,m_m,m_w,m_s])*0.1
+std_ij=np.std([ij_f,ij_d,ij_m,ij_w,ij_s])*0.1
+
+mean_s=np.mean([s_f,s_d,s_m,s_w,s_s])
+mean_nm=np.mean([nm_f,nm_d,nm_m,nm_w,nm_s])
+mean_chl=np.mean([chl_f,chl_d,chl_m,chl_w,chl_s])
+mean_tl=np.mean([tl_f,tl_d,tl_m,tl_w,tl_s])
+mean_m=np.mean([m_f,m_d,m_m,m_w,m_s])
+mean_ij=np.mean([ij_f,ij_d,ij_m,ij_w,ij_s])
+
+s_range=s_m-min(np.random.normal(mean_s,std_s,100000))
+nm_range=nm_m-min(np.random.normal(mean_nm,std_nm,100000))
+chl_range=chl_m-min(np.random.normal(mean_chl,std_chl,100000))
+tl_range=tl_m-min(np.random.normal(mean_tl,std_tl,100000))
+m_range=m_m-min(np.random.normal(mean_m,std_m,100000))
+ij_range=ij_m-min(np.random.normal(mean_ij,std_ij,100000))
+vwc_range=0.0
+
+    
+
+###plasticity of traits
+#s_range=np.abs(s_s-s_w)*0.1
+#nm_range=np.abs(nm_s-nm_w)*0.1
+#chl_range=np.abs(chl_s-chl_w)*0.1
+#tl_range=np.abs(tl_s-tl_w)*0.1
+#vwc_range=np.abs(vwc_s-vwc_w)*0.0 #assume no range in this value (not a trait)
+#m_range=np.abs(m_s-m_w)*0.1
+#ij_range=np.abs(ij_s-ij_w)*0.1
 
 ##---In the Below Dictionary, sla, leaf n, and fraction of leaf n in rub are the only proportionally dependent variables---##
 
@@ -191,76 +215,76 @@ ij_range=np.abs(ij_s-ij_w)*0.1
 
 
 #variable nm
-dict=[
-      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
-       {'m_f1':np.zeros(shape=2)+m_m-m_range},
-       {'m_f2':np.zeros(shape=2)+m_m+m_range},
-       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-       {'vwc_f1':np.zeros(shape=2)+vwc_m-vwc_range},
-       {'vwc_f2':np.zeros(shape=2)+vwc_m+vwc_range},
-       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-        ],
-      
-      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
-       {'m_d1':np.zeros(shape=2)+m_m-m_range},
-       {'m_d2':np.zeros(shape=2)+m_m+m_range},
-       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-       {'vwc_d1':np.zeros(shape=2)+vwc_m-vwc_range},
-       {'vwc_d2':np.zeros(shape=2)+vwc_m+vwc_range},
-       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-        ],
-        
-      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-       {'m_m1':np.zeros(shape=2)+m_m-m_range},
-       {'m_m2':np.zeros(shape=2)+m_m+m_range},
-       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-       {'vwc_m1':np.zeros(shape=2)+vwc_m-vwc_range},
-       {'vwc_m2':np.zeros(shape=2)+vwc_m+vwc_range},
-       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-        ],
-       
-      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
-       {'m_w1':np.zeros(shape=2)+m_m-m_range},
-       {'m_w2':np.zeros(shape=2)+m_m+m_range},
-       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-       {'vwc_w1':np.zeros(shape=2)+vwc_m-vwc_range},
-       {'vwc_w2':np.zeros(shape=2)+vwc_m+vwc_range},
-       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-        ], 
-      
-      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
-       {'m_s1':np.zeros(shape=2)+m_m-m_range},
-       {'m_s2':np.zeros(shape=2)+m_m+m_range},
-       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-       {'vwc_s1':np.zeros(shape=2)+vwc_m-vwc_range},
-       {'vwc_s2':np.zeros(shape=2)+vwc_m+vwc_range},
-       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-        ]]
+#dict=[
+#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
+#       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
+#       {'m_f1':np.zeros(shape=2)+m_m-m_range},
+#       {'m_f2':np.zeros(shape=2)+m_m+m_range},
+#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
+#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
+#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
+#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
+#       {'vwc_f1':np.zeros(shape=2)+vwc_m-vwc_range},
+#       {'vwc_f2':np.zeros(shape=2)+vwc_m+vwc_range},
+#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
+#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
+#        ],
+#      
+#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
+#       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
+#       {'m_d1':np.zeros(shape=2)+m_m-m_range},
+#       {'m_d2':np.zeros(shape=2)+m_m+m_range},
+#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
+#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
+#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
+#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
+#       {'vwc_d1':np.zeros(shape=2)+vwc_m-vwc_range},
+#       {'vwc_d2':np.zeros(shape=2)+vwc_m+vwc_range},
+#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
+#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
+#        ],
+#        
+#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
+#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
+#       {'m_m1':np.zeros(shape=2)+m_m-m_range},
+#       {'m_m2':np.zeros(shape=2)+m_m+m_range},
+#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
+#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
+#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
+#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
+#       {'vwc_m1':np.zeros(shape=2)+vwc_m-vwc_range},
+#       {'vwc_m2':np.zeros(shape=2)+vwc_m+vwc_range},
+#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
+#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
+#        ],
+#       
+#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
+#       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
+#       {'m_w1':np.zeros(shape=2)+m_m-m_range},
+#       {'m_w2':np.zeros(shape=2)+m_m+m_range},
+#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
+#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
+#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
+#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
+#       {'vwc_w1':np.zeros(shape=2)+vwc_m-vwc_range},
+#       {'vwc_w2':np.zeros(shape=2)+vwc_m+vwc_range},
+#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
+#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
+#        ], 
+#      
+#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
+#       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
+#       {'m_s1':np.zeros(shape=2)+m_m-m_range},
+#       {'m_s2':np.zeros(shape=2)+m_m+m_range},
+#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
+#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
+#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
+#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
+#       {'vwc_s1':np.zeros(shape=2)+vwc_m-vwc_range},
+#       {'vwc_s2':np.zeros(shape=2)+vwc_m+vwc_range},
+#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
+#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
+#        ]]
 
 #variable nm/s
 #dict=[
@@ -627,7 +651,7 @@ dict=[
  
 #variable ij
 #dict=[
-#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
+#      [{'s_f':np.linspace(s_m-0.1*s_m,s_m+0.1*s_m,2)},  ##STOPPED HERE
 #       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
 #       {'m_f1':np.zeros(shape=2)+m_m-m_range},
 #       {'m_f2':np.zeros(shape=2)+m_m+m_range},
@@ -700,76 +724,76 @@ dict=[
 
 #traits vary for each community
 
-#dict=[
-#      [{'s_f':np.linspace(s_f-s_range,s_f+s_range,2)},
-#       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
-#       {'m_f1':np.zeros(shape=2)+m_f-m_range},
-#       {'m_f2':np.zeros(shape=2)+m_f+m_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_f-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_f+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_f-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_f+tl_range},
-#       {'vwc_f1':np.zeros(shape=2)+vwc_m-vwc_range},
-#       {'vwc_f2':np.zeros(shape=2)+vwc_m+vwc_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_f-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_f+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_d-s_range,s_d+s_range,2)},
-#       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
-#       {'m_d1':np.zeros(shape=2)+m_d-m_range},
-#       {'m_d2':np.zeros(shape=2)+m_d+m_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_d-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_d+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_d-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_d+tl_range},
-#       {'vwc_d1':np.zeros(shape=2)+vwc_m-vwc_range},
-#       {'vwc_d2':np.zeros(shape=2)+vwc_m+vwc_range},
-#        {'ij_d1':np.zeros(shape=2)+ij_d-ij_range},
-#        {'ij_d2':np.zeros(shape=2)+ij_d+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'m_m1':np.zeros(shape=2)+m_m-m_range},
-#       {'m_m2':np.zeros(shape=2)+m_m+m_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'vwc_m1':np.zeros(shape=2)+vwc_m-vwc_range},
-#       {'vwc_m2':np.zeros(shape=2)+vwc_m+vwc_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_w-s_range,s_w+s_range,2)},
-#       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
-#       {'m_w1':np.zeros(shape=2)+m_w-m_range},
-#       {'m_w2':np.zeros(shape=2)+m_w+m_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_w-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_w+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_w-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_w+tl_range},
-#       {'vwc_w1':np.zeros(shape=2)+vwc_m-vwc_range},
-#       {'vwc_w2':np.zeros(shape=2)+vwc_m+vwc_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_w-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_w+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_s-s_range,s_s+s_range,2)},
-#       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
-#       {'m_s1':np.zeros(shape=2)+m_s-m_range},
-#       {'m_s2':np.zeros(shape=2)+m_s+m_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_s-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_s+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_s-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_s+tl_range},
-#       {'vwc_s1':np.zeros(shape=2)+vwc_m-vwc_range},
-#       {'vwc_s2':np.zeros(shape=2)+vwc_m+vwc_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_s-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_s+ij_range},
-#        ]] 
+dict=[
+      [{'s_f':np.linspace(s_f-s_range,s_f+s_range,2)},
+       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
+       {'m_f1':np.zeros(shape=2)+m_f-m_range},
+       {'m_f2':np.zeros(shape=2)+m_f+m_range},
+       {'chl_f1':np.zeros(shape=2)+chl_f-chl_range},
+       {'chl_f2':np.zeros(shape=2)+chl_f+chl_range},
+       {'tl_f1':np.zeros(shape=2)+tl_f-tl_range},
+       {'tl_f2':np.zeros(shape=2)+tl_f+tl_range},
+       {'vwc_f1':np.zeros(shape=2)+vwc_m-vwc_range},
+       {'vwc_f2':np.zeros(shape=2)+vwc_m+vwc_range},
+       {'ij_f1':np.zeros(shape=2)+ij_f-ij_range},
+       {'ij_f2':np.zeros(shape=2)+ij_f+ij_range},
+        ],
+      
+      [{'s_d':np.linspace(s_d-s_range,s_d+s_range,2)},
+       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
+       {'m_d1':np.zeros(shape=2)+m_d-m_range},
+       {'m_d2':np.zeros(shape=2)+m_d+m_range},
+       {'chl_d1':np.zeros(shape=2)+chl_d-chl_range},
+       {'chl_d2':np.zeros(shape=2)+chl_d+chl_range},
+       {'tl_d1':np.zeros(shape=2)+tl_d-tl_range},
+       {'tl_d2':np.zeros(shape=2)+tl_d+tl_range},
+       {'vwc_d1':np.zeros(shape=2)+vwc_m-vwc_range},
+       {'vwc_d2':np.zeros(shape=2)+vwc_m+vwc_range},
+        {'ij_d1':np.zeros(shape=2)+ij_d-ij_range},
+        {'ij_d2':np.zeros(shape=2)+ij_d+ij_range},
+        ],
+        
+      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
+       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
+       {'m_m1':np.zeros(shape=2)+m_m-m_range},
+       {'m_m2':np.zeros(shape=2)+m_m+m_range},
+       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
+       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
+       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
+       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
+       {'vwc_m1':np.zeros(shape=2)+vwc_m-vwc_range},
+       {'vwc_m2':np.zeros(shape=2)+vwc_m+vwc_range},
+       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
+       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
+        ],
+       
+      [{'s_w':np.linspace(s_w-s_range,s_w+s_range,2)},
+       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
+       {'m_w1':np.zeros(shape=2)+m_w-m_range},
+       {'m_w2':np.zeros(shape=2)+m_w+m_range},
+       {'chl_w1':np.zeros(shape=2)+chl_w-chl_range},
+       {'chl_w2':np.zeros(shape=2)+chl_w+chl_range},
+       {'tl_w1':np.zeros(shape=2)+tl_w-tl_range},
+       {'tl_w2':np.zeros(shape=2)+tl_w+tl_range},
+       {'vwc_w1':np.zeros(shape=2)+vwc_m-vwc_range},
+       {'vwc_w2':np.zeros(shape=2)+vwc_m+vwc_range},
+       {'ij_w1':np.zeros(shape=2)+ij_w-ij_range},
+       {'ij_w2':np.zeros(shape=2)+ij_w+ij_range},
+        ], 
+      
+      [{'s_s':np.linspace(s_s-s_range,s_s+s_range,2)},
+       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
+       {'m_s1':np.zeros(shape=2)+m_s-m_range},
+       {'m_s2':np.zeros(shape=2)+m_s+m_range},
+       {'chl_s1':np.zeros(shape=2)+chl_s-chl_range},
+       {'chl_s2':np.zeros(shape=2)+chl_s+chl_range},
+       {'tl_s1':np.zeros(shape=2)+tl_s-tl_range},
+       {'tl_s2':np.zeros(shape=2)+tl_s+tl_range},
+       {'vwc_s1':np.zeros(shape=2)+vwc_m-vwc_range},
+       {'vwc_s2':np.zeros(shape=2)+vwc_m+vwc_range},
+       {'ij_s1':np.zeros(shape=2)+ij_s-ij_range},
+       {'ij_s2':np.zeros(shape=2)+ij_s+ij_range},
+        ]] 
 #---------------Define Number of Variable Parameters---------------#  
 
 num_params=7

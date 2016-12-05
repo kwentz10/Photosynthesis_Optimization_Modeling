@@ -30,6 +30,7 @@ gradient in the alpine tundra.
 import itertools as it
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import rcParams
 
 #The line of code below is for if I want to input all combinations of changed parameters into my model:
 from leaf_parameter_inputs_intraspecific_var import leaf_params_plas
@@ -115,11 +116,16 @@ for ii in range(len(dict_params)):
 #    axD = fb1.add_subplot(324)
 #    axE = fb1.add_subplot(325)
     axA = plt.subplot2grid((2,6),(0,0),colspan=2)
+    axA2=axA.twinx()
     axB = plt.subplot2grid((2,6),(0,2),colspan=2)
+    axB2=axB.twinx()
     axC = plt.subplot2grid((2,6),(0,4),colspan=2)
+    axC2=axC.twinx()
     axD = plt.subplot2grid((2,6),(1,1),colspan=2)
+    axD2=axD.twinx()
     axE = plt.subplot2grid((2,6),(1,3),colspan=2)
-
+    axE2=axE.twinx()
+    
     ##---Figure Without Subplots Blueprint---##
 
     #put in correct ax value (e.g. axA, axB)
@@ -128,75 +134,104 @@ for ii in range(len(dict_params)):
 
     ##---Define Plot Parameters Based on Graph Interests---##
 
-    axA.set_xlabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
-    axA.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
-#    axA.set_xlim([0,25])
+    axA.set_xlabel('Percent Change in Trait Plasticity (%)',fontsize=12, fontname='Times New Roman')
+    axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
+    axA2.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
+    #    axA.set_xlim([0,25])
 #    axA.set_ylim([0,10])
-    axA.set_title(' Fellfield "Index of Light" Plasticity', fontname='Times New Roman',fontsize=14,fontweight='bold')
+    axA.set_title(' Fellfield: Variation in Leaf Index of Light Range', fontname='Times New Roman',fontsize=14,fontweight='bold')
 #    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
 
-    axB.set_xlabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
-    axB.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
+    axB.set_xlabel('Percent Change in Trait Plasticity (%)',fontsize=12, fontname='Times New Roman')
+    axB.set_ylabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
+    axB2.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
 #    axA.set_xlim([0,25])
 #    axA.set_ylim([0,10])
-    axB.set_title('Dry Meadow "Index of Light" Plasticity', fontname='Times New Roman',fontsize=14,fontweight='bold')
+    axB.set_title('Dry Meadow: Variation in Leaf Index of Light Range', fontname='Times New Roman',fontsize=14,fontweight='bold')
 #    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
 
-    axC.set_xlabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
-    axC.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
+    axC.set_xlabel('Percent Change in Trait Plasticity (%)',fontsize=12, fontname='Times New Roman')
+    axC.set_ylabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
+    axC2.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
 #    axA.set_xlim([0,25])
 #    axA.set_ylim([0,10])
-    axC.set_title('Moist Meadow "Index of Light" Plasticity', fontname='Times New Roman',fontsize=14,fontweight='bold')
+    axC.set_title('Moist Meadow: Variation in Leaf Index of Light Range', fontname='Times New Roman',fontsize=14,fontweight='bold')
 #    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
 
-    axD.set_xlabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
-    axD.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
+    axD.set_xlabel('Percent Change in Trait Plasticity (%)',fontsize=12, fontname='Times New Roman')
+    axD.set_ylabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
+    axD2.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
 #    axA.set_xlim([0,25])
 #    axA.set_ylim([0,10])
-    axD.set_title('Wet Meadow "Index of Light" Plasticity', fontname='Times New Roman',fontsize=14,fontweight='bold')
+    axD.set_title('Wet Meadow: Variation in Leaf Index of Light Range', fontname='Times New Roman',fontsize=14,fontweight='bold')
 #    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
 
-    axE.set_xlabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
-    axE.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
+    axE.set_xlabel('Percent Change in Trait Plasticity (%)',fontsize=12, fontname='Times New Roman')
+    axE.set_ylabel('NUE (umol CO2/g N s)',fontsize=12, fontname='Times New Roman')
+    axE2.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=12, fontname='Times New Roman')
 #    axA.set_xlim([0,25])
 #    axA.set_ylim([0,10])
-    axE.set_title('Snowbed "Index of Light" Plasticity', fontname='Times New Roman',fontsize=14,fontweight='bold')
+    axE.set_title('Snowbed: Variation in Leaf Index of Light Range', fontname='Times New Roman',fontsize=14,fontweight='bold')
 #    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
 
 
     ##---Line Type for Each Plant---##
-    n=32 #number of variable parameter combinations for each meadow type
+#    n=32 #number of variable parameter combinations for each meadow type
+#
+#    color=['darkblue','slateblue','blueviolet','mediumorchid','purple']
+#    legend=['90% Trait Variation','70% Trait Variation','50% Trait Variation','30% Trait Variation','10% Trait Variation']
+#    
+#    linewidth=[8.0,6.0,4.0,2.0,0.5]
 
-    color=['darkblue','slateblue','blueviolet','mediumorchid','purple']
-    legend=['90% Trait Variation','70% Trait Variation','50% Trait Variation','30% Trait Variation','10% Trait Variation']
-    
-    linewidth=[8.0,6.0,4.0,2.0,0.5]
+    wue_f_per1=[]
+    nue_f_per1=[]
+    wue_f_per2=[]
+    nue_f_per2=[]
+    wue_f_per3=[]
+    nue_f_per3=[]
 
-    wue_f_tot=[]
-    nue_f_tot=[]
-    wue_d_tot=[]
-    nue_d_tot=[]
-    wue_m_tot=[]
-    nue_m_tot=[]
-    wue_w_tot=[]
-    nue_w_tot=[]
-    wue_s_tot=[]
-    nue_s_tot=[] 
+    wue_d_per1=[]
+    nue_d_per1=[]
+    wue_d_per2=[]
+    nue_d_per2=[]
+    wue_d_per3=[]
+    nue_d_per3=[]
+
+    wue_m_per1=[]
+    nue_m_per1=[]
+    wue_m_per2=[]
+    nue_m_per2=[]
+    wue_m_per3=[]
+    nue_m_per3=[]
+
+    wue_w_per1=[]
+    nue_w_per1=[]
+    wue_w_per2=[]
+    nue_w_per2=[]
+    wue_w_per3=[]
+    nue_w_per3=[]
+
+    wue_s_per1=[]
+    nue_s_per1=[]
+    wue_s_per2=[]
+    nue_s_per2=[]
+    wue_s_per3=[]
+    nue_s_per3=[]
   
     ##---Variable Parameter Arrays for Model---##
     
     for iii in range(len(leaf_params_plas)):
         ##---Initialize Arrays for Each Meadow---##
-        wue_f=[]
-        nue_f=[]
-        wue_d=[]
-        nue_d=[]
-        wue_m=[]
-        nue_m=[]
-        wue_w=[]
-        nue_w=[]    
-        wue_s=[]
-        nue_s=[]
+#        wue_f=[]
+#        nue_f=[]
+#        wue_d=[]
+#        nue_d=[]
+#        wue_m=[]
+#        nue_m=[]
+#        wue_w=[]
+#        nue_w=[]    
+#        wue_s=[]
+#        nue_s=[]
 
         for i in range(len(leaf_params_plas[iii])):
             for key,val in leaf_params_plas[iii][i].items():
@@ -215,8 +250,9 @@ for ii in range(len(dict_params)):
                 vwc=vwc_c
             if 'ij' in dict_params[ii]:
                 ij=ij_c
-
-            wue,nue=photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b)
+            
+            
+            wue, nue, A, gsw, E, na=photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b)
             
             if wue==-999 and nue==-999:
                 continue
@@ -232,31 +268,66 @@ for ii in range(len(dict_params)):
 #---------------Make Array of Values for Each Meadow---------------#  
 
             if i+1<33:
-                wue_f+=[wue]
-                nue_f+=[nue]
+                if iii==0:
+                    wue_f_per1+=[wue]
+                    nue_f_per1+=[nue]
+                if iii==1:
+                    wue_f_per2+=[wue]
+                    nue_f_per2+=[nue]
+                if iii==2:
+                    wue_f_per3+=[wue]
+                    nue_f_per3+=[nue]
             elif i+1>=33 and i+1<65:
-                wue_d+=[wue]
-                nue_d+=[nue]
+                if iii==0:
+                    wue_d_per1+=[wue]
+                    nue_d_per1+=[nue]
+                if iii==1:
+                    wue_d_per2+=[wue]
+                    nue_d_per2+=[nue]
+                if iii==2:
+                    wue_d_per3+=[wue]
+                    nue_d_per3+=[nue]
             elif i+1>=65 and i+1<97:
-                wue_m+=[wue]
-                nue_m+=[nue]
+                if iii==0:
+                    wue_m_per1+=[wue]
+                    nue_m_per1+=[nue]
+                if iii==1:
+                    wue_m_per2+=[wue]
+                    nue_m_per2+=[nue]
+                if iii==2:
+                    wue_m_per3+=[wue]
+                    nue_m_per3+=[nue]             
             elif i+1>=97 and i+1<129:
-                wue_w+=[wue]
-                nue_w+=[nue]
+                if iii==0:
+                    wue_w_per1+=[wue]
+                    nue_w_per1+=[nue]
+                if iii==1:
+                    wue_w_per2+=[wue]
+                    nue_w_per2+=[nue]
+                if iii==2:
+                    wue_w_per3+=[wue]
+                    nue_w_per3+=[nue] 
             elif i+1>=129 and i+1<161:
-                wue_s+=[wue]
-                nue_s+=[nue]
+                if iii==0:
+                    wue_s_per1+=[wue]
+                    nue_s_per1+=[nue]
+                if iii==1:
+                    wue_s_per2+=[wue]
+                    nue_s_per2+=[nue]
+                if iii==2:
+                    wue_s_per3+=[wue]
+                    nue_s_per3+=[nue]
             
-            wue_f_tot+=wue_f
-            nue_f_tot+=nue_f
-            wue_d_tot+=wue_d
-            nue_d_tot+=nue_d
-            wue_m_tot+=wue_m
-            nue_m_tot+=nue_m
-            wue_w_tot+=wue_w
-            nue_w_tot+=nue_w
-            wue_s_tot+=wue_s
-            nue_s_tot+=nue_s
+#            wue_f_tot+=wue_f
+#            nue_f_tot+=nue_f
+#            wue_d_tot+=wue_d
+#            nue_d_tot+=nue_d
+#            wue_m_tot+=wue_m
+#            nue_m_tot+=nue_m
+#            wue_w_tot+=wue_w
+#            nue_w_tot+=nue_w
+#            wue_s_tot+=wue_s
+#            nue_s_tot+=nue_s
    
 #---------------Plot NUE vs. WUE---------------#      
 
@@ -274,37 +345,159 @@ for ii in range(len(dict_params)):
 #    axA.plot(nue,wue,label='%s' %trait[i], color='%s' %color[i],marker='%s' %marker[i],linestyle='%s' %style[i]) 
    
 
-        axA.plot([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color=color[iii], linestyle='-', linewidth=linewidth[iii], label=legend[iii]) 
-#    axA.scatter([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color='k', marker='^', label='fellfield') 
-        axA.fill_between([np.min(nue_f),np.max(nue_f)],np.min(wue_f),np.max(wue_f),color=color[iii],alpha=0.2) 
-        axA.set_ylim([np.min(wue_f_tot)-np.min(wue_f_tot)*0.01,np.max(wue_f_tot)+np.max(wue_f_tot)*0.01])
-        axA.set_xlim([np.min(nue_f_tot)-0.5,np.max(nue_f_tot)+0.5])
- 
+    nue_bp_f=axA.boxplot([nue_f_per1,nue_f_per2,nue_f_per3], positions=[0.875,1.875,2.875],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    wue_bp_f=axA2.boxplot([wue_f_per1,wue_f_per2,wue_f_per3], positions=[1.125,2.125,3.125],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    axA.plot([0.875,1.875,2.875],[np.mean(nue_f_per1),np.mean(nue_f_per2),np.mean(nue_f_per3)],'-r')
+    axA2.plot([1.125,2.125,3.125],[np.mean(wue_f_per1),np.mean(wue_f_per2),np.mean(wue_f_per3)],'-b')
     
-        axB.plot([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
-##    axA.scatter([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color='r', marker='d',label='dry meadow')     
-        axB.fill_between([np.min(nue_d),np.max(nue_d)],np.min(wue_d),np.max(wue_d),color=color[iii],alpha=0.2) 
-        axB.set_ylim([np.min(wue_d_tot)-np.min(wue_d_tot)*0.01,np.max(wue_d_tot)+np.max(wue_d_tot)*0.01])
-        axB.set_xlim([np.min(nue_d_tot)-0.5,np.max(nue_d_tot)+0.5])
+    axA.plot([0.875,1.875,2.875],[np.max(nue_f_per1),np.max(nue_f_per2),np.max(nue_f_per3)],'--r')
+    axA.plot([0.875,1.875,2.875],[np.min(nue_f_per1),np.min(nue_f_per2),np.min(nue_f_per3)],'--r')
+    axA2.plot([1.125,2.125,3.125],[np.max(wue_f_per1),np.max(wue_f_per2),np.max(wue_f_per3)],'--b')
+    axA2.plot([1.125,2.125,3.125],[np.min(wue_f_per1),np.min(wue_f_per2),np.min(wue_f_per3)],'--b')
+
+    axA.set_xticks([1, 2, 3])
+    axA.set_xticklabels(['-40%','0','+40%'])
+    rcParams['xtick.labelsize']=10   
+    
+    nue_bp_d=axB.boxplot([nue_d_per1,nue_d_per2,nue_d_per3], positions=[0.875,1.875,2.875],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    wue_bp_d=axB2.boxplot([wue_d_per1,wue_d_per2,wue_d_per3], positions=[1.125,2.125,3.125],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    axB.plot([0.875,1.875,2.875],[np.mean(nue_d_per1),np.mean(nue_d_per2),np.mean(nue_d_per3)],'-r')
+    axB2.plot([1.125,2.125,3.125],[np.mean(wue_d_per1),np.mean(wue_d_per2),np.mean(wue_d_per3)],'-b')
+
+    axB.plot([0.875,1.875,2.875],[np.max(nue_d_per1),np.max(nue_d_per2),np.max(nue_d_per3)],'--r')
+    axB.plot([0.875,1.875,2.875],[np.min(nue_d_per1),np.min(nue_d_per2),np.min(nue_d_per3)],'--r')
+    axB2.plot([1.125,2.125,3.125],[np.max(wue_d_per1),np.max(wue_d_per2),np.max(wue_d_per3)],'--b')
+    axB2.plot([1.125,2.125,3.125],[np.min(wue_d_per1),np.min(wue_d_per2),np.min(wue_d_per3)],'--b')
+    
+    axB.set_xticks([1, 2, 3])
+    axB.set_xticklabels(['-40%','0','+40%'])    
+    rcParams['xtick.labelsize']=10   
+    
+    nue_bp_m=axC.boxplot([nue_m_per1,nue_m_per2,nue_m_per3], positions=[0.875,1.875,2.875],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    wue_bp_m=axC2.boxplot([wue_m_per1,wue_m_per2,wue_m_per3], positions=[1.125,2.125,3.125],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    axC.plot([0.875,1.875,2.875],[np.mean(nue_m_per1),np.mean(nue_m_per2),np.mean(nue_m_per3)],'-r')
+    axC2.plot([1.125,2.125,3.125],[np.mean(wue_m_per1),np.mean(wue_m_per2),np.mean(wue_m_per3)],'-b')
+
+    axC.plot([0.875,1.875,2.875],[np.max(nue_m_per1),np.max(nue_m_per2),np.max(nue_m_per3)],'--r')
+    axC.plot([0.875,1.875,2.875],[np.min(nue_m_per1),np.min(nue_m_per2),np.min(nue_m_per3)],'--r')
+    axC2.plot([1.125,2.125,3.125],[np.max(wue_m_per1),np.max(wue_m_per2),np.max(wue_m_per3)],'--b')
+    axC2.plot([1.125,2.125,3.125],[np.min(wue_m_per1),np.min(wue_m_per2),np.min(wue_m_per3)],'--b')
+
+    axC.set_xticks([1, 2, 3])
+    axC.set_xticklabels(['-40%','0','+40%'])     
+    rcParams['xtick.labelsize']=10   
+    
+    nue_bp_w=axD.boxplot([nue_w_per1,nue_w_per2,nue_w_per3], positions=[0.875,1.875,2.875],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    wue_bp_w=axD2.boxplot([wue_w_per1,wue_w_per2,wue_w_per3], positions=[1.125,2.125,3.125],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    axD.plot([0.875,1.875,2.875],[np.mean(nue_w_per1),np.mean(nue_w_per2),np.mean(nue_w_per3)],'-r')
+    axD2.plot([1.125,2.125,3.125],[np.mean(wue_w_per1),np.mean(wue_w_per2),np.mean(wue_w_per3)],'-b')
+
+    axD.plot([0.875,1.875,2.875],[np.max(nue_w_per1),np.max(nue_w_per2),np.max(nue_w_per3)],'--r')
+    axD.plot([0.875,1.875,2.875],[np.min(nue_w_per1),np.min(nue_w_per2),np.min(nue_w_per3)],'--r')
+    axD2.plot([1.125,2.125,3.125],[np.max(wue_w_per1),np.max(wue_w_per2),np.max(wue_w_per3)],'--b')
+    axD2.plot([1.125,2.125,3.125],[np.min(wue_w_per1),np.min(wue_w_per2),np.min(wue_w_per3)],'--b')
  
+    axD.set_xticks([1, 2, 3])
+    axD.set_xticklabels(['-40%','0','+40%'])        
+    rcParams['xtick.labelsize']=10   
+    
+    nue_bp_s=axE.boxplot([nue_s_per1,nue_s_per2,nue_s_per3], positions=[0.875,1.875,2.875],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    wue_bp_s=axE2.boxplot([wue_s_per1,wue_s_per2,wue_s_per3], positions=[1.125,2.125,3.125],widths=0.25, patch_artist=True, showmeans=True,showfliers=False)
+    axE.plot([0.875,1.875,2.875],[np.mean(nue_s_per1),np.mean(nue_s_per2),np.mean(nue_s_per3)],'-r')
+    axE2.plot([1.125,2.125,3.125],[np.mean(wue_s_per1),np.mean(wue_s_per2),np.mean(wue_s_per3)],'-b')
+
+    axE.plot([0.875,1.875,2.875],[np.max(nue_s_per1),np.max(nue_s_per2),np.max(nue_s_per3)],'--r')
+    axE.plot([0.875,1.875,2.875],[np.min(nue_s_per1),np.min(nue_s_per2),np.min(nue_s_per3)],'--r')
+    axE2.plot([1.125,2.125,3.125],[np.max(wue_s_per1),np.max(wue_s_per2),np.max(wue_s_per3)],'--b')
+    axE2.plot([1.125,2.125,3.125],[np.min(wue_s_per1),np.min(wue_s_per2),np.min(wue_s_per3)],'--b')
+
+    axE.set_xticks([1, 2, 3])
+    axE.set_xticklabels(['-40%','0','+40%'])        
+    rcParams['xtick.labelsize']=10   
+    
+    nue_bp=[nue_bp_f,nue_bp_d,nue_bp_m,nue_bp_w,nue_bp_s]     
+    wue_bp=[wue_bp_f,wue_bp_d,wue_bp_m,wue_bp_w,wue_bp_s]           
+
+    #nue boxplot specs
+    for jj in range(len(nue_bp)):
+        for box in nue_bp[jj]['boxes']:
+            #change outline color
+            box.set(color='red',linewidth=2)
+            #change fill color
+            box.set(facecolor='red',alpha=0.2)
+    
+        for whisker in nue_bp[jj]['whiskers']:
+            whisker.set(color='red',linewidth=2,linestyle='-')
         
-        axC.plot([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
-##    axA.scatter([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color='y', marker='o',s=40,label='moist meadow') 
-        axC.fill_between([np.min(nue_m),np.max(nue_m)],np.min(wue_m),np.max(wue_m),color=color[iii],alpha=0.2) 
-        axC.set_ylim([np.min(wue_m_tot)-np.min(wue_m_tot)*0.01,np.max(wue_m_tot)+np.max(wue_m_tot)*0.01])
-        axC.set_xlim([np.min(nue_m_tot)-0.5,np.max(nue_m_tot)+0.5])
+        for cap in nue_bp[jj]['caps']:
+            cap.set(color='red',linewidth=2)
+    
+        for median in nue_bp[jj]['medians']:
+            median.set(color='red', linewidth=2)
+    
+        for flier in nue_bp[jj]['fliers']:
+            flier.set(marker='*',color='red',alpha=0.5)
+    
+        for means in nue_bp[jj]['means']:
+            means.set(marker='o',markerfacecolor='red')    
+
+
+    #wue boxplot specs  
+    for jj in range(len(wue_bp)):
+        for box in wue_bp[jj]['boxes']:
+            #change outline color
+            box.set(color='blue',linewidth=2)
+            #change fill color
+            box.set(facecolor='blue',alpha=0.2)
+    
+        for whisker in wue_bp[jj]['whiskers']:
+            whisker.set(color='blue',linewidth=2,linestyle='-')
         
-        axD.plot([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],color=color[iii], linestyle='-',linewidth=linewidth[iii],label=legend[iii])
-##    axA.scatter([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],facecolor='none',edgecolor='g', marker='o',s=120,label='wet meadow')    
-        axD.fill_between([np.min(nue_w),np.max(nue_w)],np.min(wue_w),np.max(wue_w),color=color[iii],alpha=0.2) 
-        axD.set_ylim([np.min(wue_w_tot)-np.min(wue_w_tot)*0.01,np.max(wue_w_tot)+np.max(wue_w_tot)*0.01])
-        axD.set_xlim([np.min(nue_w_tot)-0.5,np.max(nue_w_tot)+0.5])
+        for cap in wue_bp[jj]['caps']:
+            cap.set(color='blue',linewidth=2)
+    
+        for median in wue_bp[jj]['medians']:
+            median.set(color='blue', linewidth=2)
+    
+        for flier in wue_bp[jj]['fliers']:
+            flier.set(marker='*',color='blue',alpha=0.5)
+    
+        for means in wue_bp[jj]['means']:
+            means.set(marker='o',markerfacecolor='blue')
+     
         
-        axE.plot([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
-##    axA.scatter([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color='b', marker='*', label='snowbed')         
-        axE.fill_between([np.min(nue_s),np.max(nue_s)],np.min(wue_s),np.max(wue_s),color=color[iii],alpha=0.2) 
-        axE.set_ylim([np.min(wue_s_tot)-np.min(wue_s_tot)*0.01,np.max(wue_s_tot)+np.max(wue_s_tot)*0.01])
-        axE.set_xlim([np.min(nue_s_tot)-0.5,np.max(nue_s_tot)+0.5])
+        
+#        axA.plot([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color=color[iii], linestyle='-', linewidth=linewidth[iii], label=legend[iii]) 
+##    axA.scatter([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color='k', marker='^', label='fellfield') 
+#        axA.fill_between([np.min(nue_f),np.max(nue_f)],np.min(wue_f),np.max(wue_f),color=color[iii],alpha=0.2) 
+#        axA.set_ylim([np.min(wue_f_tot)-np.min(wue_f_tot)*0.01,np.max(wue_f_tot)+np.max(wue_f_tot)*0.01])
+#        axA.set_xlim([np.min(nue_f_tot)-0.5,np.max(nue_f_tot)+0.5])
+# 
+#    
+#        axB.plot([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
+###    axA.scatter([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color='r', marker='d',label='dry meadow')     
+#        axB.fill_between([np.min(nue_d),np.max(nue_d)],np.min(wue_d),np.max(wue_d),color=color[iii],alpha=0.2) 
+#        axB.set_ylim([np.min(wue_d_tot)-np.min(wue_d_tot)*0.01,np.max(wue_d_tot)+np.max(wue_d_tot)*0.01])
+#        axB.set_xlim([np.min(nue_d_tot)-0.5,np.max(nue_d_tot)+0.5])
+# 
+#        
+#        axC.plot([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
+###    axA.scatter([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color='y', marker='o',s=40,label='moist meadow') 
+#        axC.fill_between([np.min(nue_m),np.max(nue_m)],np.min(wue_m),np.max(wue_m),color=color[iii],alpha=0.2) 
+#        axC.set_ylim([np.min(wue_m_tot)-np.min(wue_m_tot)*0.01,np.max(wue_m_tot)+np.max(wue_m_tot)*0.01])
+#        axC.set_xlim([np.min(nue_m_tot)-0.5,np.max(nue_m_tot)+0.5])
+#        
+#        axD.plot([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],color=color[iii], linestyle='-',linewidth=linewidth[iii],label=legend[iii])
+###    axA.scatter([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],facecolor='none',edgecolor='g', marker='o',s=120,label='wet meadow')    
+#        axD.fill_between([np.min(nue_w),np.max(nue_w)],np.min(wue_w),np.max(wue_w),color=color[iii],alpha=0.2) 
+#        axD.set_ylim([np.min(wue_w_tot)-np.min(wue_w_tot)*0.01,np.max(wue_w_tot)+np.max(wue_w_tot)*0.01])
+#        axD.set_xlim([np.min(nue_w_tot)-0.5,np.max(nue_w_tot)+0.5])
+#        
+#        axE.plot([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color=color[iii], linestyle='-',linewidth=linewidth[iii], label=legend[iii])
+###    axA.scatter([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color='b', marker='*', label='snowbed')         
+#        axE.fill_between([np.min(nue_s),np.max(nue_s)],np.min(wue_s),np.max(wue_s),color=color[iii],alpha=0.2) 
+#        axE.set_ylim([np.min(wue_s_tot)-np.min(wue_s_tot)*0.01,np.max(wue_s_tot)+np.max(wue_s_tot)*0.01])
+#        axE.set_xlim([np.min(nue_s_tot)-0.5,np.max(nue_s_tot)+0.5])
 #   
     
     ##---Separate Plots Into Different Figures: Legend---##

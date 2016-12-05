@@ -22,10 +22,12 @@ gradient in the alpine tundra.
 
 """
 
-##LEAF ANGLE##
+#Chlorophyll, temp of leaf, m, s,nm change the relationship between wue and nue. 
+#but nm and sla are dependent variables, so they either have to both be constant or both be varying
 
 #---------------Import Modules---------------#
 
+import itertools as it
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -35,34 +37,6 @@ from leaf_parameter_inputs import leaf_params
 #The line of code below imports the temperature functions used in this model
 from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
 
-#---------------Initialize Plot---------------#
-
-##---Figure With Subplots Blueprint---##
-
-#fb1=plt.figure(1,figsize=(12,2)) 
-#axA = fb1.add_subplot(121)
-#axB = fb1.add_subplot(122)
-
-##---Figure Without Subplots Blueprint---##
-
-#put in correct ax value (e.g. axA, axB)
-fig,axA = plt.subplots(figsize=(10,5))
-
-
-##---Define Plot Parameters Based on Graph Interests---##
-
-axA.set_xlabel('NUE (umol CO2/g N s)',fontsize=23, fontname='Times New Roman')
-axA.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=23, fontname='Times New Roman')
-#axA.set_xlim([19,44])
-axA.set_title('Growth Response Across Four Plant Trait Assemblages', fontname='Times New Roman',fontsize=23,fontweight='bold')
-
-##---Line Type for Each Plant---##
-n=16 #number of variable parameter combinations for each meadow type
-
-color=['k']*n+['r']*n+['y']*n+['g']*n+['b']*n
-
-#marker=[]
-#linestyle=[]
 
 #---------------Photosynthesis + Stomatal Conductance Model---------------#
 
@@ -94,234 +68,301 @@ t=20 #degrees C
 
 #I have commented out parameters that I am assuming are variable (for the time being)
 
-s=np.zeros(shape=3)+0.019 #specific leaf area (m2 C/g C)
-ra=np.zeros(shape=3)+20.7 #specific rubisco activity (umol CO2/g Rub s)
-nm=np.zeros(shape=3)+0.035 #leaf nitrogen (g N/ g C)
-flnr=np.zeros(shape=3)+0.65 #fraction of leaf nitrogen in rubisco (g N Rub/g N leaf)
-frnr=np.zeros(shape=3)+6.25 #weight fraction of nitrogen in rubisco molecule (g Rub/g N Rub) 
+s_c=np.linspace(0.019-0.0005,0.019+0.0005,2)#specific leaf area (m2 C/g C)
+ra=np.zeros(shape=2)+20.7 #specific rubisco activity (umol CO2/g Rub s)
+nm_c=((s_c*(100.0**2))*0.077+20.25)/1000.0#leaf nitrogen (g N/ g C)
+flnr=np.zeros(shape=2)+0.65 #fraction of leaf nitrogen in rubisco (g N Rub/g N leaf)
+frnr=np.zeros(shape=2)+6.25 #weight fraction of nitrogen in rubisco molecule (g Rub/g N Rub) 
 ea_str=pa_con_atmfrac(611*np.exp(17.27*t/(t+273.3))) #saturation vapor pressure of air (Pa-->umol h20.mol air)
-rh=np.zeros(shape=3)+0.55 #relative humidity (kPa/kPa)
+rh=np.zeros(shape=2)+0.55 #relative humidity (kPa/kPa)
 ea=rh*ea_str #vapor pressure deficit (umol h2O/mol air)
-ca=np.zeros(shape=3)+410 #ambient carbon dioxide (umol CO2/mol air)
-tau25=np.zeros(shape=3)+2904.12 #specifity coefficient of tau at 25 C (unitless) 
-ko25=np.zeros(shape=3)+296100 #Michaelis-Menten kinetic coefficient for oxygen at 25 C(umol/mol) 
-kc25=np.zeros(shape=3)+ 296 #Michaelis-Menten kinetic coefficient for carbon dioxide at 25 C (umol/mol)
-o=np.zeros(shape=3)+210000 #concentration of ambient oxygen (umol/mol)
+ca=np.zeros(shape=2)+410 #ambient carbon dioxide (umol CO2/mol air)
+tau25=np.zeros(shape=2)+2904.12 #specifity coefficient of tau at 25 C (unitless) 
+ko25=np.zeros(shape=2)+296100 #Michaelis-Menten kinetic coefficient for oxygen at 25 C(umol/mol) 
+kc25=np.zeros(shape=2)+ 296 #Michaelis-Menten kinetic coefficient for carbon dioxide at 25 C (umol/mol)
+o=np.zeros(shape=2)+210000 #concentration of ambient oxygen (umol/mol)
 #lamb=np.zeros(shape=3)+0.0074 #marginal WUE (umol CO2/umol H2O)
-b=np.zeros(shape=3)+0.0 #Ball-Berry stomatal conductance intercept parameter
-a=np.zeros(shape=3)+1.6 #Conversion Coefficient between stomatal conductance to water and carbon dioxide 
-chl=np.zeros(shape=3)+400 #Chlorophyll Content of the Leaf (umol chl/m2)
-tl=np.zeros(shape=3)+(31+273.15) #Temperature of the Leaf (K)
-vwc=np.zeros(shape=3)+0.15 #Soil Volumetric Water Content (cm3/cm3)
+b=np.zeros(shape=2)+0.0 #Ball-Berry stomatal conductance intercept parameter
+a=np.zeros(shape=2)+1.6 #Conversion Coefficient between stomatal conductance to water and carbon dioxide 
+chl_c=np.zeros(shape=2)+400 #Chlorophyll Content of the Leaf (umol chl/m2)
+tl_c=np.zeros(shape=2)+(31+273.15) #Temperature of the Leaf (K)
+vwc_c=np.zeros(shape=2)+0.15 #Soil Volumetric Water Content (cm3/cm3)
 vwc_min=0.08 #minimum soil water content for photosynthesis to occur (permanent wilting point) (cm3/cm3) 
 vwc_max=0.3 #maximum soil water content where increases in soil water do not affect photosynthesis (field capacity?) (cm3/cm3)
 q=0.2 #parameter for soil water affect on photosynthesis (unitless)
-ij=np.zeros(shape=3)+0.96 #leaf area & angle index--downregulates jmax
-m=np.zeros(shape=3)+15.0 #ball-berry parameter (unitless)
+ij_c=np.zeros(shape=2)+0.96 #leaf area & angle index--downregulates jmax
+m_c=np.zeros(shape=2)+15.0 #ball-berry parameter (unitless)
 
+##--What Variable Parameters are Constant?
+dict_params=[]
+for xx in it.combinations(['nm','chl','tl','m','ij','vwc'],0):
+    dict_params+=[xx]
 
-##---Variable Parameter Arrays for Model---##
+if dict_params==[()]:
+    dict_params=['nan']   
 
-for i in range(len(leaf_params)):
-    for key,val in leaf_params[i].items():
-        exec(key + '=val')
-
-
-##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-    tl_c=tl-273.15 #temperature of leaf in (C)
-    es_str=pa_con_atmfrac(611*np.exp(17.27*tl_c/(tl_c+273.3))) #calculate saturation vapor pressure of surface (Pa)
-    d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
+for ii in range(len(dict_params)):
     
-    l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (g N/ m2 C)
+    #---------------Initialize Plot---------------#
+
+    ##---Figure With Subplots Blueprint---##
+
+    #fb1=plt.figure(1,figsize=(12,2)) 
+    #axA = fb1.add_subplot(121)
+    #axB = fb1.add_subplot(122)
+
+    ##---Figure Without Subplots Blueprint---##
+
+    #put in correct ax value (e.g. axA, axB)
+    fig,axA = plt.subplots(figsize=(10,5))
+
+
+    ##---Define Plot Parameters Based on Graph Interests---##
+
+    axA.set_xlabel('NUE (umol CO2/g N s)',fontsize=23, fontname='Times New Roman')
+    axA.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=23, fontname='Times New Roman')
+    #axA.set_xlim([19,44])
+    axA.set_title('Growth Response Across Four Plant Trait Assemblages: variable chl', fontname='Times New Roman',fontsize=23,fontweight='bold')
+#    axA.set_title('Growth Response: constant %s, %s, %s, %s, %s' % (dict_params[ii][0],dict_params[ii][1],dict_params[ii][2],dict_params[ii][3],dict_params[ii][4]), fontname='Times New Roman',fontsize=23,fontweight='bold')
+
+    ##---Line Type for Each Plant---##
+    n=16 #number of variable parameter combinations for each meadow type
+
+    color=['k']*n+['r']*n+['y']*n+['g']*n+['b']*n
+    
+    marker=['d']*n+['o']*n+['v']*n+['*']*n+['^']*n
+
+    ##---Initialize Arrays for Each Meadow---##
+    wue_f=[]
+    nue_f=[]
+    wue_d=[]
+    nue_d=[]
+    wue_m=[]
+    nue_m=[]
+    wue_w=[]
+    nue_w=[]
+    wue_s=[]
+    nue_s=[]
+
+    ##---Variable Parameter Arrays for Model---##
+    for i in range(len(leaf_params)):
+        for key,val in leaf_params[i].items():
+            exec(key + '=val')
+        #set variables constant
+        if 'nm' in dict_params[ii]:
+            nm=nm_c
+            s=s_c #nm and s are dependent variables
+        if 'm' in dict_params[ii]:
+            m=m_c
+        if 'chl' in dict_params[ii]:
+            chl=chl_c
+        if 'tl' in dict_params[ii]:
+            tl=tl_c
+        if 'vwc' in dict_params[ii]:
+            vwc=vwc_c
+        if 'ij' in dict_params[ii]:
+            ij=ij_c
+#        
+#        print dict_params[ii]
+#        print 's:',s
+#        print 'nm:',nm
+#        print 'm:',m
+#        print 'chl:',chl
+#        print 'tl:',tl
+#        print 'vwc:',vwc
+#        print 'ij:',ij
+##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
+        es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
+        d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
+    
+        l=1/s #leaf mass per unit area (g C/m2 C)
+        na=nm*l #leaf nitrogen (g N/ m2 C)
     
     #below is commented out because I am no longer using a variable lambda parameter
 #    m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
 
-    rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
-    j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
+        rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
+        j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
     
-    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
+        vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+        jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
 
 ##---Temperature Effects on Parameters---##
     
-    #parameters
-    tk_25=298.16; #absolute temperature at 25 C
-    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
-    eko=14500.0 #Activation energy for K of O2 (J mol-1)
-    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
-    ev=55000.0 #Activation energy for carboxylation (J mol-1)
-    ej=55000.0 #Activation energy for electron transport (J mol-1)
-    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
-    toptj=298.0 #Optimum temperature for maximum electron transport (K)
+        #parameters
+        tk_25=298.16; #absolute temperature at 25 C
+        ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
+        eko=14500.0 #Activation energy for K of O2 (J mol-1)
+        etau=-29000.0  #Activation energy for tau (???) (J mol-1)
+        ev=55000.0 #Activation energy for carboxylation (J mol-1)
+        ej=55000.0 #Activation energy for electron transport (J mol-1)
+        toptv=298.0 #Optimum temperature for maximum carboxylation (K)
+        toptj=298.0 #Optimum temperature for maximum electron transport (K)
     
-    #calculated parameters due to temperature
-    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
-    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
-    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
-    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
-    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
-    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
+        #calculated parameters due to temperature
+        kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+        ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+        tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
+        gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
+        vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+        jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
 ##---Soil Moisture Effect on Parameters---##
     
-    if all(vwc>=vwc_max):
-        Wfac==1
-    elif all(vwc<vwc_max):
-        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+        if all(vwc>=vwc_max):
+            Wfac==1
+        elif all(vwc<vwc_max):
+            Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
-    vmax=Wfac*vmax1
-    jmax=Wfac*jmax1
+        vmax=Wfac*vmax1
+        jmax=Wfac*jmax1
     
 ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
-    #rubisco limited
-    a1_r=vmax
-    a2_r=kc*(1+(o/ko))
-    #light limited
-    a1_l=jmax/4
-    a2_l=2*gamma
+        #rubisco limited
+        a1_r=vmax
+        a2_r=kc*(1+(o/ko))
+        #light limited
+        a1_l=jmax/4
+        a2_l=2*gamma
 
         
 ##---(1)Photosynthesis and Stomatal Conductance Models (b is not taken into account)---##
 
-    if any(b==0.0):
+        if any(b==0.0):
     
-        #In order to generate this model I combined the following equations:
-        #A=gsc*(ca-ci)
-        #gsc=gsw/a
-        #gsw=mArh/ca
-        #solve for ci
-        #plug into A=a1(ci-gamma)/ci+a2
-        #Rubisco Limiting: a1=vcmax; a2=kc(1+o/ko)
-        #Light Limiting: a1=2.2*vcmax/4; a2=2*gamma
+            #In order to generate this model I combined the following equations:
+            #A=gsc*(ca-ci)
+            #gsc=gsw/a
+            #gsw=mArh/ca
+            #solve for ci
+            #plug into A=a1(ci-gamma)/ci+a2
+            #Rubisco Limiting: a1=vcmax; a2=kc(1+o/ko)
+            #Light Limiting: a1=2.2*vcmax/4; a2=2*gamma
 
-        #Solve for Assimilation
+            #Solve for Assimilation
         
-        ci=ca-((a*ca)/(m*rh)) #internal carbon dioxide (umol/mol)
+            ci=ca-((a*ca)/(m*rh)) #internal carbon dioxide (umol/mol)
         
-        ##---Rubisco-Limited Assimilation---##
-        A_r=(a1_r*(ci-gamma))/(ci+a2_r) #rubisco limited assimilation rate (umol CO2/m2s)
+            ##---Rubisco-Limited Assimilation---##
+            A_r=(a1_r*(ci-gamma))/(ci+a2_r) #rubisco limited assimilation rate (umol CO2/m2s)
         
-        ##---Light-Limited Assimilation---##
-        A_l=(a1_l*(ci-gamma))/(ci+a2_l) #light limited assimilation rate (umol CO2/m2s)
+            ##---Light-Limited Assimilation---##
+            A_l=(a1_l*(ci-gamma))/(ci+a2_l) #light limited assimilation rate (umol CO2/m2s)
         
-        ##---Determine Rate-Limiting Assimilation---##
-        A=[]
-        for xx in range(len(A_r)):
-            if A_r[xx]<A_l[xx]:
-                A+=[A_r[xx]] #rubisco limited
-            elif A_l[xx]<A_r[xx]:
-                A+=[A_l[xx]] #light limited
-            else: 
-                A+=[A_l[xx]] #both light and rubisco limited
+            ##---Determine Rate-Limiting Assimilation---##
+            A=[]
+            for xx in range(len(A_r)):
+                if A_r[xx]<A_l[xx]:
+                    A+=[A_r[xx]] #rubisco limited
+                elif A_l[xx]<A_r[xx]:
+                    A+=[A_l[xx]] #light limited
+                else: 
+                    A+=[A_l[xx]] #both light and rubisco limited
                 
-        ##---Solve for Stomatal Conductance to Water---##
-        gsw=m*A*rh/ca #stomatal conductance to water (mol air/m2s)
+            ##---Solve for Stomatal Conductance to Water---##
+            gsw=m*A*rh/ca #stomatal conductance to water (mol air/m2s)
         
-        ##---Solve for Evapotranspiration---##
-        E=gsw*d #(umol H2O/m2s)
+            ##---Solve for Evapotranspiration---##
+            E=gsw*d #(umol H2O/m2s)
     
 
 ##---(2)Photosynthesis and Stomatal Conductance Models (with b)---##
 
-    elif any(b>0.0):
+        elif any(b>0.0):
     
-        #In order to generate this model I combined the following equations:
-        #A=gsc*(ca-ci)
-        #gsc=gsw/a
-        #gsw=mArh/ca+b
-        #solve for ci
-        #plug into A=a1(ci-gamma)/ci+a2
-        #Rubisco Limiting: a1=vcmax; a2=kc(1+o/ko)
-        #Light Limiting: a1=2.2*vcmax/4; a2=2*gamma
+            #In order to generate this model I combined the following equations:
+            #A=gsc*(ca-ci)
+            #gsc=gsw/a
+            #gsw=mArh/ca+b
+            #solve for ci
+            #plug into A=a1(ci-gamma)/ci+a2
+            #Rubisco Limiting: a1=vcmax; a2=kc(1+o/ko)
+            #Light Limiting: a1=2.2*vcmax/4; a2=2*gamma
 
-        #Solve for Assimilation Using Quadratic Equation
+            #Solve for Assimilation Using Quadratic Equation
         
-        ##---Rubisco-Limited Assimilation---##
-        aa_r=m*rh*ca-a*ca+m*rh*a2_r
-        bb_r=b*(ca**2)+b*ca*a2_r-a1_r*m*rh*ca+a*ca*a1_r+a1_r*m*rh*gamma
-        cc_r=a1_r*b*(ca**2)+gamma*b*ca*a1_r
+            ##---Rubisco-Limited Assimilation---##
+            aa_r=m*rh*ca-a*ca+m*rh*a2_r
+            bb_r=b*(ca**2)+b*ca*a2_r-a1_r*m*rh*ca+a*ca*a1_r+a1_r*m*rh*gamma
+            cc_r=a1_r*b*(ca**2)+gamma*b*ca*a1_r
 
-        A1_r=(-bb_r+np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
-        A2_r=(-bb_r-np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
+            A1_r=(-bb_r+np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
+            A2_r=(-bb_r-np.sqrt(bb_r**2-4*aa_r*cc_r))/(2*aa_r)
             
-        #Choose Highest Values for Assimilation and Conductance
-        A_r=[]
-        for j in range(len(A1_r)):
-            if A1_r[j]>A2_r[j]:
-                A_r+=[A1_r[j]]
-            elif A2_r[j]>A1_r[j]:
-                A_r+=[A2_r[j]]
-            else:
-                A_r+=[A1_r[j]]
+            #Choose Highest Values for Assimilation and Conductance
+            A_r=[]
+            for j in range(len(A1_r)):
+                if A1_r[j]>A2_r[j]:
+                    A_r+=[A1_r[j]]
+                elif A2_r[j]>A1_r[j]:
+                    A_r+=[A2_r[j]]
+                else:
+                    A_r+=[A1_r[j]]
         
-        ##---Light-Limited Assimilation---##
-        aa_l=m*rh*ca-a*ca+m*rh*a2_l
-        bb_l=b*(ca**2)+b*ca*a2_l-a1_l*m*rh*ca+a*ca*a1_l+a1_l*m*rh*gamma
-        cc_l=a1_l*b*(ca**2)+gamma*b*ca*a1_l
+            ##---Light-Limited Assimilation---##
+            aa_l=m*rh*ca-a*ca+m*rh*a2_l
+            bb_l=b*(ca**2)+b*ca*a2_l-a1_l*m*rh*ca+a*ca*a1_l+a1_l*m*rh*gamma
+            cc_l=a1_l*b*(ca**2)+gamma*b*ca*a1_l
 
-        A1_l=(-bb_l+np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
-        A2_l=(-bb_l-np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
+            A1_l=(-bb_l+np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
+            A2_l=(-bb_l-np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l)
             
-        #Choose Highest Values for Assimilation and Conductance
-        A_l=[]
-        for j in range(len(A1_l)):
-            if A1_l[j]>A2_l[j]:
-                A_l+=[A1_l[j]]
-            elif A2_l[j]>A1_l[j]:
-                A_l+=[A2_l[j]]
-            else:
-                A_l+=[A1_l[j]]
+            #Choose Highest Values for Assimilation and Conductance
+            A_l=[]
+            for j in range(len(A1_l)):
+                if A1_l[j]>A2_l[j]:
+                    A_l+=[A1_l[j]]
+                elif A2_l[j]>A1_l[j]:
+                    A_l+=[A2_l[j]]
+                else:
+                    A_l+=[A1_l[j]]
 
-        ##---Determine Rate-Limiting Assimilation---##
-        A=[]
-        for xx in range(len(A_r)):
-            if A_r[xx]<A_l[xx]:
-                A+=[A_r[xx]] #rubisco limited
-            elif A_l[xx]<A_r[xx]:
-                A+=[A_l[xx]] #light limited
-            else: 
-                A+=[A_l[xx]] #both light and rubisco limited         
+            ##---Determine Rate-Limiting Assimilation---##
+            A=[]
+            for xx in range(len(A_r)):
+                if A_r[xx]<A_l[xx]:
+                    A+=[A_r[xx]] #rubisco limited
+                elif A_l[xx]<A_r[xx]:
+                    A+=[A_l[xx]] #light limited
+                else: 
+                    A+=[A_l[xx]] #both light and rubisco limited         
         
-        ##---Solve for Stomatal Conductance to Water---##
-        gsw=m*A*rh/ca #stomatal conductance to water (mol H2O/m2s) #make array from list
+            ##---Solve for Stomatal Conductance to Water---##
+            gsw=m*A*rh/ca #stomatal conductance to water (mol H2O/m2s) #make array from list
         
-        ##---Solve for Evapotranspiration---##
-        E=gsw*d #(umol H2O/m2s)
+            ##---Solve for Evapotranspiration---##
+            E=gsw*d #(umol H2O/m2s)
 
         
 #---------------Test for Nan or Negative Values---------------#       
     
-    print A
-    for xxx in range(len(A)):
-        if np.isnan(A[xxx]):
-            print "A array contains nan values"
-            print '\n'
-            break
-        if A[xxx]<0.0:
-            print "A array contains negative values"
-            break
-        if np.isnan(gsw[xxx]):
-            print "gsw array contains nan values"
-            break
-        if gsw[xxx]<0.0:
-            print "gsw array contains negative values"
-            break
-        if np.isnan(E[xxx]):
-            print "E array contains nan values"
-            break
-        if E[xxx]<0.0:
-            print "E array contains negative values"
-            break
+        for xxx in range(len(A)):
+            if np.isnan(A[xxx]):
+                print "A array contains nan values"
+                break
+            if A[xxx]<0.0:
+                print "A array contains negative values"
+                break
+            if np.isnan(gsw[xxx]):
+                print "gsw array contains nan values"
+                break
+            if gsw[xxx]<0.0:
+                print "gsw array contains negative values"
+                break
+            if np.isnan(E[xxx]):
+                print "E array contains nan values"
+                break
+            if E[xxx]<0.0:
+                print "E array contains negative values"
+                break
 
         
 #---------------WUE vs. NUE---------------#    
     
     
-    wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
-    nue=np.diff(A)/np.diff(na)
+        wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
+        nue=np.diff(A)/np.diff(na)
 
     
 #---------------Test for Low NUE Values---------------#  
@@ -345,26 +386,43 @@ for i in range(len(leaf_params)):
     #will need to change ax value if plotting separate graphs for each iteration, e.g. ax1
 #    axA.plot(nue,wue,label='%s' %trait[i], color='%s' %color[i],marker='%s' %marker[i],linestyle='%s' %style[i]) 
    
-    axA.scatter(nue,wue,color=color[i]) 
+        axA.scatter(nue,wue,color=color[i],marker=marker[i]) 
+        
     
     
     ##---Separate Plots Into Different Figures: Legend---##
     #ax1.legend(loc=4)
 
+##---------------Nutrient Use Efficiency and Water Use Efficiency--------------- #     
+
+##I am plotting the change in plant trait vs. two y axes: WUE and NUE
+
+        #fb3=plt.figure(3,figsize=(6,6)) #figure blueprint
+        #fig, ax1 = plt.subplots()
+#        axB=axA.twinx() #second y axis
+#        axA.set_xlabel('m (umol CO2/m2s)',fontsize=12)
+#        axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=12)
+#        axB.set_ylabel('WUE (umol CO2/mol H20)',fontsize=12)
+#        axA.scatter(m[0:2],nue,color=color[i],label='NUE') 
+#        axB.scatter(m[0:2],wue,color=color[i],label='WUE') 
+#        ax1.set_title('NUE vs. WUE with Increasing Photosynthesis',fontsize=14)
+##        ax1.legend(loc=2)
+#        ax2.legend(loc=1)
+        
 
 #---------------Make Plot Interactive---------------# 
     
-    plt.pause(0.0001)
-    plt.ion()
+        plt.pause(0.0001)
+        plt.ion()
     #end of sensitivity analysis iterations
     
 #---------------Finalize Figure---------------#    
 
-#axA refers to first figure in subplot; axB refers to second figure in subplot
-#if only one axis is run then the figure is just one plot
+    #axA refers to first figure in subplot; axB refers to second figure in subplot
+    #if only one axis is run then the figure is just one plot
 
-##---Legend---##
-axA.legend(loc=2,prop={'size':11})
+    ##---Legend---##
+    axA.legend(loc=2,prop={'size':11})
 
-##---Save Figure--##
-plt.savefig('NUE_vs_WUE.png') 
+    ##---Save Figure--##
+    plt.savefig('NUE_vs_WUE_variable_chl.png') 
