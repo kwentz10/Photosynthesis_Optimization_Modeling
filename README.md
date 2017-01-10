@@ -1,6 +1,11 @@
 # Photosynthesis_Optimization_Modeling
-This repository contains model code that I am using to understand plant optimization strategies. 
-The Trait_Based_Photo_Model.py code describes the preliminary photosynthesis+stomatal conductance model.
-The Trait_Based_Photo_Model_Sensitivity_Analysis.py code performs a sensitivity analysis. It includes model iterations where different model parameters are perturbed. 
-The leaf_parameter_inputs.py code will be used if I need to do a sensitivity analysis of combinations of model parameter perturbations.
+
+This repository contains model code that I am using to understand plant optimization strategies—that is, water use efficiency (WUE) and nutrient use efficiency (NUE). 
+
+The most updated photosynthesis model that I am using is in the file: Photosynthesis_Model.py
+
+I use combinations of leaf traits in the photosynthesis model to determine WUE and NUE. This can be found in the file: leaf_parameter_inputs.py
+
+I plot WUE and NUE using the file: Trait_Based Photo_Model_InterSpecificVariation.py
+
 
