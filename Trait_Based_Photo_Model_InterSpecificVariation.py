@@ -5,14 +5,9 @@ Created 9/27/2016
 Katherine Wentz
 
 This is a program that runs photosynthesis and
-stomatal conductance given changes in leaf-
-level traits. I derive photosynthesis from a
-stomatal conductance model. That way I am 
-able to void the ci term. I am breaking up the code
-into 2 different models. The first model
-pretends that there is no intercept term in
-the Ball-Berry stomatal conductance model. The
-second model contains the intercept term.
+stomatal conductance models given changes in leaf-
+level traits. 
+
 The end product is graphs of NUE vs. WUE.
 
 
@@ -20,10 +15,9 @@ Update: I am going to run the model for plants with
 traits that are distinctive of the meadow moisture 
 gradient in the alpine tundra.
 
-"""
+Fix: correct for atmospheric pressure differences in co2, o2, and vapor pressure
 
-#Chlorophyll, temp of leaf, m, s,nm change the relationship between wue and nue. 
-#but nm and sla are dependent variables, so they either have to both be constant or both be varying
+"""
 
 #---------------Import Modules---------------#
 
@@ -32,13 +26,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
 
-#The line of code below is for if I want to input all combinations of changed parameters into my model:
+#Import combinations of variable parameters 
 from leaf_parameter_inputs import leaf_params
 
-#The line of code below imports the photosynthesis model 
-from Photosynthesis_Model import photo
+#Import photosynthesis model
+from Photosynthesis_Model import photo_bound_meso_eqstom as photo
 
-from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
+#Import functions to switch between Pa and umol/mol at sea level
+from photo_functions import pa_con_atmfrac
 
 
 #---------------Photosynthesis + Stomatal Conductance Model---------------#
@@ -84,8 +79,7 @@ tau25=np.zeros(shape=2)+2904.12 #specifity coefficient of tau at 25 C (unitless)
 ko25=np.zeros(shape=2)+296100 #Michaelis-Menten kinetic coefficient for oxygen at 25 C(umol/mol) 
 kc25=np.zeros(shape=2)+ 296 #Michaelis-Menten kinetic coefficient for carbon dioxide at 25 C (umol/mol)
 o=np.zeros(shape=2)+210000 #concentration of ambient oxygen (umol/mol)
-#lamb=np.zeros(shape=3)+0.0074 #marginal WUE (umol CO2/umol H2O)
-b=np.zeros(shape=2)+0.0 #Ball-Berry stomatal conductance intercept parameter
+g0=np.zeros(shape=2)+0.01 #Ball-Berry stomatal conductance intercept parameter
 a=np.zeros(shape=2)+1.6 #Conversion Coefficient between stomatal conductance to water and carbon dioxide 
 chl_c=np.zeros(shape=2)+400 #Chlorophyll Content of the Leaf (umol chl/m2)
 tl_c=np.zeros(shape=2)+(31+273.15) #Temperature of the Leaf (K)
@@ -94,21 +88,30 @@ vwc_min=0.08 #minimum soil water content for photosynthesis to occur (permanent 
 vwc_max=0.3 #maximum soil water content where increases in soil water do not affect photosynthesis (field capacity?) (cm3/cm3)
 q=0.2 #parameter for soil water affect on photosynthesis (unitless)
 ij_c=np.zeros(shape=2)+0.96 #leaf area & angle index--downregulates jmax
-m_c=np.zeros(shape=2)+15.0 #ball-berry parameter (unitless)
+m=np.zeros(shape=2)+9.0 #ball-berry parameter (unitless)
+b=1.37 #Conversion Coefficient between boundary layer conductance to water and carbon dioxide 
+dia_c=3.5/100. #Mean diameter or size of leaf (m)
+u=5.0 #windspeed (m/s)
+#gm=?? (mesophyll conductance)
 
-##--What Variable Parameters are Constant?
-dict_params=[]
-for xx in it.combinations(['nm','chl','tl','m','ij','vwc'],0):
-    dict_params+=[xx]
+#---------------Determine if I Want to Keep Any of the Variable Parameters Constant---------------#
 
-if dict_params==[()]:
-    dict_params=['nan']   
+const_params=[]
+for xx in it.combinations(['dia'],1):
+    const_params+=[xx]
 
-nue_tot=[]
-wue_tot=[]
-for ii in range(len(dict_params)):
+#do this when I do not put any of the variable parameters as constant. instead I 
+#vary each parameter one at a time while keeping the other parameters constant.
+if const_params==[()]:
+    const_params=['nan']   
+
+
+#---------------Begin Looping Through Photosynthesis Model---------------#
+
+#each loop is for a constant value, or combinatin of constant values, of variable parameter as determined above
+for ii in range(len(const_params)):
     
-    #---------------Initialize Plot---------------#
+#---------------Initialize Plots---------------#
 
     ##---Figure With Subplots Blueprint---##
 
@@ -116,105 +119,89 @@ for ii in range(len(dict_params)):
     #axA = fb1.add_subplot(121)
     #axB = fb1.add_subplot(122)
 
-    ##---Figure Without Subplots Blueprint---##
+    ##---Figures Without Subplots Blueprint---##
     
-    #--figure 1--
+    #--figure 1--#
     
     #put in correct ax value (e.g. axA, axB)
     fig1,axA = plt.subplots(figsize=(30,15))
     
     #twin axis
     axA2=axA.twinx()
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
-#    axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
+    #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
     axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=36, fontname='Times New Roman')
     axA2.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=36, fontname='Times New Roman')  
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
-    axA.set_title('WUE and NUE for Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    #axA.set_xlim([0,30])
+    #axA.set_ylim([0,30])
+    #axA2.set_ylim([0,9])
+    axA.set_title('WUE and NUE for Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
     
-    #--figure 2--
+    #--figure 2--#
     
     #put in correct ax value (e.g. axA, axB)
     fig2,axB = plt.subplots(figsize=(15,15))
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
-#    axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
+    #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
     axB.set_ylabel('gsw (mol H2O/m2s)',fontsize=36, fontname='Times New Roman')
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
+    #axA.set_xlim([0,20])
+    #axA.set_ylim([0,10])
     axB.set_title('Plant Communities vs. Stomatal Conductance', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
-    #--figure 3--
+    #--figure 3--#
     
     #put in correct ax value (e.g. axA, axB)
     fig3,axC = plt.subplots(figsize=(15,15))
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
-#    axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
+    #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
     axC.set_ylabel('Leaf N (mol H2O/m2s)',fontsize=36, fontname='Times New Roman')
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
+    #axA.set_xlim([0,20])
+    #axA.set_ylim([0,10])
     axC.set_title('Plant Communities vs. Leaf Nitrogen', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
-    #--figure 4--
+    #--figure 4--#
     
     #put in correct ax value (e.g. axA, axB)
     fig4,axD = plt.subplots(figsize=(15,15))
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
-#    axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
+    #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
     axD.set_ylabel('Assimilation (umol CO2/m2s)',fontsize=36, fontname='Times New Roman')
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
+    #axA.set_xlim([0,20])
+    #axA.set_ylim([0,10])
     axD.set_title('Plant Communities vs. Assimilation', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
   
-      #--figure 5--
+    #--figure 5--#
     
     #put in correct ax value (e.g. axA, axB)
     fig5,axE = plt.subplots(figsize=(15,15))
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
-#    axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
+    #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
     axE.set_ylabel('Evapotranspiration (umol H2O/m2s)',fontsize=36, fontname='Times New Roman')
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
+    #axA.set_xlim([0,20])
+    #axA.set_ylim([0,10])
     axE.set_title('Plant Communities vs. Evapotranspiration', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
    
-    #--figure 6--
+    #--figure 6--#
     
     #put in correct ax value (e.g. axA, axB)
     fig6,axF = plt.subplots(figsize=(15,15))
-    
-    ##---Define Plot Parameters Based on Graph Interests---##
 
     axF.set_xlabel('NUE (umol CO2/g N s)',fontsize=36, fontname='Times New Roman')
     axF.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=36, fontname='Times New Roman')
-#    axA.set_xlim([0,20])
-#    axA.set_ylim([0,10])
+    #axA.set_xlim([0,20])
+    #axA.set_ylim([0,10])
     axF.set_title('NUE vs. WUE for all Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
-    
-    
-  
-    ##---Line Type for Each Plant---##
-#    n=16 #number of variable parameter combinations for each meadow type
-#
-#    color=['k']*n+['r']*n+['y']*n+['g']*n+['b']*n
-#    
-#    marker=['d']*n+['o']*n+['v']*n+['*']*n+['^']*n
 
-    ##---Initialize Arrays for Each Meadow---##
+#---------------Initialize Arrays for Each Meadow---------------#
     
+    #total nue and wue
+    nue_tot=[]
+    wue_tot=[]
+   
     #wue and nue arrays
     wue_f=[]
     nue_f=[]
@@ -255,70 +242,72 @@ for ii in range(len(dict_params)):
     E_w=[]
     E_s=[]    
 
-    ##---Variable Parameter Arrays for Model---##
+#---------------Import Variable Parameter Arrays from Leaf Parameter File---------------#
+    
     for i in range(len(leaf_params)):
         for key,val in leaf_params[i].items():
             exec(key + '=val')
-        #set variables constant
-        if 'nm' in dict_params[ii]:
+        
+        #set variable parameters constant if I specify this above
+        if 'nm' in const_params[ii]:
             nm=nm_c
-            s=s_c #nm and s are dependent variables
-        if 'm' in dict_params[ii]:
-            m=m_c
-        if 'chl' in dict_params[ii]:
+        if 's' in const_params[ii]:
+            s=s_c 
+        if 'dia' in const_params[ii]:
+            dia=dia_c
+        if 'chl' in const_params[ii]:
             chl=chl_c
-        if 'tl' in dict_params[ii]:
+        if 'tl' in const_params[ii]:
             tl=tl_c
-        if 'vwc' in dict_params[ii]:
+        if 'vwc' in const_params[ii]:
             vwc=vwc_c
-        if 'ij' in dict_params[ii]:
+        if 'ij' in const_params[ii]:
             ij=ij_c
        
+#---------------Photosynthesis Function---------------#
+
+        #alter this line of code for when implementing different photosynthesis functions
+        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb =photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b)
         
-        wue, nue, A, gsw, E, na=photo(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,b)
-            
+        #test to make sure wue and nue are positive at not 'nan'
         if wue==-999 and nue==-999:
             continue
-
     
-#---------------Test for Low NUE Values---------------#  
-
-#    if any(nue<15):
-#        break
-    
-
     
 #---------------Make Array of Values for Each Meadow---------------#  
-
-        if i+1<33:
+        
+        #number of simulations per meadow type:
+        m_sim=len(leaf_params)/5.0 #meadow simulations 
+        
+        if i<(m_sim):  
             wue_f+=[wue]
             nue_f+=[nue]
             na_f+=[na]
             gsw_f+=[gsw]
             A_f+=[A]
             E_f+=[E]
-        elif i+1>=33 and i+1<65:
+        elif i>=(m_sim) and i<(m_sim*2):
             wue_d+=[wue]
             nue_d+=[nue]
             na_d+=[na]
             gsw_d+=[gsw]
             A_d+=[A]
             E_d+=[E]
-        elif i+1>=65 and i+1<97:
+        elif i>=(m_sim*2) and i<(m_sim*3):
             wue_m+=[wue]
             nue_m+=[nue]
             na_m+=[na]
             gsw_m+=[gsw]
             A_m+=[A]
             E_m+=[E]
-        elif i+1>=97 and i+1<129:
+        elif i>=(m_sim*3) and i<(m_sim*4):
             wue_w+=[wue]
             nue_w+=[nue]
             na_w+=[na]
             gsw_w+=[gsw]
             A_w+=[A]
             E_w+=[E]
-        elif i+1>=129 and i+1<161:
+        elif i>=(m_sim*4) and i<(m_sim*5):
             wue_s+=[wue]
             nue_s+=[nue]
             na_s+=[na]
@@ -329,22 +318,20 @@ for ii in range(len(dict_params)):
         nue_tot+=[nue]
         wue_tot+=[wue]
 
-#---------------Plot Plant Communities NUE vs. WUE---------------#      
-
-    #I am plotting NUE vs. WUE for each plant community
-    
-    ##---Plot---##
+#---------------Plot Plant Communities vs. NUE & WUE---------------#      
     
     nue_bp=axA.boxplot([nue_f,nue_d,nue_m,nue_w,nue_s], positions=[0.875,1.875,2.875,3.875,4.875],widths=0.25, patch_artist=True, showmeans=True, showfliers=False)
     wue_bp=axA2.boxplot([wue_f,wue_d,wue_m,wue_w,wue_s], positions=[1.125,2.125,3.125,4.125,5.125],widths=0.25, patch_artist=True, showmeans=True, showfliers=False)
     axA.plot([0.875,1.875,2.875,3.875,4.875],[np.mean(nue_f),np.mean(nue_d),np.mean(nue_m),np.mean(nue_w),np.mean(nue_s)],'-r')
     axA2.plot([1.125,2.125,3.125,4.125,5.125],[np.mean(wue_f),np.mean(wue_d),np.mean(wue_m),np.mean(wue_w),np.mean(wue_s)],'-b')
 
-    axA.set_xticks([1, 2, 3,4,5])
+    axA.set_xticks([1, 2, 3, 4, 5])
     axA.set_xticklabels(['Fellfield','Dry Meadow','Moist Meadow','Wet Meadow','Snowbed'],fontname='Times New Roman')
     axA.tick_params(axis='x', labelsize=28)
+    axA.tick_params(axis='y', labelsize=18)
+    axA2.tick_params(axis='y', labelsize=18)
     
-        #nue boxplot specs
+    #nue boxplot specs
     for box in nue_bp['boxes']:
         #change outline color
         box.set(color='red',linewidth=2)
@@ -388,54 +375,17 @@ for ii in range(len(dict_params)):
 
     for means in wue_bp['means']:
         means.set(marker='o',markerfacecolor='blue')
-        
-    #will need to change ax value if plotting separate graphs for each iteration, e.g. ax1
-#    axA.plot(nue,wue,label='%s' %trait[i], color='%s' %color[i],marker='%s' %marker[i],linestyle='%s' %style[i]) 
-   
-#    axA.plot([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color='red', linestyle='-', linewidth=8.5, label='fellfield') 
-##    axA.scatter([max(nue_f),max(nue_f),min(nue_f),min(nue_f),max(nue_f)],[max(wue_f),min(wue_f),min(wue_f),max(wue_f),max(wue_f)],color='k', marker='^', label='fellfield') 
-#    axA.fill_between([np.min(nue_f),np.max(nue_f)],np.min(wue_f),np.max(wue_f),color='red',alpha=0.5) 
-##    axA.set_ylim([np.min(wue_f)-np.min(wue_f)*0.01,np.max(wue_f)+np.max(wue_f)*0.01])
-##    axA.set_xlim([np.min(nue_f)-0.5,np.max(nue_f)+0.5])  
-#    
-#    axA.plot([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color='brown', linestyle='-',linewidth=6.5, label='dry meadow')
-##    axA.scatter([max(nue_d),max(nue_d),min(nue_d),min(nue_d),max(nue_d)],[max(wue_d),min(wue_d),min(wue_d),max(wue_d),max(wue_d)],color='r', marker='d',label='dry meadow')     
-#    axA.fill_between([np.min(nue_d),np.max(nue_d)],np.min(wue_d),np.max(wue_d),color='brown',alpha=0.5) 
-##    axA.set_ylim([np.min(wue_d)-np.min(wue_d)*0.01,np.max(wue_d)+np.max(wue_d)*0.01])
-##    axA.set_xlim([np.min(nue_d)-0.5,np.max(nue_d)+0.5])
-#    
-#    axA.plot([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color='orange', linestyle='-',linewidth=4.5, label='moist meadow')
-##    axA.scatter([max(nue_m),max(nue_m),min(nue_m),min(nue_m),max(nue_m)],[max(wue_m),min(wue_m),min(wue_m),max(wue_m),max(wue_m)],color='y', marker='o',s=40,label='moist meadow') 
-#    axA.fill_between([np.min(nue_m),np.max(nue_m)],np.min(wue_m),np.max(wue_m),color='orange',alpha=0.5) 
-##    axA.set_ylim([np.min(wue_m)-np.min(wue_m)*0.01,np.max(wue_m)+np.max(wue_m)*0.01])
-##    axA.set_xlim([np.min(nue_m)-0.5,np.max(nue_m)+0.5])   
-#    
-#    axA.plot([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],color='g', linestyle='-',linewidth=2.0,label='wet meadow')
-##    axA.scatter([max(nue_w),max(nue_w),min(nue_w),min(nue_w),max(nue_w)],[max(wue_w),min(wue_w),min(wue_w),max(wue_w),max(wue_w)],facecolor='none',edgecolor='g', marker='o',s=120,label='wet meadow')    
-#    axA.fill_between([np.min(nue_w),np.max(nue_w)],np.min(wue_w),np.max(wue_w),color='green',alpha=0.5) 
-##    axA.set_ylim([np.min(wue_w)-np.min(wue_w)*0.01,np.max(wue_w)+np.max(wue_w)*0.01])
-##    axA.set_xlim([np.min(nue_w)-0.5,np.max(nue_w)+0.5])    
-#    
-#    axA.plot([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color='c', linestyle='-',linewidth=1.0, label='snowbed')
-##    axA.scatter([max(nue_s),max(nue_s),min(nue_s),min(nue_s),max(nue_s)],[max(wue_s),min(wue_s),min(wue_s),max(wue_s),max(wue_s)],color='b', marker='*', label='snowbed')         
-#    axA.fill_between([np.min(nue_s),np.max(nue_s)],np.min(wue_s),np.max(wue_s),color='cyan',alpha=0.5) 
-##    axA.set_ylim([np.min(wue_s)-np.min(wue_s)*0.01,np.max(wue_s)+np.max(wue_s)*0.01])
-##    axA.set_xlim([np.min(nue_s)-0.5,np.max(nue_s)+0.5])    
-   
-    
-    ##---Separate Plots Into Different Figures: Legend---##
-    #ax1.legend(loc=4)
-  
+          
 
-##---------------Box Plot Plant communities vs. Stomatal Condcutance--------------- #     
+#---------------Box Plot Plant Communities vs. Stomatal Condcutance--------------- #     
 
     gsw_bp=axB.boxplot([gsw_f,gsw_d,gsw_m,gsw_w,gsw_s], patch_artist=True, showmeans=True, showfliers=False)
+    axB.plot([1,2,3,4,5],[np.mean(gsw_f),np.mean(gsw_d),np.mean(gsw_m),np.mean(gsw_w),np.mean(gsw_s)],'-c')
   
     axB.set_xticks([1, 2, 3,4,5])
     axB.set_xticklabels(['Fellfield','Dry Meadow','Moist Meadow','Wet Meadow','Snowbed'],fontname='Times New Roman')
-    axB.plot([1,2,3,4,5],[np.mean(gsw_f),np.mean(gsw_d),np.mean(gsw_m),np.mean(gsw_w),np.mean(gsw_s)],'-c')
-    
     axB.tick_params(axis='x', labelsize=25)
+    axB.tick_params(axis='y', labelsize=16)
     
     #gsw boxplot specs
     for box in gsw_bp['boxes']:
@@ -459,17 +409,17 @@ for ii in range(len(dict_params)):
     for means in gsw_bp['means']:
         means.set(marker='o',markerfacecolor='cyan')    
 
- ##---------------Box Plot Plant communities vs. Leaf N--------------- #     
+#---------------Box Plot Plant Communities vs. Leaf N--------------- #     
 
     na_bp=axC.boxplot([na_f,na_d,na_m,na_w,na_s], patch_artist=True, showmeans=True, showfliers=False)
+    axC.plot([1,2,3,4,5],[np.mean(na_f),np.mean(na_d),np.mean(na_m),np.mean(na_w),np.mean(na_s)],'-',color='orange')
   
     axC.set_xticks([1, 2, 3,4,5])
     axC.set_xticklabels(['Fellfield','Dry Meadow','Moist Meadow','Wet Meadow','Snowbed'],fontname='Times New Roman')
-    axC.plot([1,2,3,4,5],[np.mean(na_f),np.mean(na_d),np.mean(na_m),np.mean(na_w),np.mean(na_s)],'-',color='orange')
-  
     axC.tick_params(axis='x', labelsize=25)
+    axC.tick_params(axis='y', labelsize=16)
     
-    #gsw boxplot specs
+    #na boxplot specs
     for box in na_bp['boxes']:
         #change outline color
         box.set(color='orange',linewidth=2)
@@ -492,17 +442,17 @@ for ii in range(len(dict_params)):
         means.set(marker='o',markerfacecolor='orange')    
 
         
- ##---------------Box Plot Plant communities vs. Assimilation--------------- #     
+#---------------Box Plot Plant Communities vs. Assimilation--------------- #     
 
     A_bp=axD.boxplot([A_f,A_d,A_m,A_w,A_s], patch_artist=True, showmeans=True, showfliers=False)
-  
+    axD.plot([1,2,3,4,5],[np.mean(A_f),np.mean(A_d),np.mean(A_m),np.mean(A_w),np.mean(A_s)],'-',color='purple')
+    
     axD.set_xticks([1, 2, 3,4,5])
     axD.set_xticklabels(['Fellfield','Dry Meadow','Moist Meadow','Wet Meadow','Snowbed'],fontname='Times New Roman')
-    axD.plot([1,2,3,4,5],[np.mean(A_f),np.mean(A_d),np.mean(A_m),np.mean(A_w),np.mean(A_s)],'-',color='purple')
-  
     axD.tick_params(axis='x', labelsize=25)
+    axD.tick_params(axis='y', labelsize=16)
     
-    #gsw boxplot specs
+    #A boxplot specs
     for box in A_bp['boxes']:
         #change outline color
         box.set(color='purple',linewidth=2)
@@ -524,18 +474,18 @@ for ii in range(len(dict_params)):
     for means in A_bp['means']:
         means.set(marker='o',markerfacecolor='purple')  
         
- ##---------------Box Plot Plant communities vs. Evapotranspiration--------------- #     
+#---------------Box Plot Plant Communities vs. Evapotranspiration--------------- #     
 
     E_bp=axE.boxplot([E_f,E_d,E_m,E_w,E_s], patch_artist=True, showmeans=True, showfliers=False)
+    axE.plot([1,2,3,4,5],[np.mean(E_f),np.mean(E_d),np.mean(E_m),np.mean(E_w),np.mean(E_s)],'-k')
   
     axE.set_xticks([1, 2, 3,4,5])
     axE.set_xticklabels(['Fellfield','Dry Meadow','Moist Meadow','Wet Meadow','Snowbed'],fontname='Times New Roman')
-    axE.plot([1,2,3,4,5],[np.mean(E_f),np.mean(E_d),np.mean(E_m),np.mean(E_w),np.mean(E_s)],'-k')
-  
     axE.tick_params(axis='x', labelsize=25)
+    axE.tick_params(axis='y', labelsize=16)
     
     
-    #gsw boxplot specs
+    #E boxplot specs
     for box in E_bp['boxes']:
         #change outline color
         box.set(color='black',linewidth=2)
@@ -558,25 +508,23 @@ for ii in range(len(dict_params)):
         means.set(marker='o',markerfacecolor='black')  
         
         
-##---------------Regression Plot WUE vs. NUE--------------- #   
+#---------------Regression Plot WUE vs. NUE---------------#   
 
     axF.plot([np.mean(nue_f),np.mean(nue_d),np.mean(nue_m),np.mean(nue_w),np.mean(nue_s)],[np.mean(wue_f),np.mean(wue_d),np.mean(wue_m),np.mean(wue_w),np.mean(wue_s)])
     axF.scatter(nue_tot,wue_tot) 
-
+    #axF.tick_params(axis='x', labelsize=25)
+    axF.tick_params(axis='y', labelsize=16)
     
-    #---------------Make Plot Interactive---------------# 
-#    
+#---------------Make Plot Interactive---------------# 
+   
 #        plt.pause(0.0001)
 #        plt.ion()
-    #end of sensitivity analysis iterations
+
     
 #---------------Finalize Figure---------------#    
 
-    #axA refers to first figure in subplot; axB refers to second figure in subplot
-    #if only one axis is run then the figure is just one plot
-
     ##---Legend---##
-#    axA.legend(bbox_to_anchor=(1, 1), loc='left', prop={'size':15})
+    #axA.legend(bbox_to_anchor=(1, 1), loc='left', prop={'size':15})
 
     ##---Save Figure--##
     fig1.savefig('NUE_vs_WUE_var_allcoms.png') 

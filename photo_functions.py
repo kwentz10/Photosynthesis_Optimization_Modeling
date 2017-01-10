@@ -19,10 +19,10 @@ def bar_con_atmfrac(bars):
     return umolmol
 
 #convert pascals to umol/mol
-def pa_con_atmfrac(pa):
+def pa_con_atmfrac(pa,atm_air):
     
-    atm=pa*0.00000987
-    umolmol=atm*1000000
+    atm=pa*0.00000987 #this relationship holds for all altitudes
+    umolmol=(atm/atm_air)*1000000 #altered this from atm*1000000 to (atm/atm_air)*1000000
     
     return umolmol
     
