@@ -41,588 +41,212 @@ def merge_dicts(*dict_args):
             result.update(dictionary)
     return result
 
-    
+
+
+#note to self: alternative relationship between sla and N: 0.61*log(sla)+0.55=log(N)
+
+#log(5)=1.6
+
+#exp(1.6)=5
+
+#np.exp(0.61*log(sla)+0.55)=N
     
 #---------------Create Dictionary For All Variable Parameter Inputs---------------#  
 
 ##mean trait assemblage parameters for dry meadow, moist meadow, wet meadow, snowbed 
 
 #fellfield
-s_f=0.015 #specific leaf area (m2/g)
-nm_f=0.0253  #leaf N (gN/gC)
-chl_f=200 #chlorophyll content (umol chl/m2)
-tl_f=36.0 #temp of leaf (K)-->f(leaf area,angle,height)
-#vwc_f=0.10 #soil volumetric water content (cm3/cm3)
-ij_f=0.92 #index of light penetration (low leaf area and high leaf angle) (unitless)-->f(leaf area & angle)
-dia_f=2./100. #leaf diameter (m)
 
+#chl_f1=275.4669 #chlorophyll content (umol chl/m2)
+#chl_f2=322.7893 #chlorophyll content (umol chl/m2)
+#chl_f3=370.1116 #chlorophyll content (umol chl/m2)
+#sla_f1=98.49966-10.6
+#sla_f2=98.49966
+#sla_f3=98.49966+10.6
+#nm_f1=0.02 #(20.25+0.077*(sla_f1))/1000.0
+#nm_f2=0.02 #(20.25+0.077*(sla_f2))/1000.0
+#nm_f3=0.02 #(20.25+0.077*(sla_f3))/1000.0
+#na_f1=2.0#nm_f1*(1/(sla_f1/10000))#(((chl_f1)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_f1*(1/(sla_f1/10000))  #leaf N (gN/m2C)
+#na_f2=2.0#nm_f2*(1/(sla_f2/10000))#(((chl_f2)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_f2*(1/(sla_f2/10000))   #leaf N (gN/m2C)
+#na_f3=2.0#nm_f3*(1/(sla_f3/10000)) #(((chl_f3)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_f3*(1/(sla_f3/10000))  #leaf N (gN/m2C)
+#ht_f1=5.423279#t+16 #temp of leaf (K)-->f(leaf area,angle,height)
+#ht_f2=6.324087#t+16 #temp of leaf (K)-->f(leaf area,angle,height)
+#ht_f3=7.224895#t+16 #temp of leaf (K)-->f(leaf area,angle,height)
+#dia_f1=0.9141305/100. #leaf diameter (m)
+#dia_f2=1.144449/100. #leaf diameter (m)
+#dia_f3=1.3356245/100. #leaf diameter (m)
 
 #dry meadow
-s_d=0.017 #specific leaf area (m2/g)
-nm_d=0.0313 #leaf N (gN/gC)
-chl_d=300 #chlorophyll content (umol chl/m2)
-tl_d=32.0 #temp of leaf (K)-->f(leaf area,angle,height)
-#vwc_d=0.16  #soil volumetric water content (cm3/cm3)
-ij_d=0.94 #index of light penetration (low medium leaf area and high medium leaf angle) (unitless)-->f(leaf area & angle)
-dia_d=3./100. #leaf diameter (m)
+chl_d1=371.3030 #chlorophyll content (umol chl/m2)
+chl_d2=395.7132 #chlorophyll content (umol chl/m2)
+chl_d3=420.1234 #chlorophyll content (umol chl/m2)
+#sla_d1=67.86595-7.6
+#sla_d2=67.86595
+#sla_d3=67.86595+7.6
+#nm_d1=0.025#(20.25+0.077*(sla_d1))/1000.0
+#nm_d2=0.025#(20.25+0.077*(sla_d2))/1000.0
+#nm_d3=0.025#(20.25+0.077*(sla_d3))/1000.0
+na_d1=2.45-0.57#nm_d1*(1/(sla_d1/10000))#(((chl_d1)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_d1*(1/(sla_d1/10000)) #leaf N (gN/m2C)
+na_d2=2.45#nm_d2*(1/(sla_d2/10000))#(((chl_d2)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_d2*(1/(sla_d2/10000)) #leaf N (gN/m2C)
+na_d3=2.45+0.57#nm_d3*(1/(sla_d3/10000))#(((chl_d3)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_d3*(1/(sla_d3/10000)) #leaf N (gN/m2C)
+ht_d1=7.688147#height of leaf (cm)
+ht_d2=9.183549##height of leaf (cm)
+ht_d3=10.678950#height of leaf (cm)
+dia_d1=1.177997/100. #leaf diameter (m)
+dia_d2=1.429446/100. #leaf diameter (m)
+dia_d3=1.642849/100. #leaf diameter (m)
 
 #moist meadow
-s_m=0.019 #specific leaf area (m2/g)
-nm_m=0.0372 #leaf N (gN/gC)
-chl_m=400 #chlorophyll content (umol chl/m2)
-tl_m=28.0 #temp of leaf (K)-->f(leaf area,angle,height)
-#vwc_m=0.22 #soil volumetric water content (cm3/cm3)
-ij_m=0.96 #index of light penetration (medium leaf area and medium leaf angle) (unitless)-->f(leaf area & angle)
-dia_m=4./100. #leaf diameter (m)
+chl_m1=411.0208 #chlorophyll content (umol chl/m2)
+chl_m2=464.606 #chlorophyll content (umol chl/m2)
+chl_m3=518.1911 #chlorophyll content (umol chl/m2)
+#sla_m1=111.947-12.3
+#sla_m2=111.947
+#sla_m3=111.947+12.3
+#nm_m1=0.03#(20.25+0.077*(sla_m1))/1000.0
+#nm_m2=0.03#(20.25+0.077*(sla_m2))/1000.0
+#nm_m3=0.03#(20.25+0.077*(sla_m3))/1000.0
+na_m1=5.55-0.61#nm_m1*(1/(sla_m1/10000)) #nm_m1*(1/(sla_m1/10000))#(((chl_m1)/1000.0-0.022)/0.0036)/1000.0*14.0 #nm_m1*(1/(sla_m1/10000)) #leaf N (gN/m2C)
+na_m2=5.55#nm_m2*(1/(sla_m2/10000)) #(((chl_m2)/1000.0-0.022)/0.0036)/1000.0*14.0 #nm_m2*(1/(sla_m2/10000)) #leaf N (gN/m2C)
+na_m3=5.55+0.61#nm_m3*(1/(sla_m3/10000)) #(((chl_m3)/1000.0-0.022)/0.0036)/1000.0*14.0 #nm_m3*(1/(sla_m3/10000)) #leaf N (gN/m2C)
+ht_m1=13.48271#height of leaf (cm)
+ht_m2=19.19779#height of leaf (cm)
+ht_m3=24.91287#height of leaf (cm)
+dia_m1=2.042256/100. #leaf diameter (m)
+dia_m2=2.340899/100. #leaf diameter (m)
+dia_m3=2.605534/100. #leaf diameter (m)
 
-#wet meadow
-s_w=0.022 #specific leaf area (m2/g)
-nm_w=0.0435#leaf N (gN/gC)
-chl_w=500 #chlorophyll content (umol chl/m2)
-tl_w=24.0 #temp of leaf (K)-->f(leaf area,angle,height)
-#vwc_w=0.28 #soil volumetric water content (cm3/cm3)
-ij_w=0.98 #index of light penetration (high medium leaf area and low medium leaf angle) (unitless)-->f(leaf area & angle)
-dia_w=5./100. #leaf diameter (m)
+##wet meadow
+chl_w1=446.7062 #chlorophyll content (umol chl/m2)
+chl_w2=475.8913 #chlorophyll content (umol chl/m2)
+chl_w3=505.0765 #chlorophyll content (umol chl/m2)
+#sla_w1=117.6779-5.7
+#sla_w2=117.6779
+#sla_w3=117.6779+5.7
+#nm_w1=0.035#(20.25+0.077*(sla_w1))/1000.0
+#nm_w2=0.035#(20.25+0.077*(sla_w2))/1000.0
+#nm_w3=0.035#(20.25+0.077*(sla_w3))/1000.0
+na_w1=6.25-0.61#nm_w1*(1/(sla_w1/10000))#(((chl_w1)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_w1*(1/(sla_w1/10000)) #leaf N (gN/m2C)
+na_w2=6.25#nm_w2*(1/(sla_w2/10000))#(((chl_w2)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_w2*(1/(sla_w2/10000)) #leaf N (gN/m2C)
+na_w3=6.25+0.61#nm_w3*(1/(sla_w3/10000))#(((chl_w3)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_w3*(1/(sla_w3/10000)) #leaf N (gN/m2C)
+ht_w1=16.86773#height of leaf (cm)
+ht_w2=19.98519#height of leaf (cm)
+ht_w3=23.10266#height of leaf (cm)
+dia_w1=2.378119/100. #leaf diameter (m)
+dia_w2=2.622528/100. #leaf diameter (m)
+dia_w3=2.846025/100. #leaf diameter (m)
 
-#snowbed
-s_s=0.025 #specific leaf area (m2/g)
-nm_s=0.0495 #leaf N (gN/gC)
-chl_s=600 #chlorophyll content (umol chl/m2)
-tl_s=20.0 #temp of leaf (K)-->f(leaf area,angle,height)
-#vwc_s=0.34 #soil volumetric water content (cm3/cm3)
-ij_s=1.0 #index of light penetration (high leaf area and low leaf angle) (unitless)-->f(leaf area & angle)
-dia_s=6./100. #leaf diameter (m)
-
-#standard deviation of traits (trait plasticity)
-std_s=np.std([s_f,s_d,s_m,s_w,s_s])*0.1
-std_nm=np.std([nm_f,nm_d,nm_m,nm_w,nm_s])*0.2
-std_chl=np.std([chl_f,chl_d,chl_m,chl_w,chl_s])*0.1
-std_tl=np.std([tl_f,tl_d,tl_m,tl_w,tl_s])*0.1
-std_dia=np.std([dia_f,dia_d,dia_m,dia_w,dia_s])*0.1
-std_ij=np.std([ij_f,ij_d,ij_m,ij_w,ij_s])*0.1
-
-#mean of traits
-mean_s=np.mean([s_f,s_d,s_m,s_w,s_s])
-mean_nm=np.mean([nm_f,nm_d,nm_m,nm_w,nm_s])
-mean_chl=np.mean([chl_f,chl_d,chl_m,chl_w,chl_s])
-mean_tl=np.mean([tl_f,tl_d,tl_m,tl_w,tl_s])
-mean_dia=np.mean([dia_f,dia_d,dia_m,dia_w,dia_s])
-mean_ij=np.mean([ij_f,ij_d,ij_m,ij_w,ij_s])
-
-#range of traits using normal pdf
-s_range=s_m-min(np.random.normal(mean_s,std_s,100000))
-nm_range=nm_m-min(np.random.normal(mean_nm,std_nm,100000))
-chl_range=chl_m-min(np.random.normal(mean_chl,std_chl,100000))
-tl_range=tl_m-min(np.random.normal(mean_tl,std_tl,100000))
-dia_range=dia_m-min(np.random.normal(mean_dia,std_dia,100000))
-ij_range=ij_m-min(np.random.normal(mean_ij,std_ij,100000))
+##snowbed
+#chl_s1=376.2863 #chlorophyll content (umol chl/m2)
+#chl_s2=426.6331 #chlorophyll content (umol chl/m2)
+#chl_s3=476.9798 #chlorophyll content (umol chl/m2)
+#sla_s1=147.195-12.6
+#sla_s2=147.195
+#sla_s3=147.195+12.6
+#nm_s1=0.021#(20.25+0.077*(sla_s1))/1000.0
+#nm_s2=0.021#(20.25+0.077*(sla_s2))/1000.0
+#nm_s3=0.021#(20.25+0.077*(sla_s3))/1000.0
+#na_s1=#nm_s1*(1/(sla_s1/10000))#(((chl_s1)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_s1*(1/(sla_s1/10000)) #leaf N (gN/m2C)
+#na_s2=#nm_s2*(1/(sla_s2/10000))#(((chl_s2)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_s2*(1/(sla_s2/10000)) #leaf N (gN/m2C)
+#na_s3=#nm_s3*(1/(sla_s3/10000))#(((chl_s3)/1000.0-0.022)/0.0036)/1000.0*14.0#nm_s3*(1/(sla_s3/10000)) #leaf N (gN/m2C)
+#ht_s1=9.055197#t #temp of leaf (K)-->f(leaf area,angle,height)
+#ht_s2=12.84922#t #temp of leaf (K)-->f(leaf area,angle,height)
+#ht_s3=16.643243#t #temp of leaf (K)-->f(leaf area,angle,height)
+#dia_s1=1.979317/100. #leaf diameter (m)
+#dia_s2=2.136071/100. #leaf diameter (m)
+#dia_s3=2.282084/100. #leaf diameter (m)
 
 
 
 ##---In the Below Dictionary, sla, leaf n, and fraction of leaf n in rub are the only proportionally dependent variables---##
 
-#variable s
-#dict=[
-#      [{'s_f':np.linspace(s_f-s_range,s_f+s_range,2)},
-#       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_d-s_range,s_d+s_range,2)},
-#       {'nm_d':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_w-s_range,s_w+s_range,2)},
-#       {'nm_w':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_s-s_range,s_s+s_range,2)},
-#       {'nm_s':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
-
-
-#variable nm
-#dict=[
-#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
-
-#variable nm/s
-#dict=[
-#      [{'s_f':np.linspace(s_f-s_range,s_f+s_range,2)},
-#       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_d-s_range,s_d+s_range,2)},
-#       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_w-s_range,s_w+s_range,2)},
-#       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_s-s_range,s_s+s_range,2)},
-#       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
-
-##variable dia 
-#dict=[
-#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_f-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_f+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_d':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_d-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_d+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_w':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_hm1':np.zeros(shape=2)+dia_w-dia_range},
-#       {'dia_hm2':np.zeros(shape=2)+dia_w+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_s':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_s-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_s+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
- 
-#variable chl        
-#dict=[
-#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_f-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_f+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_d':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_d-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_d+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_w':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_w-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_w+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_s':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_s-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_s+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
-
-#variable tl
-#dict=[
-#      [{'s_f':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_f-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_f+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_d':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_d-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_d+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_w':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_w-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_w+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_m+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_s':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_s-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_s+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_m+ij_range},
-#        ]]
-
- 
-#variable ij
-#dict=[
-#      [{'s_f':np.linspace(s_m-0.1*s_m,s_m+0.1*s_m,2)},  ##STOPPED HERE
-#       {'nm_f':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_f1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_f2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_f1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_f2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_f1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_f2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_f1':np.zeros(shape=2)+ij_f-ij_range},
-#       {'ij_f2':np.zeros(shape=2)+ij_f+ij_range},
-#        ],
-#      
-#      [{'s_d':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_d':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_d1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_d2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_d1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_d2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_d1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_d2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_d1':np.zeros(shape=2)+ij_d-ij_range},
-#       {'ij_d2':np.zeros(shape=2)+ij_d+ij_range},
-#        ],
-#        
-#      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-#       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
-#        ],
-#       
-#      [{'s_w':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_w':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_w1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_w2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_w1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_w2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_w1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_w2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_w1':np.zeros(shape=2)+ij_w-ij_range},
-#       {'ij_w2':np.zeros(shape=2)+ij_w+ij_range},
-#        ], 
-#      
-#      [{'s_s':np.linspace(s_m-s_range,s_m+s_range,2)},
-#       {'nm_s':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-#       {'dia_s1':np.zeros(shape=2)+dia_m-dia_range},
-#       {'dia_s2':np.zeros(shape=2)+dia_m+dia_range},
-#       {'chl_s1':np.zeros(shape=2)+chl_m-chl_range},
-#       {'chl_s2':np.zeros(shape=2)+chl_m+chl_range},
-#       {'tl_s1':np.zeros(shape=2)+tl_m-tl_range},
-#       {'tl_s2':np.zeros(shape=2)+tl_m+tl_range},
-#       {'ij_s1':np.zeros(shape=2)+ij_s-ij_range},
-#       {'ij_s2':np.zeros(shape=2)+ij_s+ij_range},
-#        ]]       
 
 
 #traits vary for each community
 
+
+        
+        
 dict=[
-      [{'s_f':np.linspace(s_f-s_range,s_f+s_range,2)},
-       {'nm_f':np.linspace(nm_f-nm_range,nm_f+nm_range,2)},
-       {'dia_f1':np.zeros(shape=2)+dia_f-dia_range},
-       {'dia_f2':np.zeros(shape=2)+dia_f+dia_range},
-       {'chl_f1':np.zeros(shape=2)+chl_f-chl_range},
-       {'chl_f2':np.zeros(shape=2)+chl_f+chl_range},
-       {'tl_f1':np.zeros(shape=2)+tl_f-tl_range},
-       {'tl_f2':np.zeros(shape=2)+tl_f+tl_range},
-       {'ij_f1':np.zeros(shape=2)+ij_f-ij_range},
-       {'ij_f2':np.zeros(shape=2)+ij_f+ij_range},
-        ],
+#      [
+#       {'na_f1':np.zeros(shape=1)+na_f1},
+#       {'na_f2':np.zeros(shape=1)+na_f2},
+#       {'na_f3':np.zeros(shape=1)+na_f3},
+#       {'dia_f1':np.zeros(shape=1)+dia_f1},
+#       {'dia_f2':np.zeros(shape=1)+dia_f2},
+#       {'dia_f3':np.zeros(shape=1)+dia_f3},
+#       {'chl_f1':np.zeros(shape=1)+chl_f1},
+#       {'chl_f2':np.zeros(shape=1)+chl_f2},
+#       {'chl_f3':np.zeros(shape=1)+chl_f3},
+#       {'ht_f1':np.zeros(shape=1)+ht_f1},
+#       {'ht_f2':np.zeros(shape=1)+ht_f2},
+#       {'ht_f3':np.zeros(shape=1)+ht_f3},
+#        ],
       
-      [{'s_d':np.linspace(s_d-s_range,s_d+s_range,2)},
-       {'nm_d':np.linspace(nm_d-nm_range,nm_d+nm_range,2)},
-       {'dia_d1':np.zeros(shape=2)+dia_d-dia_range},
-       {'dia_d2':np.zeros(shape=2)+dia_d+dia_range},
-       {'chl_d1':np.zeros(shape=2)+chl_d-chl_range},
-       {'chl_d2':np.zeros(shape=2)+chl_d+chl_range},
-       {'tl_d1':np.zeros(shape=2)+tl_d-tl_range},
-       {'tl_d2':np.zeros(shape=2)+tl_d+tl_range},
-        {'ij_d1':np.zeros(shape=2)+ij_d-ij_range},
-        {'ij_d2':np.zeros(shape=2)+ij_d+ij_range},
+      [
+       {'na_d1':np.zeros(shape=1)+na_d1},
+       {'na_d2':np.zeros(shape=1)+na_d2},
+       {'na_d3':np.zeros(shape=1)+na_d3},
+       {'dia_d1':np.zeros(shape=1)+dia_d1},
+       {'dia_d2':np.zeros(shape=1)+dia_d2},
+       {'dia_d3':np.zeros(shape=1)+dia_d3},
+       {'chl_d1':np.zeros(shape=1)+chl_d1},
+       {'chl_d2':np.zeros(shape=1)+chl_d2},
+       {'chl_d3':np.zeros(shape=1)+chl_d3},
+       {'ht_d1':np.zeros(shape=1)+ht_d1},
+       {'ht_d2':np.zeros(shape=1)+ht_d2},
+       {'ht_d3':np.zeros(shape=1)+ht_d3},
         ],
         
-      [{'s_m':np.linspace(s_m-s_range,s_m+s_range,2)},
-       {'nm_m':np.linspace(nm_m-nm_range,nm_m+nm_range,2)},
-       {'dia_m1':np.zeros(shape=2)+dia_m-dia_range},
-       {'dia_m2':np.zeros(shape=2)+dia_m+dia_range},
-       {'chl_m1':np.zeros(shape=2)+chl_m-chl_range},
-       {'chl_m2':np.zeros(shape=2)+chl_m+chl_range},
-       {'tl_m1':np.zeros(shape=2)+tl_m-tl_range},
-       {'tl_m2':np.zeros(shape=2)+tl_m+tl_range},
-       {'ij_m1':np.zeros(shape=2)+ij_m-ij_range},
-       {'ij_m2':np.zeros(shape=2)+ij_m+ij_range},
+      [
+       {'na_m1':np.zeros(shape=1)+na_m1},
+       {'na_m2':np.zeros(shape=1)+na_m2},
+       {'na_m3':np.zeros(shape=1)+na_m3},
+       {'dia_m1':np.zeros(shape=1)+dia_m1},
+       {'dia_m2':np.zeros(shape=1)+dia_m2},
+       {'dia_m3':np.zeros(shape=1)+dia_m3},
+       {'chl_m1':np.zeros(shape=1)+chl_m1},
+       {'chl_m2':np.zeros(shape=1)+chl_m2},
+       {'chl_m3':np.zeros(shape=1)+chl_m3},
+       {'ht_m1':np.zeros(shape=1)+ht_m1},
+       {'ht_m2':np.zeros(shape=1)+ht_m2},
+       {'ht_m3':np.zeros(shape=1)+ht_m3},
         ],
        
-      [{'s_w':np.linspace(s_w-s_range,s_w+s_range,2)},
-       {'nm_w':np.linspace(nm_w-nm_range,nm_w+nm_range,2)},
-       {'dia_w1':np.zeros(shape=2)+dia_w-dia_range},
-       {'dia_w2':np.zeros(shape=2)+dia_w+dia_range},
-       {'chl_w1':np.zeros(shape=2)+chl_w-chl_range},
-       {'chl_w2':np.zeros(shape=2)+chl_w+chl_range},
-       {'tl_w1':np.zeros(shape=2)+tl_w-tl_range},
-       {'tl_w2':np.zeros(shape=2)+tl_w+tl_range},
-       {'ij_w1':np.zeros(shape=2)+ij_w-ij_range},
-       {'ij_w2':np.zeros(shape=2)+ij_w+ij_range},
-        ], 
+      [
+       {'na_w1':np.zeros(shape=1)+na_w1},
+       {'na_w2':np.zeros(shape=1)+na_w2},
+       {'na_w3':np.zeros(shape=1)+na_w3},
+       {'dia_w1':np.zeros(shape=1)+dia_w1},
+       {'dia_w2':np.zeros(shape=1)+dia_w2},
+       {'dia_w3':np.zeros(shape=1)+dia_w3},
+       {'chl_w1':np.zeros(shape=1)+chl_w1},
+       {'chl_w2':np.zeros(shape=1)+chl_w2},
+       {'chl_w3':np.zeros(shape=1)+chl_w3},
+       {'ht_w1':np.zeros(shape=1)+ht_w1},
+       {'ht_w2':np.zeros(shape=1)+ht_w2},
+       {'ht_w3':np.zeros(shape=1)+ht_w3},
+        ],
       
-      [{'s_s':np.linspace(s_s-s_range,s_s+s_range,2)},
-       {'nm_s':np.linspace(nm_s-nm_range,nm_s+nm_range,2)},
-       {'dia_s1':np.zeros(shape=2)+dia_s-dia_range},
-       {'dia_s2':np.zeros(shape=2)+dia_s+dia_range},
-       {'chl_s1':np.zeros(shape=2)+chl_s-chl_range},
-       {'chl_s2':np.zeros(shape=2)+chl_s+chl_range},
-       {'tl_s1':np.zeros(shape=2)+tl_s-tl_range},
-       {'tl_s2':np.zeros(shape=2)+tl_s+tl_range},
-       {'ij_s1':np.zeros(shape=2)+ij_s-ij_range},
-       {'ij_s2':np.zeros(shape=2)+ij_s+ij_range},
-        ]] 
+#      [
+#       {'na_s1':np.zeros(shape=1)+na_s1},
+#       {'na_s2':np.zeros(shape=1)+na_s2},
+#       {'na_s3':np.zeros(shape=1)+na_s3},
+#       {'dia_s1':np.zeros(shape=1)+dia_s1},
+#       {'dia_s2':np.zeros(shape=1)+dia_s2},
+#       {'dia_s3':np.zeros(shape=1)+dia_s3},
+#       {'chl_s1':np.zeros(shape=1)+chl_s1},
+#       {'chl_s2':np.zeros(shape=1)+chl_s2},
+#       {'chl_s3':np.zeros(shape=1)+chl_s3},
+#       {'ht_s1':np.zeros(shape=1)+ht_s1},
+#       {'ht_s2':np.zeros(shape=1)+ht_s2},
+#       {'ht_s3':np.zeros(shape=1)+ht_s3},
+#        ]
+        ]        
+        
 #---------------Define Number of Variable Parameters---------------#  
 
-num_params=6
+num_params=4
 
 leaf_params=[]
 
@@ -646,50 +270,64 @@ for i in range(len(dict)):
                  
     dict_combs_new=[]
 
-    for i in range(len(dict_combs)):
-        keys=dict_combs[i].keys()
+    for xx in range(len(dict_combs)):
+        keys=dict_combs[xx].keys()
         key_param=[]
         for ii in range(len(keys)):
             key_param+=[keys[ii][0]]
         if len(np.unique(key_param))<num_params:
             continue
         else:
-            dict_combs_new+=[dict_combs[i]]
+            dict_combs_new+=[dict_combs[xx]]
 
 #---------------Rename All Parameters in Parameter Combination Dictionaries to Model Parameter Names---------------#  
 
     params_int=[]
 
 
-    for i in range(len(dict_combs_new)):
-        params=dict_combs_new[i].copy()
+    for xxx in range(len(dict_combs_new)):
+        params=dict_combs_new[xxx].copy()
         
-        #rename sla
-        if 's_f' in params.keys():
-            params['s']=params.pop('s_f')        
-        if 's_d' in params.keys():
-            params['s']=params.pop('s_d')
-        if 's_m' in params.keys():
-            params['s']=params.pop('s_m') 
-        if 's_w' in params.keys():
-            params['s']=params.pop('s_w') 
-        if 's_s' in params.keys():
-            params['s']=params.pop('s_s')               
+             
         
         #rename leaf n
-        if 'nm_f' in params.keys():
-            params['nm']=params.pop('nm_f')        
-        if 'nm_d' in params.keys():
-            params['nm']=params.pop('nm_d')
-        if 'nm_m' in params.keys():
-            params['nm']=params.pop('nm_m')
-        if 'nm_w' in params.keys():
-            params['nm']=params.pop('nm_w')
-        if 'nm_s' in params.keys():
-            params['nm']=params.pop('nm_s')            
+        if 'na_f1' in params.keys():
+            params['na']=params.pop('na_f1')  
+        if 'na_f2' in params.keys():
+            params['na']=params.pop('na_f2')  
+        if 'na_f3' in params.keys():
+            params['na']=params.pop('na_f3')  
+            
+        if 'na_d1' in params.keys():
+            params['na']=params.pop('na_d1')
+        if 'na_d2' in params.keys():
+            params['na']=params.pop('na_d2')
+        if 'na_d3' in params.keys():
+            params['na']=params.pop('na_d3')
+            
+        if 'na_m1' in params.keys():
+            params['na']=params.pop('na_m1')
+        if 'na_m2' in params.keys():
+            params['na']=params.pop('na_m2')
+        if 'na_m3' in params.keys():
+            params['na']=params.pop('na_m3')
+            
+        if 'na_w1' in params.keys():
+            params['na']=params.pop('na_w1')
+        if 'na_w2' in params.keys():
+            params['na']=params.pop('na_w2')
+        if 'na_w3' in params.keys():
+            params['na']=params.pop('na_w3')
+            
+        if 'na_s1' in params.keys():
+            params['na']=params.pop('na_s1') 
+        if 'na_s2' in params.keys():
+            params['na']=params.pop('na_s2')  
+        if 'na_s3' in params.keys():
+            params['na']=params.pop('na_s3')  
         
             
-        #rename ball berry slope parameter
+        #rename diameter
         if 'dia_f1' in params.keys():
             params['dia']=params.pop('dia_f1')
         if 'dia_d1' in params.keys():
@@ -710,7 +348,18 @@ for i in range(len(dict)):
         if 'dia_w2' in params.keys():
             params['dia']=params.pop('dia_w2')            
         if 'dia_s2' in params.keys():
-            params['dia']=params.pop('dia_s2')              
+            params['dia']=params.pop('dia_s2')         
+
+        if 'dia_f3' in params.keys():
+            params['dia']=params.pop('dia_f3')
+        if 'dia_d3' in params.keys():
+            params['dia']=params.pop('dia_d3')
+        if 'dia_m3' in params.keys():
+            params['dia']=params.pop('dia_m3')
+        if 'dia_w3' in params.keys():
+            params['dia']=params.pop('dia_w3')            
+        if 'dia_s3' in params.keys():
+            params['dia']=params.pop('dia_s3')                  
 
         
         #rename chlorophyll content
@@ -736,55 +385,53 @@ for i in range(len(dict)):
         if 'chl_s2' in params.keys():
             params['chl']=params.pop('chl_s2')              
  
-        
+        if 'chl_f3' in params.keys():
+            params['chl']=params.pop('chl_f3')            
+        if 'chl_d3' in params.keys():
+            params['chl']=params.pop('chl_d3')
+        if 'chl_m3' in params.keys():
+            params['chl']=params.pop('chl_m3')
+        if 'chl_w3' in params.keys():
+            params['chl']=params.pop('chl_w3')
+        if 'chl_s3' in params.keys():
+            params['chl']=params.pop('chl_s3')  
+       
         #rename temp of leaf
-        if 'tl_f1' in params.keys():
-            params['tl']=params.pop('tl_f1')        
-        if 'tl_d1' in params.keys():
-            params['tl']=params.pop('tl_d1')
-        if 'tl_m1' in params.keys():
-            params['tl']=params.pop('tl_m1')
-        if 'tl_w1' in params.keys():
-            params['tl']=params.pop('tl_w1')
-        if 'tl_s1' in params.keys():
-            params['tl']=params.pop('tl_s1')            
+        if 'ht_f1' in params.keys():
+            params['ht']=params.pop('ht_f1')        
+        if 'ht_d1' in params.keys():
+            params['ht']=params.pop('ht_d1')
+        if 'ht_m1' in params.keys():
+            params['ht']=params.pop('ht_m1')
+        if 'ht_w1' in params.keys():
+            params['ht']=params.pop('ht_w1')
+        if 'ht_s1' in params.keys():
+            params['ht']=params.pop('ht_s1')            
 
-        if 'tl_f2' in params.keys():
-            params['tl']=params.pop('tl_f2')            
-        if 'tl_d2' in params.keys():
-            params['tl']=params.pop('tl_d2')
-        if 'tl_m2' in params.keys():
-            params['tl']=params.pop('tl_m2')
-        if 'tl_w2' in params.keys():
-            params['tl']=params.pop('tl_w2')
-        if 'tl_s2' in params.keys():
-            params['tl']=params.pop('tl_s2')              
+        if 'ht_f2' in params.keys():
+            params['ht']=params.pop('ht_f2')            
+        if 'ht_d2' in params.keys():
+            params['ht']=params.pop('ht_d2')
+        if 'ht_m2' in params.keys():
+            params['ht']=params.pop('ht_m2')
+        if 'ht_w2' in params.keys():
+            params['ht']=params.pop('ht_w2')
+        if 'ht_s2' in params.keys():
+            params['ht']=params.pop('ht_s2')              
                 
-        
-        #rename leaf area/angle index
-        if 'ij_f1' in params.keys():
-            params['ij']=params.pop('ij_f1')            
-        if 'ij_d1' in params.keys():
-            params['ij']=params.pop('ij_d1')
-        if 'ij_m1' in params.keys():
-            params['ij']=params.pop('ij_m1')
-        if 'ij_w1' in params.keys():
-            params['ij']=params.pop('ij_w1')
-        if 'ij_s1' in params.keys():
-            params['ij']=params.pop('ij_s1')    
-                
-        if 'ij_f2' in params.keys():
-            params['ij']=params.pop('ij_f2')            
-        if 'ij_d2' in params.keys():
-            params['ij']=params.pop('ij_d2')
-        if 'ij_m2' in params.keys():
-            params['ij']=params.pop('ij_m2')
-        if 'ij_w2' in params.keys():
-            params['ij']=params.pop('ij_w2')
-        if 'ij_s2' in params.keys():
-            params['ij']=params.pop('ij_s2') 
-                  
-        
+        if 'ht_f3' in params.keys():
+            params['ht']=params.pop('ht_f3')            
+        if 'ht_d3' in params.keys():
+            params['ht']=params.pop('ht_d3')
+        if 'ht_m3' in params.keys():
+            params['ht']=params.pop('ht_m3')
+        if 'ht_w3' in params.keys():
+            params['ht']=params.pop('ht_w3')
+        if 'ht_s3' in params.keys():
+            params['ht']=params.pop('ht_s3')   
+
+
         params_int+=[params]       
     
+ 
     leaf_params+=params_int

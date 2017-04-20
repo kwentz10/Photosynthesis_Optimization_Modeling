@@ -22,7 +22,6 @@ mesophyll conductance equal to stomatal conductance.
 
 See Supplementary Eq. Worksheet for more information.
 
-Fix: correct for atmospheric pressure differences in co2, o2, and vapor pressure
 
 @author: Katherine
 """
@@ -33,70 +32,58 @@ from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
 import numpy as np
 
 
-
-
 #############------Photosynthesis Model 1------#############
 
-def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,g0):
-    
-    tl=tl+273.15  
+def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, s,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,q,vwc,vwc_max,vwc_min):
     
     if all(ij>1.0):
-        ij=1.0
+        ij=np.zeros(shape=2)+1.0
     else:
         ij=ij
     
     ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-    es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
+    pa_v=611*np.exp((17.27*tl)/(tl+237.3)) #calculate saturation vapor pressure of surface (Pa)
+    es_str=pa_con_atmfrac(pa_v,3528) #calculate saturation vapor pressure of surface (Pa-->umol/mol)
     d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
     
-    l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (mol H2O/m2s)
-    
-    #below is commented out because I am no longer using a variable lambda parameter
-    #m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
-
-    rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
-        
-    if all(rub<rub_max):
-        j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
-    else:
-        j_m=j_m_max*ij
-            
-    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
+             
+    vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+    jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
     
-    #parameters
-    tk_25=298.16; #absolute temperature at 25 C
-    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
-    eko=14500.0 #Activation energy for K of O2 (J mol-1)
-    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
-    ev=55000.0 #Activation energy for carboxylation (J mol-1)
-    ej=55000.0 #Activation energy for electron transport (J mol-1)
-    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
-    toptj=298.0 #Optimum temperature for maximum electron transport (K)
         
     #calculated parameters due to temperature
-    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
-    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
-    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
-    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
-    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
-    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
+    kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+    ko=arr_temp(pa_con_atmfrac(ko25,3528),eko,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+    gamma=(kc*o)/(2.0*ko)*0.21 #carbon dioxide compensation point (umol/mol)
+    vmax1=bol_temp(vmaxopt,ev,toptv,tl+273.15) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+    jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
-    Wfac=1
-#    if all(vwc>=vwc_max):
-#        Wfac=1
-#    elif all(vwc<vwc_max):
-#        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    Wfac=1.0
+    if all(vwc>=vwc_max):
+        Wfac=1.0
+    elif all(vwc<vwc_max):
+        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    
+    #currently Wfac=1.0 because no soil moisture constraint
+    Wfac=1.0
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+    
+    ##---Determine J---## 
+    alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
+    qalpha=alpha*qeff
+    Iphoton=PAR*ij
+    
+    
+    if all(jmax>0.0):
+        jj=(qalpha*Iphoton)/(np.sqrt(1.+(((qalpha**2)*(Iphoton**2))/(jmax**2))))
+    
     
     ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
@@ -104,7 +91,7 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
     a1_r=vmax
     a2_r=kc*(1+(o/ko))
     #light limited
-    a1_l=jmax/4
+    a1_l=jj/4
     a2_l=2*gamma
     
         
@@ -144,6 +131,9 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
         ##---Solve for Stomatal Conductance to Water---##
         gsw=m*A*rh/ca #stomatal conductance to water (mol air/m2s)
         
+        ##---Solve for Stomatal Conductance to CO2---##
+        gs=gsw*a
+        
         ##---Solve for Evapotranspiration---##
         E=gsw*d #(umol H2O/m2s)
     
@@ -173,13 +163,24 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
                     
         #Choose Highest Values for Assimilation and Conductance
         A_r=[]
+        
         for j in range(len(A1_r)):
-            if A1_r[j]>A2_r[j]:
-                A_r+=[A1_r[j]]
-            elif A2_r[j]>A1_r[j]:
+            
+            if A1_r[j]<A2_r[j]:
+                if A1_r[j]>0.0:
+                    A_r+=[A1_r[j]]
+                else:
+                    A_r+=[A2_r[j]]
+            
+            elif A1_r[j]>A2_r[j]:
+                if A2_r[j]>0.0:
+                    A_r+=[A2_r[j]]
+                else:
+                    A_r+=[A1_r[j]]
+            
+            elif A1_r[j]==A2_r[j]:
                 A_r+=[A2_r[j]]
-            else:
-                A_r+=[A1_r[j]]
+
 
         ##---Light-Limited Assimilation---##
         aa_l=m*rh*ca-a*ca+m*rh*a2_l
@@ -189,15 +190,25 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
         A1_l=(-bb_l+np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l) #(umol CO2/m2s)
         A2_l=(-bb_l-np.sqrt(bb_l**2-4*aa_l*cc_l))/(2*aa_l) #(umol CO2/m2s)
             
-        #Choose Highest Values for Assimilation and Conductance
+        #Choose Highest Values for Assimilation and Conductance (do minimum that is not negative!!)
         A_l=[]
+        
         for j in range(len(A1_l)):
-            if A1_l[j]>A2_l[j]:
-                A_l+=[A1_l[j]]
-            elif A2_l[j]>A1_l[j]:
+            
+            if A1_l[j]<A2_l[j]:
+                if A1_l[j]>0.0:
+                    A_l+=[A1_l[j]]
+                else:
+                    A_l+=[A2_l[j]]
+            
+            elif A1_l[j]>A2_l[j]:
+                if A2_l[j]>0.0:
+                    A_l+=[A2_l[j]]
+                else:
+                    A_l+=[A1_l[j]]
+            
+            elif A1_l[j]==A2_l[j]:
                 A_l+=[A2_l[j]]
-            else:
-                A_l+=[A1_l[j]]
     
         ##---Determine Rate-Limiting Assimilation---##
         A=[]
@@ -211,41 +222,47 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
         
         ##---Solve for Stomatal Conductance to Water---##
         gsw=(m*A*rh/ca)+g0 #stomatal conductance to water (mol H2O/m2s) #make array from list
-            
+         
+        ##---Solve for Stomatal Conductance to CO2---##
+        gs=gsw*a
+   
         ##---Solve for Evapotranspiration---##
         E=gsw*d #(umol H2O/m2s)
-
+        
+        
         
         #---------------Test for Nan or Negative Values---------------#       
   
+    neg_vals=([np.zeros(1)+-999]*13)
+    
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if A[xxx]<0.0:
             print "A array contains negative values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(gsw[xxx]):
             print "gsw array contains nan values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if gsw[xxx]<0.0:
             print "gsw array contains negative values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(E[xxx]):
             print "E array contains nan values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if E[xxx]<0.0:
             print "E array contains negative values"
-            return np.zeros(6)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
 
         
     #---------------WUE vs. NUE---------------#    
-    
-    wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
-    nue=np.diff(A)/np.diff(na)
 
+    wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
+    nue=A/na   
     
-    return wue, nue, A, gsw, E, na
+    
+    return wue, nue, A, gsw, E, na, gs
   
     
     
@@ -255,66 +272,54 @@ def photo_no_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,r
     
 #############------Photosynthesis Model 2------#############
 
-def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,g0,b,dia,u):
- 
-    tl=tl+273.15  
+def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,b,dia,u,q,vwc,vwc_max,vwc_min):  
     
     if all(ij>1.0):
-        ij=1.0
+        ij=np.zeros(shape=2)+1.0
     else:
         ij=ij
     
     ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-    es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
+    pa_v=611*np.exp((17.27*tl)/(tl+237.3)) #calculate saturation vapor pressure of surface (Pa)
+    es_str=pa_con_atmfrac(pa_v,3528) #calculate saturation vapor pressure of surface (Pa-->umol/mol)
     d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
     
-    l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (mol H2O/m2s)
-    
-    #below is commented out because I am no longer using a variable lambda parameter
-    #m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
-
-    rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
-        
-    if all(rub<rub_max):
-        j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
-    else:
-        j_m=j_m_max*ij
-            
-    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
+          
+    vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+    jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
-    
-    #parameters
-    tk_25=298.16; #absolute temperature at 25 C
-    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
-    eko=14500.0 #Activation energy for K of O2 (J mol-1)
-    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
-    ev=55000.0 #Activation energy for carboxylation (J mol-1)
-    ej=55000.0 #Activation energy for electron transport (J mol-1)
-    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
-    toptj=298.0 #Optimum temperature for maximum electron transport (K)
         
     #calculated parameters due to temperature
-    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
-    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
-    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
-    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
-    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
-    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
+    kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+    ko=arr_temp(pa_con_atmfrac(ko25,3528),eko,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+    gamma=(kc*o)/(2.0*ko)*0.21 #carbon dioxide compensation point (umol/mol)
+    vmax1=bol_temp(vmaxopt,ev,toptv,tl+273.15) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+    jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
-    Wfac=1
-#    if all(vwc>=vwc_max):
-#        Wfac=1
-#    elif all(vwc<vwc_max):
-#        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    Wfac=1.0
+    if all(vwc>=vwc_max):
+        Wfac=1.0
+    elif all(vwc<vwc_max):
+        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+    
+    #currently Wfac=1.0 because no soil moisture constraint
+    Wfac=1.0
+    
+    ##---Determine J---## 
+    alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
+    qalpha=alpha*qeff
+    Iphoton=PAR*ij
+    
+    if all(jmax>0.0):
+        jj=(qalpha*Iphoton)/(np.sqrt(1.+(((qalpha**2)*(Iphoton**2))/(jmax**2))))
+    
     
     ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
@@ -322,7 +327,7 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     a1_r=vmax
     a2_r=kc*(1+(o/ko))
     #light limited
-    a1_l=jmax/4
+    a1_l=jj/4
     a2_l=2*gamma
     
     
@@ -335,7 +340,7 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     gbw=1/(200*np.sqrt(dia/u))
     gb=b*gbw
     
-    C1=(-a*m*rh*gb)+(a*g0)-gb
+    C1=(-a*m*rh*gb)+(a*g0)+gb
     C2=(ca*(gb**2)*a*m*rh)-(ca*gb*a*g0)-(a*g0*ca*gb)-(ca*(gb**2))
     C3=(ca**2)*(gb**2)*a*g0
     C4=(a*m*rh*(gb**2))-(a*g0*gb)
@@ -347,7 +352,8 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     coef=[]
     for i in range(len(C1)):
         coef+=[[C1[i],C2[i]+C4[i]*a2_r[i]-a1_r[i]*C1[i],C3[i]+C5[i]*a2_r[i]-a1_r[i]*C2[i]+C4[i]*a1_r[i]*gamma[i],-a1_r[i]*C3[i]+C5[i]*a1_r[i]*gamma[i]]]
-    
+   
+
     #Solve Cubic Eq. for Roots
     roots=[]
     for i in range(len(coef)):
@@ -361,9 +367,14 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
-    
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
+  
     #assimilation is the minimum of the roots that are greater than zero
     A_r=[]
     for i in range(len(roots_pos)):
@@ -384,14 +395,19 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     #make list of real roots
     roots_real=[]
     for i in range(len(roots)):
-        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]]
+        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]] #or do: roots[np.isreal(roots)]
     
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
-    
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
+        
     #assimilation is the minimum of the roots that are greater than zero
     A_l=[]
     for i in range(len(roots_pos)):
@@ -426,34 +442,35 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     
     #---------------Test for Nan or Negative Values---------------#       
   
+    neg_vals=([np.zeros(1)+-999]*13)
+    
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if A[xxx]<0.0:
             print "A array contains negative values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(gsw[xxx]):
             print "gsw array contains nan values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if gsw[xxx]<0.0:
             print "gsw array contains negative values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(E[xxx]):
             print "E array contains nan values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if E[xxx]<0.0:
             print "E array contains negative values"
-            return np.zeros(10)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
 
         
     #---------------WUE vs. NUE---------------#    
     
-    wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
-    nue=np.diff(A)/np.diff(na)
-
+    wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
+    nue=A/na   
     
-    return wue, nue, A, E, cs, ci, gsw, gs, gbw, gb        
+    return wue, nue, A, E, na, cs, ci, gsw, gs, gbw, gb        
 
     
     
@@ -464,66 +481,56 @@ def photo_bound(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,fr
     
 #############------Photosynthesis Model 3------#############
     
-def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,g0,b,dia,u,gm):
- 
-    tl=tl+273.15  
+def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,b,dia,u,gm,q,vwc_min,vwc_max,vwc):
+  
     
     if all(ij>1.0):
-        ij=1.0
+        ij=np.zeros(shape=2)+1.0
     else:
         ij=ij
     
     ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-    es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
+    pa_v=611*np.exp((17.27*tl)/(tl+237.3)) #calculate saturation vapor pressure of surface (Pa)
+    es_str=pa_con_atmfrac(pa_v,3528) #calculate saturation vapor pressure of surface (Pa-->umol/mol)
     d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
-    
-    l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (mol H2O/m2s)
-    
-    #below is commented out because I am no longer using a variable lambda parameter
-    #m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
 
-    rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
         
-    if all(rub<rub_max):
-        j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
-    else:
-        j_m=j_m_max*ij
-            
-    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
+    vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+    jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
-    
-    #parameters
-    tk_25=298.16; #absolute temperature at 25 C
-    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
-    eko=14500.0 #Activation energy for K of O2 (J mol-1)
-    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
-    ev=55000.0 #Activation energy for carboxylation (J mol-1)
-    ej=55000.0 #Activation energy for electron transport (J mol-1)
-    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
-    toptj=298.0 #Optimum temperature for maximum electron transport (K)
+
         
     #calculated parameters due to temperature
-    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
-    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
-    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
-    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
-    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
-    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
+    kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+    ko=arr_temp(pa_con_atmfrac(ko25,3528),eko,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+    gamma=(kc*o)/(2.0*ko)*0.21 #carbon dioxide compensation point (umol/mol)
+    vmax1=bol_temp(vmaxopt,ev,toptv,tl+273.15) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+    jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
-    Wfac=1
-#    if all(vwc>=vwc_max):
-#        Wfac=1
-#    elif all(vwc<vwc_max):
-#        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    Wfac=1.0
+    if all(vwc>=vwc_max):
+        Wfac=1.0
+    elif all(vwc<vwc_max):
+        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+    
+    #currently Wfac=1.0 because no soil moisture constraint
+    Wfac=1.0
+    
+    ##---Determine J---## 
+    alpha=(chl/1000.)/((chl/1000.)+0.076) #from (Photosynthetic acclimation of plants to growth irradiance)Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
+    qalpha=alpha*qeff
+    Iphoton=PAR*ij
+    
+    if all(jmax>0.0):
+        jj=(qalpha*Iphoton)/(np.sqrt(1.+(((qalpha**2)*(Iphoton**2))/(jmax**2)))) #see baldocchi lecture 10 notes for this eq.
+    
     
     ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
@@ -531,11 +538,11 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     a1_r=vmax
     a2_r=kc*(1+(o/ko))
     #light limited
-    a1_l=jmax/4
+    a1_l=jj/4
     a2_l=2*gamma
     
     
-     ##---Photosynthesis Model---##
+    ##---Photosynthesis Model---##
     
 
     #Solve for Assimilation Using Cubic Equation
@@ -544,7 +551,7 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     gbw=1/(200*np.sqrt(dia/u))
     gb=b*gbw
     
-    C1=(-a*m*rh*gb)+(a*g0)-gb
+    C1=(-a*m*rh*gb)+(a*g0)+gb
     C2=(ca*(gb**2)*a*m*rh)-(ca*gb*a*g0)-(a*g0*ca*gb)-(ca*(gb**2))
     C3=(ca**2)*(gb**2)*a*g0
     C4=(a*m*rh*(gb**2))-(a*g0*gb)
@@ -575,8 +582,13 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
     
     #assimilation is the minimum of the roots that are greater than zero
     A_r=[]
@@ -598,13 +610,18 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     #make list of real roots
     roots_real=[]
     for i in range(len(roots)):
-        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]]
+        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]] #or do: roots[np.isreal(roots)]
     
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
     
     #assimilation is the minimum of the roots that are greater than zero
     A_l=[]
@@ -643,31 +660,34 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     
     #---------------Test for Nan or Negative Values---------------#       
   
+    neg_vals=([np.zeros(1)+-999]*13)
+    
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if A[xxx]<0.0:
             print "A array contains negative values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(gsw[xxx]):
             print "gsw array contains nan values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if gsw[xxx]<0.0:
             print "gsw array contains negative values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(E[xxx]):
             print "E array contains nan values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if E[xxx]<0.0:
             print "E array contains negative values"
-            return np.zeros(12)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
 
         
     #---------------WUE vs. NUE---------------#    
-    
-    wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
-    nue=np.diff(A)/np.diff(na)
+
+
+    wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
+    nue=A/na   
 
     
     return wue, nue, A, E, na, cs, ci, gsw, gs, gbw, gb, cc    
@@ -680,66 +700,58 @@ def photo_bound_meso(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m
     
 #############------Photosynthesis Model 4------#############
 
-def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,ca,rh,m,a,frnr,flnr,ra,j_b,j_m_max,q,vwc_min,vwc_max,g0,b,dia,u):
- 
-    tl=tl+273.15  
+def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,b,dia,u,q,vwc_min,vwc_max,vwc):
+
     
     if all(ij>1.0):
-        ij=1.0
+        ij=np.zeros(shape=2)+1.0
     else:
         ij=ij
     
     ##---Calculated Parameter Arrays for Model(Constant+Variable Plant Trait(s))---##
-    es_str=pa_con_atmfrac(611*np.exp(17.27*(tl-273.15)/((tl-273.15)+273.3))) #calculate saturation vapor pressure of surface (Pa)
-    d=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
-    
-    l=1/s #leaf mass per unit area (g C/m2 C)
-    na=nm*l #leaf nitrogen (mol H2O/m2s)
-    
-    #below is commented out because I am no longer using a variable lambda parameter
-    #m=ca/(rh*d*lamb) ##Ball-Berry stomatal conductance slope parameter (unitless)
+    pa_v=611*np.exp((17.27*tl)/(tl+237.3)) #calculate saturation vapor pressure of surface (Pa)
+    es_str=pa_con_atmfrac(pa_v,3528) #calculate saturation vapor pressure of surface (Pa-->umol/mol)
+    dd=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
 
-    rub=(chl*crc)/1000 # find ribulose bisphosphate content (umol RuBP/m2)
         
-    if all(rub<rub_max):
-        j_m=j_m_max*(rub/rub_max)*ij #find j_m slope based on ribulose bisphosphate content & leaf area/angle index
-    else:
-        j_m=j_m_max*ij
-            
-    vopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jopt=vopt*j_m+j_b #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
+    vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
+    jmaxopt=vmaxopt*j_m #optimal electron transport rate, limited by RuBP (umol electrons/m2s)
+    
     
     ##---Temperature Effects on Parameters---##
-    
-    #parameters
-    tk_25=298.16; #absolute temperature at 25 C
-    ekc=80500.0 #Activation energy for K of CO2 (J mol-1)
-    eko=14500.0 #Activation energy for K of O2 (J mol-1)
-    etau=-29000.0  #Activation energy for tau (???) (J mol-1)
-    ev=55000.0 #Activation energy for carboxylation (J mol-1)
-    ej=55000.0 #Activation energy for electron transport (J mol-1)
-    toptv=298.0 #Optimum temperature for maximum carboxylation (K)
-    toptj=298.0 #Optimum temperature for maximum electron transport (K)
         
     #calculated parameters due to temperature
-    kc=arr_temp(kc25,ekc,tk_25,tl) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
-    ko=arr_temp(ko25,eko,tk_25,tl) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
-    tau=arr_temp(tau25,etau,tk_25,tl) #specifity coefficient of tau at leaf temperature (unitless) 
-    gamma=o/(2*tau) #carbon dioxide compensation point (umol/mol)
-    vmax1=bol_temp(vopt,ev,toptv,tl) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
-    jmax1=bol_temp(jopt,ej,toptj,tl) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
+    kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
+    ko=arr_temp(pa_con_atmfrac(ko25,3528),eko,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for oxygen at leaf temperature (umol/mol) 
+    gamma=(kc*o)/(2.0*ko)*0.21 #carbon dioxide compensation point (umol/mol)
+    vmax1=bol_temp(vmaxopt,ev,toptv,tl+273.15) #carboxylation rate at leaf temperature, limited by CO2 (umol CO2/m2s)
+    jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #rate of electron transport at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
     Wfac=1
-#    if all(vwc>=vwc_max):
-#        Wfac=1
-#    elif all(vwc<vwc_max):
-#        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    if all(vwc>=vwc_max):
+        Wfac=1
+    elif all(vwc<vwc_max):
+        Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
+    
+    #currently Wfac=1.0 because no soil moisture constraint
+    Wfac=1.0
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+    
+    
+    
+    ##---Determine J---## 
+    alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
+    qalpha=alpha*qeff
+    Iphoton=PAR*ij
+    
+    if all(jmax>0.0):
+        jj=(qalpha*Iphoton)/(np.sqrt(1.+(((qalpha**2)*(Iphoton**2))/(jmax**2))))
+    
     
     ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
@@ -747,7 +759,7 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     a1_r=vmax
     a2_r=kc*(1+(o/ko))
     #light limited
-    a1_l=jmax/4
+    a1_l=jj/4
     a2_l=2*gamma
     
     
@@ -760,15 +772,18 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     gbw=1/(200*np.sqrt(dia/u))
     gb=b*gbw
     
-    C1=(-a*m*rh*gb)+(a*g0)-gb
+    C1=(-a*m*rh*gb)+(a*g0)+gb
     C2=(ca*(gb**2)*a*m*rh)-(ca*gb*a*g0)-(a*g0*ca*gb)-(ca*(gb**2))
     C3=(ca**2)*(gb**2)*a*g0
     C4=(a*m*rh*(gb**2))-(a*g0*gb)
     C5=a*g0*ca*(gb**2)
-    C11=C1+1
-    C12=C2-ca*gb
+    C11=C1+gb
+    C12=C2-(ca*(gb**2))
+    
+    
     
     ##---Rubisco-Limited Assimilation---##
+    
     
     #make list of coefficients for cubic eq.
     coef=[]
@@ -779,23 +794,33 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     roots=[]
     for i in range(len(coef)):
         roots+=[np.roots(coef[i])]
+
     
     #make list of real roots
     roots_real=[]
     for i in range(len(roots)):
         roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]]
     
+    
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
+    
+   
     
     #assimilation is the minimum of the roots that are greater than zero
     A_r=[]
     for i in range(len(roots_pos)):
         A_r+=[np.min(roots_pos[i])]
-
+    
+    
 
     ##---Light-Limited Assimilation---##
     #make list of coefficients for cubic eq.
@@ -811,13 +836,18 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     #make list of real roots
     roots_real=[]
     for i in range(len(roots)):
-        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]]
+        roots_real+=[roots[i].real[abs(roots[i].imag)<1e-5]] #or do: roots[np.isreal(roots)]
     
     #make list of roots greater than zero
     roots_pos=[]
     for i in range(len(roots_real)):  
-        if roots_real[i]>0.0:
-            roots_pos+=[roots_real[i]]
+        roots_pos_0=[]
+        for ii in range(len(roots_real[i])):
+            if roots_real[i][ii]>0.0:
+                roots_pos_0+=[roots_real[i][ii]]
+            else:
+                continue
+        roots_pos+=[roots_pos_0]
     
     #assimilation is the minimum of the roots that are greater than zero
     A_l=[]
@@ -840,7 +870,8 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     ##---Solve for Stomatal Conductance to Water---##
     cs=ca-(A/gb) #stomatal co2 (umol CO2/mol)
     gsw=(m*A*rh/cs)+g0 #stomatal conductance to water (mol H2O/m2s) #make array from list
-
+    
+    
     ##---Solve for Stomatal Conductance to CO2---##
     gs=gsw*a
     
@@ -853,37 +884,39 @@ def photo_bound_meso_eqstom(s,nm,tl,ea,chl,crc,rub_max,ij,vwc,kc25,ko25,o,tau25,
     ##---Solve for Internal CO2 Concentration (in Chloroplast)---##    
     cc=ci-(A/gm)    
     
+    
     ##---Solve for Evapotranspiration---##
-    E=gsw*d #(umol H2O/m2s)
+    E=gsw*dd #(umol H2O/m2s)
 
     
     #---------------Test for Nan or Negative Values---------------#       
-  
+    
+    neg_vals=([np.zeros(1)+-999]*13)
+    
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
             print "A array contains nan values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if A[xxx]<0.0:
             print "A array contains negative values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(gsw[xxx]):
             print "gsw array contains nan values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if gsw[xxx]<0.0:
             print "gsw array contains negative values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(E[xxx]):
             print "E array contains nan values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if E[xxx]<0.0:
             print "E array contains negative values"
-            return np.zeros(13)+-999
+            return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
 
         
     #---------------WUE vs. NUE---------------#    
-    
-    wue=np.diff(A)/np.diff(E)*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
-    nue=np.diff(A)/np.diff(na)
 
+    wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
+    nue=A/na   
     
     return wue, nue, A, E, na, cs, ci, gsw, gs, gbw, gb, gm, cc       
