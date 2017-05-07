@@ -1,6 +1,14 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """
+Created on Wed May  3 13:40:16 2017
+
+@author: Katherine
+"""
+
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
 Created on Thu Oct 13 09:45:04 2016
 
 This code allows me to calculate all combinations
@@ -184,58 +192,27 @@ dict=[
 #        ],
       
       [
-       {'na_d1':np.zeros(shape=1)+na_d1},
-       {'na_d2':np.zeros(shape=1)+na_d2},
-       {'na_d3':np.zeros(shape=1)+na_d3},
-       {'dia_d1':np.zeros(shape=1)+dia_d1},
-       {'dia_d2':np.zeros(shape=1)+dia_d2},
-       {'dia_d3':np.zeros(shape=1)+dia_d3},
-       {'chl_d1':np.zeros(shape=1)+chl_d1},
-       {'chl_d2':np.zeros(shape=1)+chl_d2},
-       {'chl_d3':np.zeros(shape=1)+chl_d3},
-       {'ht_d1':np.zeros(shape=1)+ht_d1},
-       {'ht_d2':np.zeros(shape=1)+ht_d2},
-       {'ht_d3':np.zeros(shape=1)+ht_d3},
-       {'sla_d1':np.zeros(shape=1)+sla_d1},
-       {'sla_d2':np.zeros(shape=1)+sla_d2},
-       {'sla_d3':np.zeros(shape=1)+sla_d3},
-       
+       {'na_d2':na_d2},
+       {'dia_d2':dia_d2},
+       {'chl_d2':chl_d2},
+       {'ht_d2':ht_d2},
+       {'sla_d2':sla_d2},
         ],
         
       [
-       {'na_m1':np.zeros(shape=1)+na_m1},
-       {'na_m2':np.zeros(shape=1)+na_m2},
-       {'na_m3':np.zeros(shape=1)+na_m3},
-       {'dia_m1':np.zeros(shape=1)+dia_m1},
-       {'dia_m2':np.zeros(shape=1)+dia_m2},
-       {'dia_m3':np.zeros(shape=1)+dia_m3},
-       {'chl_m1':np.zeros(shape=1)+chl_m1},
-       {'chl_m2':np.zeros(shape=1)+chl_m2},
-       {'chl_m3':np.zeros(shape=1)+chl_m3},
-       {'ht_m1':np.zeros(shape=1)+ht_m1},
-       {'ht_m2':np.zeros(shape=1)+ht_m2},
-       {'ht_m3':np.zeros(shape=1)+ht_m3},
-       {'sla_m1':np.zeros(shape=1)+sla_m1},
-       {'sla_m2':np.zeros(shape=1)+sla_m2},
-       {'sla_m3':np.zeros(shape=1)+sla_m3},
+       {'na_m2':na_m2},
+       {'dia_m2':dia_m2},
+       {'chl_m2':chl_m2},
+       {'ht_m2':ht_m2},
+       {'sla_m2':sla_m2},
         ],
        
       [
-       {'na_w1':np.zeros(shape=1)+na_w1},
-       {'na_w2':np.zeros(shape=1)+na_w2},
-       {'na_w3':np.zeros(shape=1)+na_w3},
-       {'dia_w1':np.zeros(shape=1)+dia_w1},
-       {'dia_w2':np.zeros(shape=1)+dia_w2},
-       {'dia_w3':np.zeros(shape=1)+dia_w3},
-       {'chl_w1':np.zeros(shape=1)+chl_w1},
-       {'chl_w2':np.zeros(shape=1)+chl_w2},
-       {'chl_w3':np.zeros(shape=1)+chl_w3},
-       {'ht_w1':np.zeros(shape=1)+ht_w1},
-       {'ht_w2':np.zeros(shape=1)+ht_w2},
-       {'ht_w3':np.zeros(shape=1)+ht_w3},
-       {'sla_w1':np.zeros(shape=1)+sla_w1},
-       {'sla_w2':np.zeros(shape=1)+sla_w2},
-       {'sla_w3':np.zeros(shape=1)+sla_w3},
+       {'na_w2':na_w2},
+       {'dia_w2':dia_w2},
+       {'chl_w2':chl_w2},
+       {'ht_w2':ht_w2},
+       {'sla_w2':sla_w2},
         ],
       
 #      [

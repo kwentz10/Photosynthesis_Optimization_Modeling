@@ -34,7 +34,7 @@ import numpy as np
 
 #############------Photosynthesis Model 1------#############
 
-def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, s,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,q,vwc,vwc_max,vwc_min):
+def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,q,vwc,vwc_max,vwc_min):
     
     if all(ij>1.0):
         ij=np.zeros(shape=2)+1.0
@@ -337,7 +337,7 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=1/(200*np.sqrt(dia/u))
+    gbw=26.0/(200*np.sqrt(dia/u))
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -548,7 +548,7 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=1/(200*np.sqrt(dia/u))
+    gbw=26./(200*np.sqrt(dia/u))
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -713,7 +713,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     es_str=pa_con_atmfrac(pa_v,3528) #calculate saturation vapor pressure of surface (Pa-->umol/mol)
     dd=es_str-ea #calculate vapor pressure deficit (umol H2O/mol air)
 
-        
+    
     vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
     jmaxopt=vmaxopt*j_m #optimal electron transport rate, limited by RuBP (umol electrons/m2s)
     
@@ -731,18 +731,14 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
     Wfac=1
-    if all(vwc>=vwc_max):
+    if vwc>=vwc_max:
         Wfac=1
-    elif all(vwc<vwc_max):
+    elif vwc<vwc_max:
         Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
-    
-    #currently Wfac=1.0 because no soil moisture constraint
-    Wfac=1.0
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
-    
-    
+        
     
     ##---Determine J---## 
     alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
@@ -769,7 +765,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=1/(200*np.sqrt(dia/u))
+    gbw=(27.0)/(200.0*np.sqrt(dia/u)) #26 is from: PV=nRT; n/V=P/RT; g(mol/m2s)=g(m/s)*P/RT (mol/m3); @ atm pressure at 25C, g(mol/m2s)=0.04g(mm/s)
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -821,7 +817,8 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
         A_r+=[np.min(roots_pos[i])]
     
     
-
+    
+    
     ##---Light-Limited Assimilation---##
     #make list of coefficients for cubic eq.
     coef=[]
@@ -919,4 +916,4 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
     nue=A/na   
     
-    return wue, nue, A, E, na, cs, ci, gsw, gs, gbw, gb, gm, cc       
+    return wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc, dd    
