@@ -30,6 +30,7 @@ See Supplementary Eq. Worksheet for more information.
 
 from photo_functions import arr_temp, bol_temp, pa_con_atmfrac
 import numpy as np
+import math
 
 
 #############------Photosynthesis Model 1------#############
@@ -51,6 +52,21 @@ def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, tl,ea
     jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
+    if tl<=0.0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
     
         
     #calculated parameters due to temperature
@@ -61,6 +77,41 @@ def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, tl,ea
     jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
+
+   #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
+
+    if math.isnan(vwc):
+        nue=[np.nan]
+        wue=[np.nan]
+        A=[np.nan]
+        E=[np.nan]
+        cs=[np.nan]
+        ci=[np.nan]
+        gsw=[np.nan]
+        gs=[np.nan]
+        gbw=[np.nan]
+        gb=[np.nan]
+        gm=[np.nan]
+        cc=[np.nan]
+        dd=[np.nan]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd   
+    
+    if vwc<=vwc_min:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
+   
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
     Wfac=1.0
@@ -69,11 +120,26 @@ def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, tl,ea
     elif all(vwc<vwc_max):
         Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
-    #currently Wfac=1.0 because no soil moisture constraint
-    Wfac=1.0
+
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+
+    if vmax<=0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
     
     ##---Determine J---## 
     alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
@@ -233,7 +299,7 @@ def photo_no_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na,qeff, PAR, tl,ea
         
         #---------------Test for Nan or Negative Values---------------#       
   
-    neg_vals=([np.zeros(1)+-999]*13)
+    neg_vals=([np.zeros(1)+0]*13)
     
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
@@ -289,6 +355,21 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
+    if tl<=0.0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
         
     #calculated parameters due to temperature
     kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
@@ -298,6 +379,41 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     jmax1=bol_temp(jmaxopt,ej,toptj,tl+273.15) #carboxylation rate at leaf temperature, limited by RuBP (umol CO2/m2s)
 
     ##---Soil Moisture Effect on Parameters---##
+
+   #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
+
+    if math.isnan(vwc):
+        nue=[np.nan]
+        wue=[np.nan]
+        A=[np.nan]
+        E=[np.nan]
+        cs=[np.nan]
+        ci=[np.nan]
+        gsw=[np.nan]
+        gs=[np.nan]
+        gbw=[np.nan]
+        gb=[np.nan]
+        gm=[np.nan]
+        cc=[np.nan]
+        dd=[np.nan]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd   
+    
+    if vwc<=vwc_min:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
+   
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
     Wfac=1.0
@@ -309,8 +425,21 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
     
-    #currently Wfac=1.0 because no soil moisture constraint
-    Wfac=1.0
+    if vmax<=0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
     
     ##---Determine J---## 
     alpha=(chl/1000.)/((chl/1000.)+0.076) #from Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
@@ -337,7 +466,7 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=26.0/(200*np.sqrt(dia/u))
+    gbw=27.0/(200*np.sqrt(dia/u))
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -442,7 +571,7 @@ def photo_bound(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, tl,ea,chl,ij
     
     #---------------Test for Nan or Negative Values---------------#       
   
-    neg_vals=([np.zeros(1)+-999]*13)
+    neg_vals=([np.zeros(1)+0]*13)
     
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
@@ -499,6 +628,21 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     jmaxopt=vmaxopt*j_m #optimal carboxylation rate, limited by RuBP (umol CO2/m2s)
     
     ##---Temperature Effects on Parameters---##
+    if tl<=0.0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
 
         
     #calculated parameters due to temperature
@@ -510,6 +654,41 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
 
     ##---Soil Moisture Effect on Parameters---##
     
+   #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
+
+    if math.isnan(vwc):
+        nue=[np.nan]
+        wue=[np.nan]
+        A=[np.nan]
+        E=[np.nan]
+        cs=[np.nan]
+        ci=[np.nan]
+        gsw=[np.nan]
+        gs=[np.nan]
+        gbw=[np.nan]
+        gb=[np.nan]
+        gm=[np.nan]
+        cc=[np.nan]
+        dd=[np.nan]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd   
+    
+    if vwc<=vwc_min:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
+   
+
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
     Wfac=1.0
     if all(vwc>=vwc_max):
@@ -519,9 +698,23 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+
+    if vmax<=0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
     
-    #currently Wfac=1.0 because no soil moisture constraint
-    Wfac=1.0
     
     ##---Determine J---## 
     alpha=(chl/1000.)/((chl/1000.)+0.076) #from (Photosynthetic acclimation of plants to growth irradiance)Developmental Constratins on Photosynthesis: Effects of Light and Nutrition (Evans)
@@ -548,7 +741,7 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=26./(200*np.sqrt(dia/u))
+    gbw=27./(200*np.sqrt(dia/u))
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -660,7 +853,7 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     
     #---------------Test for Nan or Negative Values---------------#       
   
-    neg_vals=([np.zeros(1)+-999]*13)
+    neg_vals=([np.zeros(1)+0]*13)
     
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
@@ -700,7 +893,7 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     
 #############------Photosynthesis Model 4------#############
 
-def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,j_m,g0,b,dia,u,q,vwc_min,vwc_max,vwc):
+def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc):
 
     
     if all(ij>1.0):
@@ -715,10 +908,27 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
 
     
     vmaxopt=frnr*flnr*ra*na #optimal carboxylation rate, limited by CO2 (umol CO2/m2s)
-    jmaxopt=vmaxopt*j_m #optimal electron transport rate, limited by RuBP (umol electrons/m2s)
+    jmaxopt=vmaxopt*jm #optimal electron transport rate, limited by RuBP (umol electrons/m2s)
     
     
     ##---Temperature Effects on Parameters---##
+
+    if tl<=0.0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
+
         
     #calculated parameters due to temperature
     kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
@@ -730,14 +940,63 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     ##---Soil Moisture Effect on Parameters---##
     
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
-    Wfac=1
+ 
+    if math.isnan(vwc):
+        nue=[np.nan]
+        wue=[np.nan]
+        A=[np.nan]
+        E=[np.nan]
+        cs=[np.nan]
+        ci=[np.nan]
+        gsw=[np.nan]
+        gs=[np.nan]
+        gbw=[np.nan]
+        gb=[np.nan]
+        gm=[np.nan]
+        cc=[np.nan]
+        dd=[np.nan]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd    
+    
+    if vwc<=vwc_min:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
+    
     if vwc>=vwc_max:
         Wfac=1
     elif vwc<vwc_max:
         Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
+    
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
+
+    if vmax<=0:
+        nue=[0.0]
+        wue=[0.0]
+        A=[0.0]
+        E=[0.0]
+        cs=[0.0]
+        ci=[0.0]
+        gsw=[0.0]
+        gs=[0.0]
+        gbw=[0.0]
+        gb=[0.0]
+        gm=[0.0]
+        cc=[0.0]
+        dd=[0.0]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
         
     
     ##---Determine J---## 
@@ -747,7 +1006,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     
     if all(jmax>0.0):
         jj=(qalpha*Iphoton)/(np.sqrt(1.+(((qalpha**2)*(Iphoton**2))/(jmax**2))))
-    
+
     
     ##---Define a1 and a2 depending on whether plant is rubisco limited or light limited---##
 
@@ -888,7 +1147,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     
     #---------------Test for Nan or Negative Values---------------#       
     
-    neg_vals=([np.zeros(1)+-999]*13)
+    neg_vals=([np.zeros(1)+0]*13)
     
     for xxx in range(len(A)):
         if np.isnan(A[xxx]):
