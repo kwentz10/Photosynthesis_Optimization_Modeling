@@ -89,46 +89,141 @@ for ii in range(len(const_params)):
     fig1,axA = plt.subplots(figsize=(30,15))
     
     #twin axis
-    axA2=axA.twinx()
+#    axA2=axA.twinx()
 
     axA.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
     axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=28, fontname='Times New Roman')
-    axA2.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
-    axA.set_ylim([0,4])
-    axA2.set_ylim([0,20])
-    axA.set_title('NUE and WUE in the Dry Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+#    axA2.set_ylabel('Temperature ($^\circ$C)', fontsize=28, fontname='Times New Roman')  
+#    axA.set_ylim([0,3])
+#    axA2.set_ylim([0,25])
+    axA.set_xlim([0,365])
+    axA.set_title('NUE in the Dry Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
-     #-----figure 9----#
+     #-----figure 2----#
 
         
     #put in correct ax value (e.g. axA, axB)
     fig2,axB = plt.subplots(figsize=(30,15))
     
     #twin axis
-    axB2=axB.twinx()
+#    axB2=axB.twinx()
 
     axB.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
     axB.set_ylabel('NUE (umol CO2/g N s)',fontsize=28, fontname='Times New Roman')
-    axB2.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
-    axB.set_ylim([0,5])
-    axB2.set_ylim([0,20])
-    axB.set_title('NUE and WUE in the Moist Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+#    axB2.set_ylabel('Temperature ($^\circ$C)', fontsize=28, fontname='Times New Roman')  
+#    axB.set_ylim([0,5])
+#    axB2.set_ylim([0,20])
+    axB.set_xlim([0,365])
+    axB.set_title('NUE in the Moist Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
-     #-----figure 9----#
+     #-----figure 3----#
           
     #put in correct ax value (e.g. axA, axB)
     fig3,axC = plt.subplots(figsize=(30,15))
     
     #twin axis
-    axC2=axC.twinx()
+#    axC2=axC.twinx()
 
     axC.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
     axC.set_ylabel('NUE (umol CO2/g N s)',fontsize=28, fontname='Times New Roman')
-    axC2.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
-    axC.set_ylim([0,6.5])
-    axC2.set_ylim([0,20])
-    axC.set_title('NUE and WUE in the Wet Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+#    axC2.set_ylabel('Temperature ($^\circ$C)', fontsize=28, fontname='Times New Roman')  
+#    axC.set_ylim([0,8])
+#    axC2.set_ylim([0,20])
+    axC.set_xlim([0,365])
+    axC.set_title('NUE in the Wet Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
+
+    #--figure 4--#
+         
+    #put in correct ax value (e.g. axA, axB)
+    fig4,axD = plt.subplots(figsize=(30,15))
+
+    axD.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axD.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
+    axD.set_title('WUE in the Dry Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axD.set_xlim([0,365])
+
+     #-----figure 5----#
+
+        
+    #put in correct ax value (e.g. axA, axB)
+    fig5,axE = plt.subplots(figsize=(30,15))
+    
+    axE.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axE.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
+    axE.set_title('WUE in the Moist Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axE.set_xlim([0,365])
+
+     #-----figure 6----#
+          
+    #put in correct ax value (e.g. axA, axB)
+    fig6,axF = plt.subplots(figsize=(30,15))
+
+    axF.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axF.set_ylabel('WUE (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
+    axF.set_title('WUE in the Wet Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axF.set_xlim([0,365])
+
+    #--figure 7--#
+         
+    #put in correct ax value (e.g. axA, axB)
+    fig7,axG = plt.subplots(figsize=(30,15))
+
+    axG.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axG.set_ylabel('Assimilation (umol CO2/m2s)', fontsize=28, fontname='Times New Roman')  
+    axG.set_title('Assimilation in the Dry Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axG.set_xlim([0,365])
+    
+     #-----figure 8----#
+
+        
+    #put in correct ax value (e.g. axA, axB)
+    fig8,axH = plt.subplots(figsize=(30,15))
+    
+    axH.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axH.set_ylabel('Assimilation (umol CO2/m2s)', fontsize=28, fontname='Times New Roman')  
+    axH.set_title('Assimilation in the Moist Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axH.set_xlim([0,365])
+     #-----figure 9----#
+          
+    #put in correct ax value (e.g. axA, axB)
+    fig9,axI = plt.subplots(figsize=(30,15))
+
+    axI.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axI.set_ylabel('Assimilation (umol CO2/mmol H2O)', fontsize=28, fontname='Times New Roman')  
+    axI.set_title('Assimilation in the Wet Meadow', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axI.set_xlim([0,365])
+
+    #--figure 10--#
+         
+    #put in correct ax value (e.g. axA, axB)
+    fig10,axJ = plt.subplots(figsize=(30,15))
+
+    axJ.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axJ.set_ylabel('Temperature ($^\circ$C)', fontsize=28, fontname='Times New Roman')  
+    axJ.set_title('Surface Temperature in Three Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axJ.set_xlim([0,365])
+
+     #-----figure 11----#
+
+        
+    #put in correct ax value (e.g. axA, axB)
+    fig11,axK = plt.subplots(figsize=(30,15))
+    
+    axK.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axK.set_ylabel('Volumetric Water Content (m3/m3)', fontsize=28, fontname='Times New Roman')  
+    axK.set_title('Volumetric Water Content in Three Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axK.set_xlim([0,365])
+
+     #-----figure 12----#
+          
+    #put in correct ax value (e.g. axA, axB)
+    fig12,axL = plt.subplots(figsize=(30,15))
+
+    axL.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+    axL.set_ylabel('Leaf Nitrogen Content (g N/m2)', fontsize=28, fontname='Times New Roman')  
+    axL.set_title('Leaf Nitrogen Content in Three Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axL.set_xlim([0,365])
 
     #---------------Run through time series---------------#
     
@@ -137,31 +232,37 @@ for ii in range(len(const_params)):
     #dry meadow
     tot_nue_dm_avg=[]
     tot_wue_dm_avg=[]
+    tot_A_dm_avg=[]    
     tot_nue_dm_min=[]
     tot_wue_dm_min=[]
+    tot_A_dm_min=[]    
     tot_nue_dm_max=[]
     tot_wue_dm_max=[]
-    tot_A_dm_avg=[]
+    tot_A_dm_max=[]
 
     
     #moist meadow
     tot_nue_mm_avg=[]
     tot_wue_mm_avg=[]
+    tot_A_mm_avg=[]    
     tot_nue_mm_min=[]
     tot_wue_mm_min=[]
+    tot_A_mm_min=[]    
     tot_nue_mm_max=[]
     tot_wue_mm_max=[] 
-    tot_A_mm_avg=[]
+    tot_A_mm_max=[]
 
 
     #wet meadow
     tot_nue_wm_avg=[]
     tot_wue_wm_avg=[]
+    tot_A_wm_avg=[]    
     tot_nue_wm_min=[]
     tot_wue_wm_min=[]
+    tot_A_wm_min=[]    
     tot_nue_wm_max=[]
     tot_wue_wm_max=[]
-    tot_A_wm_avg=[]
+    tot_A_wm_max=[]
 
 
     for time in range(len(surtemp_dm)):
@@ -284,8 +385,6 @@ for ii in range(len(const_params)):
                     ht=ht_c
     
                 
-    
-                
                 #number of simulations per meadow type:
                 m_sim=len(params) #meadow simulations 
                 
@@ -401,97 +500,214 @@ for ii in range(len(const_params)):
         #dry meadow
         tot_nue_dm_avg+=[np.mean(nue_d)]
         tot_wue_dm_avg+=[np.mean(wue_d)]
+        tot_A_dm_avg+=[np.mean(A_d)]
         tot_nue_dm_min+=[np.min(nue_d)]
         tot_wue_dm_min+=[np.min(wue_d)]
+        tot_A_dm_min+=[np.min(A_d)]
         tot_nue_dm_max+=[np.max(nue_d)]
         tot_wue_dm_max+=[np.max(wue_d)]
-        tot_A_dm_avg+=[np.mean(A_d)]
+        tot_A_dm_max+=[np.max(A_d)]
 
         
         #moist meadow
         tot_nue_mm_avg+=[np.mean(nue_m)]
         tot_wue_mm_avg+=[np.mean(wue_m)]
+        tot_A_mm_avg+=[np.mean(A_m)]
         tot_nue_mm_min+=[np.min(nue_m)]
         tot_wue_mm_min+=[np.min(wue_m)]
+        tot_A_mm_min+=[np.min(A_m)]
         tot_nue_mm_max+=[np.max(nue_m)]
         tot_wue_mm_max+=[np.max(wue_m)]   
-        tot_A_mm_avg+=[np.mean(A_m)]
+        tot_A_mm_max+=[np.max(A_m)]
   
     
         #wet meadow
         tot_nue_wm_avg+=[np.mean(nue_w)]
         tot_wue_wm_avg+=[np.mean(wue_w)]
+        tot_A_wm_avg+=[np.mean(A_w)]
         tot_nue_wm_min+=[np.min(nue_w)]
         tot_wue_wm_min+=[np.min(wue_w)]
+        tot_A_wm_min+=[np.min(A_w)]
         tot_nue_wm_max+=[np.max(nue_w)]
         tot_wue_wm_max+=[np.max(wue_w)]
-        tot_A_wm_avg+=[np.mean(A_w)]        
+        tot_A_wm_max+=[np.max(A_w)]        
 
     
 #---------------Plot Plant Communities vs. NUE & WUE---------------#      
 
 
 
-    #dry meadow nue and wue
+    #dry meadow nue 
     axA.plot(days, tot_nue_dm_avg, 'r-')
-    axA.plot(days,na_dm,'y',linewidth=5)
-    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
-    axA2.plot(days, tot_wue_dm_avg, 'b-')
-    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
-    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
+#    axA.plot(days,na_dm,'y',linewidth=5)
+#    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
+#    axA2.plot(days, tot_wue_dm_avg, 'b-')
+#    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
+#    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
     axA.fill_between(days, tot_nue_dm_min, tot_nue_dm_max,alpha=0.3,color='red')
-    axA2.fill_between(days, tot_wue_dm_min, tot_wue_dm_max,alpha=0.3,color='blue')
+#    axA2.fill_between(days, tot_wue_dm_min, tot_wue_dm_max,alpha=0.3,color='blue')
  
-    #moist meadow nue and wue
+    #moist meadow nue 
     axB.plot(days, tot_nue_mm_avg, 'r-')
-    axB.plot(days,na_mm,'y',linewidth=5)
-    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
-    axB2.plot(days, tot_wue_mm_avg, 'b-')
-    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
-    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
+#    axB.plot(days,na_mm,'y',linewidth=5)
+#    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
+#    axB2.plot(days, tot_wue_mm_avg, 'b-')
+#    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
+#    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
     axB.fill_between(days, tot_nue_mm_min, tot_nue_mm_max,alpha=0.3,color='red')
-    axB2.fill_between(days, tot_wue_mm_min, tot_wue_mm_max,alpha=0.3,color='blue')    
+#    axB2.fill_between(days, tot_wue_mm_min, tot_wue_mm_max,alpha=0.3,color='blue')    
 
-    #wet meadow nue and wue
+    #wet meadow nue 
     axC.plot(days, tot_nue_wm_avg, 'r-')
-    axC.plot(days,na_wm,'y',linewidth=5)    
-    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
-    axC2.plot(days, tot_wue_wm_avg, 'b-')
-    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
-    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
+#    axC.plot(days,na_wm,'y',linewidth=5)    
+#    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
+#    axC2.plot(days, tot_wue_wm_avg, 'b-')
+#    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
+#    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
     axC.fill_between(days, tot_nue_wm_min, tot_nue_wm_max,alpha=0.3, color='red')
-    axC2.fill_between(days, tot_wue_wm_min, tot_wue_wm_max,alpha=0.3,color='blue')
+#    axC2.fill_between(days, tot_wue_wm_min, tot_wue_wm_max,alpha=0.3,color='blue')
+ 
+
+
+
+###------------------------------------------------------######    
     
-   
+    #dry meadow wue 
+#    axA.plot(days,na_dm,'y',linewidth=5)
+#    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
+    axD.plot(days, tot_wue_dm_avg, 'b-')
+#    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
+#    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
+    axD.fill_between(days, tot_wue_dm_min, tot_wue_dm_max,alpha=0.3,color='blue')
+ 
+    #moist meadow wue 
+#    axB.plot(days,na_mm,'y',linewidth=5)
+#    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
+    axE.plot(days, tot_wue_mm_avg, 'b-')
+#    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
+#    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
+    axE.fill_between(days, tot_wue_mm_min, tot_wue_mm_max,alpha=0.3,color='blue')    
+
+    #wet meadow wue 
+
+#    axC.plot(days,na_wm,'y',linewidth=5)    
+#    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
+    axF.plot(days, tot_wue_wm_avg, 'b-')
+#    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
+#    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
+    axF.fill_between(days, tot_wue_wm_min, tot_wue_wm_max,alpha=0.3,color='blue')
+
+
+###------------------------------------------------------######    
+    
+
+    #dry meadow A
+#    axA.plot(days,na_dm,'y',linewidth=5)
+#    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
+    axG.plot(days, tot_A_dm_avg, 'k-')
+#    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
+#    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
+    axG.fill_between(days, tot_A_dm_min, tot_A_dm_max,alpha=0.3,color='black')
+ 
+    #moist meadow A 
+#    axB.plot(days,na_mm,'y',linewidth=5)
+#    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
+    axH.plot(days, tot_A_mm_avg, 'k-')
+#    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
+#    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
+    axH.fill_between(days, tot_A_mm_min, tot_A_mm_max,alpha=0.3,color='black')    
+
+    #wet meadow A 
+
+#    axC.plot(days,na_wm,'y',linewidth=5)    
+#    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
+    axI.plot(days, tot_A_wm_avg, 'k-')
+#    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
+#    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
+    axI.fill_between(days, tot_A_wm_min, tot_A_wm_max,alpha=0.3,color='black')
+
+
+###------------------------------------------------------######   
+
+    axJ.plot(days,surtemp_dm,'k-',linewidth=5,label="dry meadow")
+    axJ.plot(days,surtemp_mm,'g-',linewidth=5,label="moist meadow")
+    axJ.plot(days,surtemp_wm,'b-',linewidth=5,label="wet meadow")
+    axJ.legend()
+    
+    axK.plot(days,vwc_dm,'k-',linewidth=5,label="dry meadow")
+    axK.plot(days,vwc_mm,'g-',linewidth=5,label="moist meadow")
+    axK.plot(days,vwc_wm,'b-',linewidth=5,label="wet meadow")
+    axK.legend()
+    
+    axL.plot(days,na_dm,'k-',linewidth=5,label="dry meadow")
+    axL.plot(days,na_mm,'g-',linewidth=5,label="moist meadow")
+    axL.plot(days,na_wm,'b-',linewidth=5,label="wet meadow")
+    axL.legend()
+    
     #color axes
-    axA.tick_params(axis='y', labelsize=20,colors='red')
-    axA.yaxis.label.set_color('red')
+    axA.tick_params(axis='y', labelsize=20)
+#    axA.yaxis.label.set_color('red')
     axA.tick_params(axis='x', pad=15,labelsize=20)
 
 
-    axB.tick_params(axis='y', labelsize=20,colors='red')
-    axB.yaxis.label.set_color('red')  
+    axB.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
     axB.tick_params(axis='x', pad=15,labelsize= 20)
 
-    axC.tick_params(axis='y', labelsize=20,colors='red')
-    axC.yaxis.label.set_color('red')  
+    axC.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
     axC.tick_params(axis='x', pad=15,labelsize= 20)
 
-    axA2.tick_params(axis='y', labelsize=20,colors='blue')
-    axA2.yaxis.label.set_color('blue')
+#    axA2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axA2.yaxis.label.set_color('blue')
+#
+#    axB2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axB2.yaxis.label.set_color('blue')    
+#    
+#    axC2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axC2.yaxis.label.set_color('blue')   
 
-    axB2.tick_params(axis='y', labelsize=20,colors='blue')
-    axB2.yaxis.label.set_color('blue')    
-    
-    axC2.tick_params(axis='y', labelsize=20,colors='blue')
-    axC2.yaxis.label.set_color('blue')   
+    axD.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')
+    axD.tick_params(axis='x', pad=15,labelsize=20)
+
+
+    axE.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
+    axE.tick_params(axis='x', pad=15,labelsize= 20)
+
+    axF.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
+    axF.tick_params(axis='x', pad=15,labelsize= 20)
+
+    axG.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')
+    axG.tick_params(axis='x', pad=15,labelsize=20)
+
+
+    axH.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
+    axH.tick_params(axis='x', pad=15,labelsize= 20)
+
+    axI.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
+    axI.tick_params(axis='x', pad=15,labelsize= 20)
+
 
     #tight layout
     fig1.tight_layout()
     fig2.tight_layout()
     fig3.tight_layout()
- 
-    
+    fig4.tight_layout()
+    fig5.tight_layout()
+    fig6.tight_layout() 
+    fig7.tight_layout()
+    fig8.tight_layout()
+    fig9.tight_layout()   
+    fig10.tight_layout()
+    fig11.tight_layout()
+    fig12.tight_layout()
+
     
 
 
@@ -499,6 +715,15 @@ for ii in range(len(const_params)):
 #---------------Finalize Figure---------------#    
 
     ##---Save Figure--##
-    fig1.savefig('NUE_WUE_TimeSeries_DM.png') 
-    fig2.savefig('NUE_WUE_TimeSeries_MM.png') 
-    fig3.savefig('NUE_WUE_TimeSeries_WM.png') 
+    fig1.savefig('NUE_TimeSeries_DM.png') 
+    fig2.savefig('NUE_TimeSeries_MM.png') 
+    fig3.savefig('NUE_TimeSeries_WM.png') 
+    fig4.savefig('WUE_TimeSeries_DM.png') 
+    fig5.savefig('WUE_TimeSeries_MM.png') 
+    fig6.savefig('WUE_TimeSeries_WM.png')     
+    fig7.savefig('A_TimeSeries_DM.png') 
+    fig8.savefig('A_TimeSeries_MM.png') 
+    fig9.savefig('A_TimeSeries_WM.png')     
+    fig10.savefig('Temp_TimeSeries_DM.png') 
+    fig11.savefig('vwc_TimeSeries_MM.png') 
+    fig12.savefig('na_TimeSeries_WM.png')        

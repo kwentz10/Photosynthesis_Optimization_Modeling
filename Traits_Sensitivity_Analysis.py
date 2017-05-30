@@ -157,17 +157,17 @@ for ii in range(len(var_params)):
     
     #----biotic parameters that vary for each meadow type----#
     na_d=2.45
-    dia_d=1.4
+    dia_d=1.4/100.
     chl_d=396
     ht_d=9.2
 
     na_m=5.0
-    dia_m=2.3
+    dia_m=2.3/100.
     chl_m=465
     ht_m=19.2
     
     na_w=6.25
-    dia_w=2.6
+    dia_w=2.6/100.
     chl_w=476
     ht_w=20.0
             
