@@ -61,7 +61,8 @@ from photo_functions import pa_con_atmfrac
 
 
 #import timeseries of vwc and temp
-from time_dep_params import surtemp_dm, surtemp_mm, surtemp_wm, vwc_dm, vwc_mm, vwc_wm, na_dm, na_mm, na_wm
+from time_dep_params import surtemp_dm_dy, surtemp_mm_dy, surtemp_wm_dy, vwc_dm_new, vwc_mm_new, vwc_wm_new, na_dm, na_mm, na_wm
+
 
 
 #---------------Determine if I Want to Keep Any of the Variable Parameters Constant---------------#
@@ -214,7 +215,7 @@ for ii in range(len(const_params)):
     axK.set_ylabel('Volumetric Water Content (m3/m3)', fontsize=28, fontname='Times New Roman')  
     axK.set_title('Volumetric Water Content in Three Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
     axK.set_xlim([0,365])
-
+    
      #-----figure 12----#
           
     #put in correct ax value (e.g. axA, axB)
@@ -265,7 +266,7 @@ for ii in range(len(const_params)):
     tot_A_wm_max=[]
 
 
-    for time in range(len(surtemp_dm)):
+    for time in range(len(surtemp_dm_dy)):
         
         #total nue and wue
         nue_tot=[]
@@ -391,7 +392,7 @@ for ii in range(len(const_params)):
                 if xx==0: 
         
                     #------calculate vapor pressure-----#
-                    pa_v=611*np.exp((17.27*surtemp_dm[time])/(surtemp_dm[time]+237.3)) #saturation vapor pressure of air (Pa)
+                    pa_v=611*np.exp((17.27*surtemp_dm_dy[time])/(surtemp_dm_dy[time]+237.3)) #saturation vapor pressure of air (Pa)
                     ea_str=pa_con_atmfrac(pa_v,3528) #saturation vapor pressure of air (Pa-->umol h20/mol air)
                     ea=rh*ea_str #vapor pressure (umol h2O/mol air)                
         
@@ -400,13 +401,13 @@ for ii in range(len(const_params)):
            
                     t_diff=18-0.4*ht
                 
-                    tl=surtemp_dm[time]+t_diff
+                    tl=surtemp_dm_dy[time]+t_diff
     
                     
                     #---------------Photosynthesis Function---------------#
                 
                     #alter this line of code for when implementing different photosynthesis functions
-                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_dm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_dm[time])
+                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_dm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_dm_new[time])
      
                
                     #test to make sure wue and nue are positive at not 'nan'
@@ -425,7 +426,7 @@ for ii in range(len(const_params)):
                 elif xx==1:
                     
                     #------calculate vapor pressure-----#
-                    pa_v=611*np.exp((17.27*surtemp_mm[time])/(surtemp_mm[time]+237.3)) #saturation vapor pressure of air (Pa)
+                    pa_v=611*np.exp((17.27*surtemp_mm_dy[time])/(surtemp_mm_dy[time]+237.3)) #saturation vapor pressure of air (Pa)
                     ea_str=pa_con_atmfrac(pa_v,3528) #saturation vapor pressure of air (Pa-->umol h20/mol air)
                     ea=rh*ea_str #vapor pressure (umol h2O/mol air)                
         
@@ -434,12 +435,12 @@ for ii in range(len(const_params)):
            
                     t_diff=18-0.4*ht
                 
-                    tl=surtemp_mm[time]+t_diff
+                    tl=surtemp_mm_dy[time]+t_diff
                     
                     #---------------Photosynthesis Function---------------#
                 
                     #alter this line of code for when implementing different photosynthesis functions
-                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_mm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_mm[time])
+                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_mm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_mm_new[time])
      
                
                     #test to make sure wue and nue are positive at not 'nan'
@@ -455,7 +456,7 @@ for ii in range(len(const_params)):
                     E_m+=[E[0]]
                     vpd_m+=[dd[0]]
                     
-                    if vwc_mm[time]==-999:
+                    if vwc_mm_new[time]==-999:
                         print "ahhhh"
                     
     
@@ -465,7 +466,7 @@ for ii in range(len(const_params)):
                 elif xx==2:
     
                     #------calculate vapor pressure-----#
-                    pa_v=611*np.exp((17.27*surtemp_wm[time])/(surtemp_wm[time]+237.3)) #saturation vapor pressure of air (Pa)
+                    pa_v=611*np.exp((17.27*surtemp_wm_dy[time])/(surtemp_wm_dy[time]+237.3)) #saturation vapor pressure of air (Pa)
                     ea_str=pa_con_atmfrac(pa_v,3528) #saturation vapor pressure of air (Pa-->umol h20/mol air)
                     ea=rh*ea_str #vapor pressure (umol h2O/mol air)                
         
@@ -474,12 +475,12 @@ for ii in range(len(const_params)):
            
                     t_diff=18-0.4*ht
                 
-                    tl=surtemp_wm[time]+t_diff                
+                    tl=surtemp_wm_dy[time]+t_diff                
                     
                     #---------------Photosynthesis Function---------------#
                 
                     #alter this line of code for when implementing different photosynthesis functions
-                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_wm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_wm[time])
+                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_wm[time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_wm_new[time])
      
                
                     #test to make sure wue and nue are positive at not 'nan'
@@ -629,14 +630,14 @@ for ii in range(len(const_params)):
 
 ###------------------------------------------------------######   
 
-    axJ.plot(days,surtemp_dm,'k-',linewidth=5,label="dry meadow")
-    axJ.plot(days,surtemp_mm,'g-',linewidth=5,label="moist meadow")
-    axJ.plot(days,surtemp_wm,'b-',linewidth=5,label="wet meadow")
+    axJ.plot(days,surtemp_dm_dy,'k-',linewidth=5,label="dry meadow")
+    axJ.plot(days,surtemp_mm_dy,'g-',linewidth=5,label="moist meadow")
+    axJ.plot(days,surtemp_wm_dy,'b-',linewidth=5,label="wet meadow")
     axJ.legend()
     
-    axK.plot(days,vwc_dm,'k-',linewidth=5,label="dry meadow")
-    axK.plot(days,vwc_mm,'g-',linewidth=5,label="moist meadow")
-    axK.plot(days,vwc_wm,'b-',linewidth=5,label="wet meadow")
+    axK.plot(days,vwc_dm_new,'k-',linewidth=5,label="dry meadow")
+    axK.plot(days,vwc_mm_new,'g-',linewidth=5,label="moist meadow")
+    axK.plot(days,vwc_wm_new,'b-',linewidth=5,label="wet meadow")
     axK.legend()
     
     axL.plot(days,na_dm,'k-',linewidth=5,label="dry meadow")

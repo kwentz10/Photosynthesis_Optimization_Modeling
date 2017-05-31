@@ -929,6 +929,21 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
         dd=[0.0]
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
 
+    if math.isnan(tl):
+        nue=[np.nan]
+        wue=[np.nan]
+        A=[np.nan]
+        E=[np.nan]
+        cs=[np.nan]
+        ci=[np.nan]
+        gsw=[np.nan]
+        gs=[np.nan]
+        gbw=[np.nan]
+        gb=[np.nan]
+        gm=[np.nan]
+        cc=[np.nan]
+        dd=[np.nan]
+        return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd 
         
     #calculated parameters due to temperature
     kc=arr_temp(pa_con_atmfrac(kc25,3528),ekc,tk_25,tl+273.15) #Michaelis-Menten kinetic coefficient for carbon dioxide at leaf temperature (umol/mol)
