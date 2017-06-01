@@ -21,6 +21,9 @@ gsf=242
 
 fig1,axA = plt.subplots(figsize=(30,15))
 axA.set_xlim([0,365])
+axA.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
+axA.set_ylabel('Foliar Nitrogen Content (gN/m2)',fontsize=28, fontname='Times New Roman')
+axA.set_title('Foliar Nitrogen Content in 2012 vs. 2013', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
 fig2,axB = plt.subplots(figsize=(30,15))
 axB.set_xlim([0,365])
@@ -802,25 +805,26 @@ for x in vwc_wm:
 
 
 
-#calculate leaf nitrogen content
-days=[152,152,152,152,152,152,213,213,213,213,213,213,266,266,266,266,266,266]
+##calculate leaf nitrogen content
+#days=[152,152,152,152,152,152,213,213,213,213,213,213,266,266,266,266,266,266]
+#
+##leaf N
+#dm_june1= np.random.normal(2.95,np.sqrt(3)*0.24,3).tolist()+np.random.normal(2.87, np.sqrt(3)*0.23,3).tolist()
+#dm_aug1=np.random.normal(3.38,np.sqrt(3)*0.79,3).tolist()+np.random.normal(1.51, np.sqrt(3)*0.33,3).tolist()
+#dm_sep23=np.random.normal(0.62,np.sqrt(3)*0.27,3).tolist()+np.random.normal(0.82, np.sqrt(3)*0.2,3).tolist()
+#
+#mm_june1= np.random.normal(4.41,np.sqrt(3)*1.6,3).tolist()+np.random.normal(4.56, np.sqrt(3)*0.47,3).tolist()
+#mm_aug1=np.random.normal(6.46,np.sqrt(3)*0.81,3).tolist()+np.random.normal(3.48, np.sqrt(3)*0.82,3).tolist()
+#mm_sep23=np.random.normal(0.92,np.sqrt(3)*0.41,3).tolist()+np.random.normal(0.29, np.sqrt(3)*0.15,3).tolist()
+#
+#wm_june1= np.random.normal(5.85,np.sqrt(3)*0.97,3).tolist()+np.random.normal(2.53, np.sqrt(3)*0.21,3).tolist()
+#wm_aug1=np.random.normal(8.64,np.sqrt(3)*0.72,3).tolist()+np.random.normal(3.8, np.sqrt(3)*0.53,3).tolist()
+#wm_sep23=np.random.normal(3.92,np.sqrt(3)*1.6,3).tolist()+np.random.normal(0.93, np.sqrt(3)*0.93,3).tolist()
 
-#leaf N
-dm_june1= np.random.normal(2.95,np.sqrt(3)*0.24,3).tolist()+np.random.normal(2.87, np.sqrt(3)*0.23,3).tolist()
-dm_aug1=np.random.normal(3.38,np.sqrt(3)*0.79,3).tolist()+np.random.normal(1.51, np.sqrt(3)*0.33,3).tolist()
-dm_sep23=np.random.normal(0.62,np.sqrt(3)*0.27,3).tolist()+np.random.normal(0.82, np.sqrt(3)*0.2,3).tolist()
-
-mm_june1= np.random.normal(4.41,np.sqrt(3)*1.6,3).tolist()+np.random.normal(4.56, np.sqrt(3)*0.47,3).tolist()
-mm_aug1=np.random.normal(6.46,np.sqrt(3)*0.81,3).tolist()+np.random.normal(3.48, np.sqrt(3)*0.82,3).tolist()
-mm_sep23=np.random.normal(0.92,np.sqrt(3)*0.41,3).tolist()+np.random.normal(0.29, np.sqrt(3)*0.15,3).tolist()
-
-wm_june1= np.random.normal(5.85,np.sqrt(3)*0.97,3).tolist()+np.random.normal(2.53, np.sqrt(3)*0.21,3).tolist()
-wm_aug1=np.random.normal(8.64,np.sqrt(3)*0.72,3).tolist()+np.random.normal(3.8, np.sqrt(3)*0.53,3).tolist()
-wm_sep23=np.random.normal(3.92,np.sqrt(3)*1.6,3).tolist()+np.random.normal(0.93, np.sqrt(3)*0.93,3).tolist()
-
-#axA.scatter(days, dm_june1+dm_aug1+dm_sep23)
-
-#axA.plot(np.unique(days), np.poly1d(np.polyfit(days, dm_june1+dm_aug1+dm_sep23, 2))(np.unique(days)),color="black")
+#axA.scatter(days, wm_june1+wm_aug1+wm_sep23)
+#
+#axA.plot(np.unique(days), np.poly1d(np.polyfit(days, wm_june1+wm_aug1+wm_sep23, 2))(np.unique(days)),color="black")
+#print np.polyfit(days, wm_june1+wm_aug1+wm_sep23, 2)
 
 #dm equation: -0.00017*days^2+0.054*days-1.44
 #mm equation: -0.00077*days^2+0.3*days-24.4
@@ -830,34 +834,87 @@ wm_sep23=np.random.normal(3.92,np.sqrt(3)*1.6,3).tolist()+np.random.normal(0.93,
 days_2=np.linspace(1,365,365)
 
 na_dm=(days_2**2*(-0.00017))+(0.054*days_2)-1.44
-#na_dm[0:gs0-1]=0
-#na_dm[gsf:]=0
+
 
 na_mm=(days_2**2*(-0.00077))+(0.3*days_2)-24.4
-#na_mm[0:gs0-1]=0
-#na_mm[gsf:]=0
-
-na_wm=(days_2**2*(-0.00091))+(0.36*days_2)-29.5
-#na_wm[0:gs0-1]=0
-#na_wm[gsf:]=0
-
-#cannot have negative leaf nitrogen content
-for x in na_dm:
-    if x<0.0:
-        na_dm[na_dm.tolist().index(x)]=0.0
-
-for x in na_mm:
-    if x<0.0:
-        na_mm[na_mm.tolist().index(x)]=0.0
-
-for x in na_wm:
-    if x<0.0:
-        na_wm[na_wm.tolist().index(x)]=0.0
 
 
-#na_dm=(np.array(na_dm)-0.0).tolist()
-#na_mm=(np.array(na_mm)-0.0).tolist()
-#na_wm=(np.array(na_wm)-0.0).tolist()
+na_wm=(days_2**2*(-0.0007))+(0.28*days_2)-21.8
+
+
+#calculate leaf nitrogen content in a hot/dry year
+#max temp vs. na mm y=0.61x-5.1
+#max temp vs. na dm y=0.11x+0.5
+#max temp vs. na wm y=0.57x-3.9
+
+#na_dm_dy=0.11*(np.array(maxairtemp_dy))+0.5
+#na_mm_dy=0.61*(np.array(maxairtemp_dy))-5.1
+#na_wm_dy=0.57*(np.array(maxairtemp_dy))-3.9
+
+#manually shift na
+
+
+#dry meadow
+
+
+
+##more na 50-200
+na_dm_dy=np.array(na_dm[:])+0.5
+
+
+#moist meadow
+na_mm_dy=np.array(na_mm[:])+0.5
+
+
+
+#wet meadow
+na_wm_dy=np.array(na_wm[:])+0.5
+
+
+
+
+
+
+#shift na array by 30 days--stable maximum temp
+#index=na_dm_dy.tolist().index(max(na_dm_dy))
+#
+#na_dm_dy[0:index]=np.array(na_dm[30:(30+index)])
+#na_dm_dy[index-30:index]=np.linspace(max(na_dm_dy),max(na_dm_dy),30)
+#
+#index=na_mm_dy.tolist().index(max(na_mm_dy))
+#
+#na_mm_dy[0:(index-30)]=np.array(na_mm[30:index])
+#na_mm_dy[(index-30):index]=np.linspace(max(na_mm_dy),max(na_mm_dy),30)
+#
+#index_wm=na_wm_dy.tolist().index(max(na_wm_dy))
+#
+#na_wm_dy[0:index_wm]=np.array(na_wm[30:(30+index_wm)])
+#na_wm_dy[index_wm-30:index_wm]=np.linspace(max(na_wm_dy),max(na_wm_dy),30)
+
+
+
+#na_dm_dy=na_dm_dy[:-1]
+#na_mm_dy=na_mm_dy[:-1]
+#na_wm_dy=na_wm_dy[:-1]
+
+
+
+
+
+
+#axA.scatter(maxairtemp, na_wm)
+#axA.plot(np.unique(maxairtemp), np.poly1d(np.polyfit(maxairtemp, na_wm,1))(np.unique(maxairtemp)),color="black")
+#print np.polyfit(maxairtemp, na_wm,1)
+
+
+#max temp vs. na mm y=0.61x-5.1
+#max temp vs. na dm y=0.11x+0.5
+#max temp vs. na wm y=0.57x-3.9
+
+
+#axA.plot(range(len(na_dm)),na_dm)
+#axA.plot(range(len(na_mm)),na_mm)
+#axA.plot(range(len(na_wm)),na_wm)
 
 #calculate growing degree days
 airtemp_new=maxairtemp[:]
@@ -903,9 +960,7 @@ vwc_wm_new[0:214]=np.array(vwc_wm[30:(30+214)])
 ##drying in repeated timeseries (August-End of Growing Season)
 vwc_wm_new[214:]=np.array(vwc_wm_new[214:])-0.0
 
-axA.plot(range(len(vwc_dm_new)),vwc_dm_new)
-axA.plot(range(len(vwc_dm_new)),vwc_mm_new)
-axA.plot(range(len(vwc_dm_new)),vwc_wm_new)
+
 
 #fellfield dry year 2012
 ff_dy=[-999,
@@ -2446,5 +2501,652 @@ axB.plot(range(len(maxairtemp)),maxairtemp,color='blue')
 #axB.plot(range(len(surtemp_wm_dy)),surtemp_wm_dy,color='green')
 
 
-fig1.savefig('vwc_TimeSeries_ff.png') 
-fig2.savefig('temp_TimeSeries_all.png') 
+
+
+
+#smooth temp data
+
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from scipy.signal import savgol_filter
+import numpy as np
+
+x = days_2
+y= maxairtemp
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+maxairtemp_smooth=yy_sg
+
+
+
+x = days_2
+y= maxairtemp_dy[:-1]
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+maxairtemp_dy_smooth=yy_sg
+
+
+#smooth vwc data
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from scipy.signal import savgol_filter
+import numpy as np
+
+data = np.array([vwc_dm,vwc_mm,vwc_wm])
+vwc_average=np.average(data, axis=0)
+
+x = days_2
+y= vwc_average
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+vwc_smooth=yy_sg
+
+
+data = np.array([vwc_dm_new,vwc_mm_new,vwc_wm_new])
+vwc_average_dy=np.average(data, axis=0)
+
+x = days_2
+y= vwc_average_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+vwc_dy_smooth=yy_sg
+
+
+
+#smooth na data
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from scipy.signal import savgol_filter
+import numpy as np
+
+data = np.array([na_dm.tolist(),na_mm.tolist(),na_wm.tolist()])
+na_average=np.average(data, axis=0)
+
+x = days_2
+y= na_average
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_smooth=yy_sg
+
+
+data = np.array([na_dm_dy.tolist(),na_mm_dy.tolist(),na_wm_dy.tolist()])
+na_average_dy=np.average(data, axis=0)
+
+x = days_2
+y= na_average_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_dy_smooth=yy_sg
+
+
+#--------------Parameter Inputs-----------------------#
+
+
+
+#smooth temp data
+
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from scipy.signal import savgol_filter
+import numpy as np
+
+#dry meadow temp
+x = days_2
+y= surtemp_dm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_dm_smooth=yy_sg
+
+
+
+x = days_2
+y= surtemp_dm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_dm_dy_smooth=yy_sg
+
+#moist meadow temp
+x = days_2
+y= surtemp_mm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_mm_smooth=yy_sg
+
+
+
+x = days_2
+y= surtemp_mm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_mm_dy_smooth=yy_sg
+
+#wet meadow temp
+x = days_2
+y= surtemp_wm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_wm_smooth=yy_sg
+
+
+
+x = days_2
+y= surtemp_wm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+surtemp_wm_dy_smooth=yy_sg
+
+
+
+
+
+#-------smooth vwc data
+
+#dry meadow vwc
+x = days_2
+y= vwc_dm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_dm_smooth=yy_sg
+
+
+
+x = days_2
+y= vwc_dm_new
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_dm_dy_smooth=yy_sg
+
+#moist meadow vwc
+x = days_2
+y= vwc_mm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_mm_smooth=yy_sg
+
+
+
+x = days_2
+y= vwc_mm_new
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_mm_dy_smooth=yy_sg
+
+
+
+#wet meadow vwc
+x = days_2
+y= vwc_wm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_wm_smooth=yy_sg
+
+
+
+x = days_2
+y= vwc_wm_new
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-2],y[i+2]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 51, 5
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+plt.legend(loc='best')
+
+vwc_wm_dy_smooth=yy_sg
+
+
+#------smooth na data
+
+
+
+#dry meadow na
+x = days_2
+y= na_dm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_dm_smooth=yy_sg
+
+
+
+x = days_2
+y= na_dm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_dm_dy_smooth=yy_sg
+
+#moist meadow na
+x = days_2
+y= na_mm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_mm_smooth=yy_sg
+
+
+
+x = days_2
+y= na_mm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_mm_dy_smooth=yy_sg
+
+
+
+#wet meadow na
+x = days_2
+y= na_wm
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_wm_smooth=yy_sg
+
+
+
+x = days_2
+y= na_wm_dy
+
+for i in range(len(y)):
+    if math.isnan(y[i]):
+        y[i]=np.mean([y[i-1],y[i+1]])
+
+xx = np.linspace(x.min(),x.max(), 365)
+
+# interpolate + smooth
+itp = interp1d(x,y, kind='linear')
+window_size, poly_order = 101, 2
+yy_sg = savgol_filter(itp(xx), window_size, poly_order)
+
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
+
+na_wm_dy_smooth=yy_sg
+
+ #----------------#
+
+
+#shift na by maximum temperature
+
+#cannot have negative leaf nitrogen content
+for x in na_dm_smooth:
+    if x<0.0:
+        na_dm_smooth[na_dm_smooth.tolist().index(x)]=0.0
+
+for x in na_mm_smooth:
+    if x<0.0:
+        na_mm_smooth[na_mm_smooth.tolist().index(x)]=0.0
+
+for x in na_wm_smooth:
+    if x<0.0:
+        na_wm_smooth[na_wm_smooth.tolist().index(x)]=0.0
+        
+#cannot have negative leaf nitrogen content
+for x in na_dm_dy_smooth:
+    if x<0.0:
+        na_dm_dy_smooth[na_dm_dy_smooth.tolist().index(x)]=0.0
+
+for x in na_mm_dy_smooth:
+    if x<0.0:
+        na_mm_dy_smooth[na_mm_dy_smooth.tolist().index(x)]=0.0
+
+for x in na_wm_dy_smooth:
+    if x<0.0:
+        na_wm_dy_smooth[na_wm_dy_smooth.tolist().index(x)]=0.0
+
+
+#cannot have negative leaf nitrogen content
+for x in na_dy_smooth:
+    if x<0.0:
+        na_dy_smooth[na_dy_smooth.tolist().index(x)]=0.0
+
+for x in na_smooth:
+    if x<0.0:
+        na_smooth[na_smooth.tolist().index(x)]=0.0
+
+
+
+axA.plot(range(len(na_dy_smooth)),na_dy_smooth,color='red',linewidth=10.0,alpha=0.5,label="Hot, Dry Year: 2012") 
+axA.plot(range(len(na_smooth)),na_smooth,color='blue',linewidth=10.0,alpha=0.5,label="Normal Year: 2013")   
+axA.legend()
+
+   
+
+fig1.savefig('na_twoyears.png') 
