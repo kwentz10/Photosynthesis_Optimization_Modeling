@@ -630,19 +630,19 @@ for ii in range(len(const_params)):
 
 ###------------------------------------------------------######   
 
-    axJ.plot(days,surtemp_dm,'k-',linewidth=5,label="dry meadow")
-    axJ.plot(days,surtemp_mm,'g-',linewidth=5,label="moist meadow")
-    axJ.plot(days,surtemp_wm,'b-',linewidth=5,label="wet meadow")
+    axJ.plot(days,surtemp_dm,'k-',linewidth=5,label="Dry Meadow")
+    axJ.plot(days,surtemp_mm,'g-',linewidth=5,label="Moist Meadow")
+    axJ.plot(days,surtemp_wm,'b-',linewidth=5,label="Wet Meadow")
     axJ.legend()
     
-    axK.plot(days,vwc_dm,'k-',linewidth=5,label="dry meadow")
-    axK.plot(days,vwc_mm,'g-',linewidth=5,label="moist meadow")
-    axK.plot(days,vwc_wm,'b-',linewidth=5,label="wet meadow")
+    axK.plot(days,vwc_dm,'k-',linewidth=5,label="Dry Meadow")
+    axK.plot(days,vwc_mm,'g-',linewidth=5,label="Moist Meadow")
+    axK.plot(days,vwc_wm,'b-',linewidth=5,label="Wet Meadow")
     axK.legend()
     
-    axL.plot(days,na_dm,'k-',linewidth=5,label="dry meadow")
-    axL.plot(days,na_mm,'g-',linewidth=5,label="moist meadow")
-    axL.plot(days,na_wm,'b-',linewidth=5,label="wet meadow")
+    axL.plot(days,na_dm,'k-',linewidth=5,label="Dry Meadow")
+    axL.plot(days,na_mm,'g-',linewidth=5,label="Moist Meadow")
+    axL.plot(days,na_wm,'b-',linewidth=5,label="Wet Meadow")
     axL.legend()
     
     #color axes
@@ -716,15 +716,15 @@ for ii in range(len(const_params)):
 #---------------Finalize Figure---------------#    
 
     ##---Save Figure--##
-    fig1.savefig('NUE_TimeSeries_DM_tms.png') 
-    fig2.savefig('NUE_TimeSeries_MM_tms.png') 
-    fig3.savefig('NUE_TimeSeries_WM_tms.png') 
-    fig4.savefig('WUE_TimeSeries_DM_tms.png') 
-    fig5.savefig('WUE_TimeSeries_MM_tms.png') 
-    fig6.savefig('WUE_TimeSeries_WM_tms.png')     
-    fig7.savefig('A_TimeSeries_DM_tms.png') 
-    fig8.savefig('A_TimeSeries_MM_tms.png') 
-    fig9.savefig('A_TimeSeries_WM_tms.png')     
-    fig10.savefig('Temp_TimeSeries_DM_tms.png') 
-    fig11.savefig('vwc_TimeSeries_MM_tms.png') 
-    fig12.savefig('na_TimeSeries_WM_tms.png')        
+    fig1.savefig('NUE_TimeSeries_DM.png') 
+    fig2.savefig('NUE_TimeSeries_MM.png') 
+    fig3.savefig('NUE_TimeSeries_WM.png') 
+    fig4.savefig('WUE_TimeSeries_DM.png') 
+    fig5.savefig('WUE_TimeSeries_MM.png') 
+    fig6.savefig('WUE_TimeSeries_WM.png')     
+    fig7.savefig('A_TimeSeries_DM.png') 
+    fig8.savefig('A_TimeSeries_MM.png') 
+    fig9.savefig('A_TimeSeries_WM.png')     
+    fig10.savefig('Temp_TimeSeries_DM.png') 
+    fig11.savefig('vwc_TimeSeries_MM.png') 
+    fig12.savefig('na_TimeSeries_WM.png')        

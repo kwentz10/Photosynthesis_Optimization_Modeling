@@ -96,7 +96,7 @@ axC.set_title('Wet Meadow: Assimilation Sensitivity to Leaf Trait Variability', 
 
 
 #set x axis for graphs
-percent=np.linspace(-20,20,10)
+percent=np.linspace(-20,20,3)
 
 
 #initialize assimilation arrays
@@ -174,24 +174,24 @@ for ii in range(len(var_params)):
     
     #set variable parameters constant if I specify this above
     if 'na' in var_params[ii]:
-        na=[np.linspace(na_d*0.8,na_d*1.2,10),np.linspace(na_m*0.8,na_m*1.2,10),np.linspace(na_w*0.8,na_w*1.2,10)]
+        na=[np.linspace(na_d*0.8,na_d*1.2,3),np.linspace(na_m*0.8,na_m*1.2,3),np.linspace(na_w*0.8,na_w*1.2,3)]
     else:
-        na=[np.linspace(na_d,na_d,10),np.linspace(na_m,na_m,10),np.linspace(na_w,na_w,10)]
+        na=[np.linspace(na_d,na_d,3),np.linspace(na_m,na_m,3),np.linspace(na_w,na_w,3)]
     
     if 'dia' in var_params[ii]:
-        dia=[np.linspace(dia_d*0.8,dia_d*1.2,10),np.linspace(dia_m*0.8,dia_m*1.2,10),np.linspace(dia_w*0.8,dia_w*1.2,10)]
+        dia=[np.linspace(dia_d*0.8,dia_d*1.2,3),np.linspace(dia_m*0.8,dia_m*1.2,3),np.linspace(dia_w*0.8,dia_w*1.2,3)]
     else:
-        dia=[np.linspace(dia_d,dia_d,10),np.linspace(dia_m,dia_m,10),np.linspace(dia_w,dia_w,10)]
+        dia=[np.linspace(dia_d,dia_d,3),np.linspace(dia_m,dia_m,3),np.linspace(dia_w,dia_w,3)]
     
     if 'chl' in var_params[ii]:
-        chl=[np.linspace(chl_d*0.8,chl_d*1.2,10),np.linspace(chl_m*0.8,chl_m*1.2,10),np.linspace(chl_w*0.8,chl_w*1.2,10)]
+        chl=[np.linspace(chl_d*0.8,chl_d*1.2,3),np.linspace(chl_m*0.8,chl_m*1.2,3),np.linspace(chl_w*0.8,chl_w*1.2,3)]
     else:
-        chl=[np.linspace(chl_d,chl_d,10),np.linspace(chl_m,chl_m,10),np.linspace(chl_w,chl_w,10)]
+        chl=[np.linspace(chl_d,chl_d,3),np.linspace(chl_m,chl_m,3),np.linspace(chl_w,chl_w,3)]
    
     if 'ht' in var_params[ii]:
-        ht=[np.linspace(ht_d*0.8,ht_d*1.2,10),np.linspace(ht_m*0.8,ht_m*1.2,10),np.linspace(ht_w*0.8,ht_w*1.2,10)]
+        ht=[np.linspace(ht_d*0.8,ht_d*1.2,3),np.linspace(ht_m*0.8,ht_m*1.2,3),np.linspace(ht_w*0.8,ht_w*1.2,3)]
     else:
-        ht=[np.linspace(ht_d,ht_d,10),np.linspace(ht_m,ht_m,10),np.linspace(ht_w,ht_w,10)]
+        ht=[np.linspace(ht_d,ht_d,3),np.linspace(ht_m,ht_m,3),np.linspace(ht_w,ht_w,3)]
        
         
     #------initialize sensitivity array----#
@@ -204,7 +204,7 @@ for ii in range(len(var_params)):
         
     
 
-    for iii in range(10):
+    for iii in range(3):
 
         
         #correct for microclimate abiotic conditions
@@ -245,7 +245,7 @@ for ii in range(len(var_params)):
 
 
     
-    for iii in range(10):
+    for iii in range(3):
 
 
         
@@ -288,7 +288,7 @@ for ii in range(len(var_params)):
 
 
 
-    for iii in range(10):
+    for iii in range(3):
 
 
 

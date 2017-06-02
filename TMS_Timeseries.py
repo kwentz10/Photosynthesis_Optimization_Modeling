@@ -50,6 +50,11 @@ in snowbed does not necessarilly make sense--look in the literature for this
 
 herbs have a higher NUE
 
+
+notes: in 2013 assimilation begins on index 83 for dry meadow; 53 for 2012
+        in 2013 assimilation begins on index 115 for moist meadow;  111  for 2012
+        in 2013 assimilation begins on index 111 for wet meadow; 102 for 2012
+
 """
 
 #---------------Import Modules---------------#
@@ -276,17 +281,17 @@ for ii in range(len(const_params)):
     
     days=np.linspace(1,365,365)
     
-    surtemp_dm=[surtemp_dm_smooth,surtemp_dm_dy_smooth]
-    vwc_dm=[vwc_dm_smooth,vwc_dm_dy_smooth]
-    na_dm=[na_dm_smooth,na_dm_dy_smooth]
+    surtemp_dm=[surtemp_dm_smooth,surtemp_dm_dy_smooth,surtemp_dm_dy_smooth]
+    vwc_dm=[vwc_dm_smooth,vwc_dm_dy_smooth,vwc_dm_dy_smooth]
+    na_dm=[na_dm_smooth,na_dm_dy_smooth,na_dm_smooth]
     
-    surtemp_mm=[surtemp_mm_smooth,surtemp_mm_dy_smooth]
-    vwc_mm=[vwc_mm_smooth,vwc_mm_dy_smooth]
-    na_mm=[na_mm_smooth,na_mm_dy_smooth]
+    surtemp_mm=[surtemp_mm_smooth,surtemp_mm_dy_smooth,surtemp_mm_dy_smooth]
+    vwc_mm=[vwc_mm_smooth,vwc_mm_dy_smooth,vwc_mm_dy_smooth]
+    na_mm=[na_mm_smooth,na_mm_dy_smooth,na_mm_smooth]
     
-    surtemp_wm=[surtemp_wm_smooth,surtemp_wm_dy_smooth]
-    vwc_wm=[vwc_wm_smooth,vwc_wm_dy_smooth]
-    na_wm=[na_wm_smooth,na_wm_dy_smooth]
+    surtemp_wm=[surtemp_wm_smooth,surtemp_wm_dy_smooth,surtemp_wm_dy_smooth]
+    vwc_wm=[vwc_wm_smooth,vwc_wm_dy_smooth,vwc_wm_dy_smooth]
+    na_wm=[na_wm_smooth,na_wm_dy_smooth,na_wm_smooth]
     
     A_tot_wm=0
     A_tot_wm_dy=0
@@ -294,8 +299,12 @@ for ii in range(len(const_params)):
     A_tot_mm_dy=0
     A_tot_dm=0
     A_tot_dm_dy=0
+
+    A_tot_dm_dy_constN=0
+    A_tot_mm_dy_constN=0
+    A_tot_wm_dy_constN=0    
     
-    for xxx in range(2):
+    for xxx in range(3):
 
         
         #dry meadow
@@ -493,6 +502,9 @@ for ii in range(len(const_params)):
                             A_tot_dm+=(A[0]*3600*6)/1000000.*44.    
                         if xxx==1:
                             A_tot_dm_dy+=(A[0]*3600*6)/1000000.*44.     
+                            
+                        if xxx==2:
+                            A_tot_dm_dy_constN+=(A[0]*3600*6)/1000000.*44.                              
                         
                     elif xx==1:
                         
@@ -532,7 +544,8 @@ for ii in range(len(const_params)):
                             A_tot_mm_dy+=(A[0]*3600*6)/1000000.*44.
                         if vwc_mm[xxx][time]==-999:
                             print "ahhhh"
-                        
+                        if xxx==2:
+                            A_tot_mm_dy_constN+=(A[0]*3600*6)/1000000.*44.                          
         
         
                
@@ -573,6 +586,8 @@ for ii in range(len(const_params)):
                             A_tot_wm+=(A[0]*3600*6)/1000000.*44.    
                         if xxx==1:
                             A_tot_wm_dy+=(A[0]*3600*6)/1000000.*44.
+                        if xxx==2:
+                            A_tot_wm_dy_constN+=(A[0]*3600*6)/1000000.*44.                            
         
                         
         
@@ -652,7 +667,7 @@ for ii in range(len(const_params)):
 
     #dry meadow nue 
     axA.plot(days, tot_nue_dm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axA.plot(days, tot_nue_dm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
+    axA.plot(days, tot_nue_dm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
 #    axA.plot(days,na_dm,'y',linewidth=5)
 #    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
 #    axA2.plot(days, tot_wue_dm_avg, 'b-')
@@ -664,7 +679,7 @@ for ii in range(len(const_params)):
  
     #moist meadow nue 
     axB.plot(days, tot_nue_mm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axB.plot(days, tot_nue_mm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
+    axB.plot(days, tot_nue_mm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
 #    axB.plot(days,na_mm,'y',linewidth=5)
 #    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
 #    axB2.plot(days, tot_wue_mm_avg, 'b-')
@@ -676,7 +691,7 @@ for ii in range(len(const_params)):
 
     #wet meadow nue 
     axC.plot(days, tot_nue_wm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axC.plot(days, tot_nue_wm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
+    axC.plot(days, tot_nue_wm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
 #    axC.plot(days,na_wm,'y',linewidth=5)    
 #    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
 #    axC2.plot(days, tot_wue_wm_avg, 'b-')
@@ -691,73 +706,58 @@ for ii in range(len(const_params)):
 ###------------------------------------------------------######    
     
     #dry meadow wue 
-#    axA.plot(days,na_dm,'y',linewidth=5)
-#    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
+
     axD.plot(days, tot_wue_dm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axD.plot(days, tot_wue_dm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
-#    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
-#    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
-#    axD.fill_between(days, tot_wue_dm_min, tot_wue_dm_max,alpha=0.3,color='blue')
+    axD.plot(days, tot_wue_dm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
+
     axD.legend()
  
     #moist meadow wue 
-#    axB.plot(days,na_mm,'y',linewidth=5)
-#    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
+
     axE.plot(days, tot_wue_mm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axE.plot(days, tot_wue_mm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
-#    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
-#    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
-#    axE.fill_between(days, tot_wue_mm_min, tot_wue_mm_max,alpha=0.3,color='blue')    
+    axE.plot(days, tot_wue_mm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
+    
     axE.legend()
     
     #wet meadow wue 
 
-#    axC.plot(days,na_wm,'y',linewidth=5)    
-#    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
+
     axF.plot(days, tot_wue_wm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
-    axF.plot(days, tot_wue_wm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Hot, Dry Year: 2012")    
-#    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
-#    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
-#    axF.fill_between(days, tot_wue_wm_min, tot_wue_wm_max,alpha=0.3,color='blue')
+    axF.plot(days, tot_wue_wm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
+
     axF.legend()
 
 ###------------------------------------------------------######    
     
 
     #dry meadow A
-#    axA.plot(days,na_dm,'y',linewidth=5)
-#    axA.plot(days,np.array(vwc_dm)*10.,'c-',linewidth=5)
-    axG.plot(days, tot_A_dm_avg2[0], 'b-',linewidth=10,alpha=1.0,label="Normal Year: 2013 \nCumulative Assimilation=%.1E" %Decimal(A_tot_dm))
-    axG.plot(days, tot_A_dm_avg2[1], 'r-',linewidth=10,alpha=1.0,label="Hot, Dry Year: 2012 \nCumulative Assimilation=%.1E" %Decimal(A_tot_dm_dy))    
-#    axA2.plot(days,tot_A_dm_avg,'k-',linewidth=5)
-#    axA2.plot(days,np.array(surtemp_dm)/1.0,'g-',linewidth=5)
-#    axG.fill_between(days, tot_A_dm_min, tot_A_dm_max,alpha=0.3,color='black')
-    axG.fill_between(days, 0, tot_A_dm_avg2[0],alpha=0.3,color='blue')
-    axG.fill_between(days, 0, tot_A_dm_avg2[1],alpha=0.3,color='red')
+
+    axG.plot(days, tot_A_dm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm))
+    axG.plot(days, tot_A_dm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm_dy))    
+    axG.plot(days, tot_A_dm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm_dy_constN))
+
+#    axG.fill_between(days, 0, tot_A_dm_avg2[0],alpha=0.3,color='blue')
+#    axG.fill_between(days, 0, tot_A_dm_avg2[1],alpha=0.3,color='red')
     axG.legend()
     
     #moist meadow A 
-#    axB.plot(days,na_mm,'y',linewidth=5)
-#    axB.plot(days,np.array(vwc_mm)*10.,'c-',linewidth=5)   
-    axH.plot(days, tot_A_mm_avg2[0], 'b-',linewidth=10,alpha=1.0,label="Normal Year: 2013 \nCumulative Assimilation=%.1E" %Decimal(A_tot_mm))
-    axH.plot(days, tot_A_mm_avg2[1], 'r-',linewidth=10,alpha=1.0,label="Hot, Dry Year: 2012 \nCumulative Assimilation=%.1E" %Decimal(A_tot_mm_dy))    
-#    axB2.plot(days,tot_A_mm_avg,'k-',linewidth=5)
-#    axB2.plot(days,np.array(surtemp_mm)/1.0,'g-',linewidth=5)
-#    axH.fill_between(days, tot_A_mm_min, tot_A_mm_max,alpha=0.3,color='black')    
-    axH.fill_between(days, 0, tot_A_mm_avg2[0],alpha=0.3,color='blue')
-    axH.fill_between(days, 0, tot_A_mm_avg2[1],alpha=0.3,color='red')
+ 
+    axH.plot(days, tot_A_mm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm))
+    axH.plot(days, tot_A_mm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm_dy))    
+    axH.plot(days, tot_A_mm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm_dy_constN))
+ 
+#    axH.fill_between(days, 0, tot_A_mm_avg2[0],alpha=0.3,color='blue')
+#    axH.fill_between(days, 0, tot_A_mm_avg2[1],alpha=0.3,color='red')
     axH.legend()
     
     #wet meadow A 
 
-#    axC.plot(days,na_wm,'y',linewidth=5)    
-#    axC.plot(days,np.array(vwc_wm)*10.,'c-',linewidth=5)    
-    axI.plot(days, tot_A_wm_avg2[0], 'b-',linewidth=10,alpha=1.0,label="Normal Year: 2013 \nCumulative Assimilation=%.1E" %Decimal(A_tot_wm))
-    axI.plot(days, tot_A_wm_avg2[1], 'r-',linewidth=10,alpha=1.0,label="Hot, Dry Year: 2012 \nCumulative Assimilation=%.1E" %Decimal(A_tot_wm_dy))
-#    axC2.plot(days,tot_A_wm_avg,'k-',linewidth=5)    
-#    axC2.plot(days,np.array(surtemp_wm)/1.0,'g-',linewidth=5)    
-    axI.fill_between(days, 0, tot_A_wm_avg2[0],alpha=0.3,color='blue')
-    axI.fill_between(days, 0, tot_A_wm_avg2[1],alpha=0.3,color='red')
+
+    axI.plot(days, tot_A_wm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm))
+    axI.plot(days, tot_A_wm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm_dy)) 
+    axI.plot(days, tot_A_wm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm_dy_constN)) 
+#    axI.fill_between(days, 0, tot_A_wm_avg2[0],alpha=0.3,color='blue')
+#    axI.fill_between(days, 0, tot_A_wm_avg2[1],alpha=0.3,color='red')
     axI.legend()
 
 ###------------------------------------------------------######   

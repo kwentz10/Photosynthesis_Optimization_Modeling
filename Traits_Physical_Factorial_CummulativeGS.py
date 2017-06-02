@@ -246,6 +246,6 @@ for ii in range(len(const_params)):
 
         
         
-                    
+print A_tot_all                    
     
 

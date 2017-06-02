@@ -22,8 +22,8 @@ gsf=242
 fig1,axA = plt.subplots(figsize=(30,15))
 axA.set_xlim([0,365])
 axA.set_xlabel('Time (days)',fontsize=28, fontname='Times New Roman')
-axA.set_ylabel('Foliar Nitrogen Content (gN/m2)',fontsize=28, fontname='Times New Roman')
-axA.set_title('Foliar Nitrogen Content in 2012 vs. 2013', fontname='Times New Roman',fontsize=36,fontweight='bold')
+axA.set_ylabel('Volumetric Water Content (m3/m3)',fontsize=28, fontname='Times New Roman')
+axA.set_title('Volumetric Water Content in 2012 vs. 2013', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
 fig2,axB = plt.subplots(figsize=(30,15))
 axB.set_xlim([0,365])
@@ -806,7 +806,9 @@ for x in vwc_wm:
 
 
 ##calculate leaf nitrogen content
-#days=[152,152,152,152,152,152,213,213,213,213,213,213,266,266,266,266,266,266]
+
+#fig1,axA = plt.subplots(figsize=(30,15))
+#days=[90,152,152,152,152,152,152,213,213,213,213,213,213,266,266,266,266,266,266]
 #
 ##leaf N
 #dm_june1= np.random.normal(2.95,np.sqrt(3)*0.24,3).tolist()+np.random.normal(2.87, np.sqrt(3)*0.23,3).tolist()
@@ -820,11 +822,11 @@ for x in vwc_wm:
 #wm_june1= np.random.normal(5.85,np.sqrt(3)*0.97,3).tolist()+np.random.normal(2.53, np.sqrt(3)*0.21,3).tolist()
 #wm_aug1=np.random.normal(8.64,np.sqrt(3)*0.72,3).tolist()+np.random.normal(3.8, np.sqrt(3)*0.53,3).tolist()
 #wm_sep23=np.random.normal(3.92,np.sqrt(3)*1.6,3).tolist()+np.random.normal(0.93, np.sqrt(3)*0.93,3).tolist()
-
-#axA.scatter(days, wm_june1+wm_aug1+wm_sep23)
 #
-#axA.plot(np.unique(days), np.poly1d(np.polyfit(days, wm_june1+wm_aug1+wm_sep23, 2))(np.unique(days)),color="black")
-#print np.polyfit(days, wm_june1+wm_aug1+wm_sep23, 2)
+#axA.scatter(days, [0.0]+dm_june1+dm_aug1+dm_sep23)
+#
+#axA.plot(np.unique(days), np.poly1d(np.polyfit(days, [0.0]+dm_june1+dm_aug1+dm_sep23, 2))(np.unique(days)),color="black")
+#print np.polyfit(days, [0.0]+dm_june1+dm_aug1+dm_sep23, 2)
 
 #dm equation: -0.00017*days^2+0.054*days-1.44
 #mm equation: -0.00077*days^2+0.3*days-24.4
@@ -833,7 +835,7 @@ for x in vwc_wm:
 #na dry meadow, moist meadow, wet meadow
 days_2=np.linspace(1,365,365)
 
-na_dm=(days_2**2*(-0.00017))+(0.054*days_2)-1.44
+na_dm=(days_2**2*(-0.00034))+(0.13*days_2)-9.0
 
 
 na_mm=(days_2**2*(-0.00077))+(0.3*days_2)-24.4
@@ -859,16 +861,16 @@ na_wm=(days_2**2*(-0.0007))+(0.28*days_2)-21.8
 
 
 ##more na 50-200
-na_dm_dy=np.array(na_dm[:])+0.5
+na_dm_dy=np.array(na_dm[:])*1.3
 
 
 #moist meadow
-na_mm_dy=np.array(na_mm[:])+0.5
+na_mm_dy=np.array(na_mm[:])*1.3
 
 
 
 #wet meadow
-na_wm_dy=np.array(na_wm[:])+0.5
+na_wm_dy=np.array(na_wm[:])*1.3
 
 
 
@@ -933,14 +935,384 @@ GDD=sum(mylist)
 
 #manually shift water content and growing season length
 
+avg_vwc_per_diff=[0.95,
+0.98,
+0.98,
+1.00,
+1.00,
+1.00,
+0.98,
+0.95,
+0.98,
+0.98,
+0.98,
+0.98,
+1.00,
+1.00,
+1.00,
+0.98,
+0.98,
+0.98,
+0.98,
+1.00,
+1.00,
+0.98,
+0.95,
+0.95,
+0.95,
+0.93,
+0.93,
+0.93,
+0.98,
+1.00,
+0.98,
+0.98,
+0.98,
+0.98,
+0.98,
+0.95,
+0.95,
+0.98,
+0.95,
+0.98,
+0.98,
+0.98,
+1.00,
+1.00,
+0.98,
+0.98,
+0.98,
+0.98,
+1.00,
+1.00,
+0.95,
+0.95,
+1.00,
+1.00,
+0.97,
+1.00,
+0.97,
+0.97,
+0.97,
+0.97,
+0.95,
+0.95,
+0.93,
+0.95,
+0.95,
+0.98,
+0.98,
+0.95,
+0.98,
+1.00,
+1.00,
+1.00,
+1.00,
+1.00,
+1.00,
+1.02,
+1.07,
+1.10,
+1.05,
+1.00,
+1.03,
+1.05,
+1.15,
+1.23,
+1.28,
+1.30,
+1.25,
+1.28,
+1.27,
+1.27,
+1.37,
+1.49,
+1.51,
+1.40,
+1.44,
+1.49,
+1.40,
+1.26,
+1.24,
+1.32,
+1.44,
+1.57,
+1.60,
+1.45,
+1.40,
+1.43,
+1.43,
+1.45,
+1.49,
+1.45,
+1.45,
+1.48,
+1.52,
+1.64,
+1.86,
+2.10,
+2.31,
+2.30,
+2.11,
+2.02,
+1.91,
+1.91,
+2.02,
+2.24,
+2.53,
+2.84,
+3.30,
+2.84,
+2.90,
+3.28,
+3.57,
+2.90,
+1.47,
+1.32,
+1.32,
+1.35,
+1.32,
+np.nan,
+1.37,
+1.38,
+1.39,
+1.36,
+1.24,
+1.20,
+1.24,
+1.10,
+1.06,
+0.91,
+0.80,
+0.81,
+0.85,
+0.92,
+0.86,
+0.80,
+0.79,
+0.73,
+0.72,
+0.73,
+0.75,
+0.76,
+0.76,
+0.77,
+0.78,
+0.78,
+0.77,
+0.75,
+0.74,
+0.72,
+0.71,
+0.68,
+0.67,
+0.66,
+0.64,
+0.62,
+0.59,
+0.58,
+0.56,
+0.55,
+0.55,
+0.54,
+0.52,
+0.47,
+0.44,
+0.41,
+0.38,
+0.36,
+0.35,
+0.91,
+1.37,
+1.32,
+1.34,
+1.36,
+1.35,
+1.22,
+1.05,
+0.88,
+0.89,
+0.99,
+1.11,
+1.03,
+1.02,
+1.03,
+1.06,
+1.11,
+1.26,
+1.43,
+1.59,
+1.48,
+1.36,
+1.34,
+1.41,
+1.63,
+1.65,
+1.70,
+1.77,
+1.77,
+1.72,
+1.66,
+1.64,
+1.64,
+1.57,
+1.55,
+1.51,
+1.40,
+1.15,
+1.12,
+1.15,
+1.14,
+1.14,
+1.10,
+1.09,
+1.09,
+1.12,
+1.16,
+1.00,
+1.02,
+0.92,
+0.86,
+0.77,
+0.76,
+0.71,
+0.66,
+0.78,
+0.79,
+0.76,
+0.75,
+0.74,
+0.67,
+0.65,
+0.56,
+0.59,
+0.50,
+0.33,
+0.30,
+0.30,
+0.44,
+0.48,
+0.43,
+0.45,
+0.47,
+0.48,
+0.47,
+0.48,
+0.50,
+0.50,
+0.48,
+0.48,
+0.46,
+0.47,
+0.52,
+0.58,
+0.67,
+0.88,
+1.02,
+1.05,
+1.02,
+1.00,
+0.99,
+1.00,
+0.93,
+0.86,
+0.83,
+0.85,
+0.88,
+0.91,
+0.91,
+0.89,
+0.89,
+0.88,
+0.92,
+0.93,
+0.90,
+0.89,
+0.91,
+0.96,
+1.02,
+1.06,
+1.07,
+1.05,
+1.03,
+1.01,
+0.99,
+0.99,
+0.98,
+1.00,
+1.03,
+1.05,
+1.05,
+1.08,
+1.14,
+1.23,
+1.37,
+1.53,
+1.68,
+1.79,
+1.79,
+1.67,
+1.48,
+1.27,
+1.11,
+1.04,
+1.04,
+1.04,
+1.02,
+0.98,
+0.98,
+0.98,
+0.93,
+0.93,
+0.93,
+0.91,
+0.91,
+0.91,
+0.93,
+0.94,
+0.94,
+0.94,
+0.94,
+np.nan,
+1.02,
+1.02,
+1.02,
+1.07,
+1.07,
+1.02,
+1.00,
+1.00,
+1.02,
+1.02,
+1.00,
+0.98,
+0.98,
+1.00,
+1.00,
+0.98,
+0.98,
+0.96,
+0.96,
+0.96,
+0.98,
+0.96,
+0.91,
+0.91,
+0.93,
+0.93]
+
 #dry meadow
+#vwc_dm_new=np.array(vwc_dm)*np.array(avg_vwc_per_diff)
+#vwc_mm_new=np.array(vwc_mm)*np.array(avg_vwc_per_diff)
+#vwc_wm_new=np.array(vwc_wm)*np.array(avg_vwc_per_diff)
+
 vwc_dm_new=vwc_dm[:]
 
 #shift timeseries by 30 days--month of august repeats
 vwc_dm_new[0:214]=np.array(vwc_dm[30:(30+214)])
 
-##drying in repeated timeseries (August-End of Growing Season) (April through mid-June)
-vwc_dm_new[214:]=np.array(vwc_dm_new[214:])-0.0
+##drying in repeated timeseries (August-End of Growing Season) (June-August)
+vwc_dm_new[165:258]=np.array(vwc_dm_new[165:258])*0.9
 
 #moist meadow
 vwc_mm_new=vwc_mm[:]
@@ -948,8 +1320,8 @@ vwc_mm_new=vwc_mm[:]
 #shift first 100 days of growing season (April 9-July 18) back by 20 days
 vwc_mm_new[0:214]=np.array(vwc_mm[30:(30+214)])
 
-##drying in repeated timeseries (August-End of Growing Season)
-vwc_mm_new[214:]=np.array(vwc_mm_new[214:])-0.0
+##drying in repeated timeseries (June-August)
+vwc_mm_new[165:258]=np.array(vwc_mm_new[165:258])*0.9
 
 #wet meadow
 vwc_wm_new=vwc_wm[:]
@@ -957,8 +1329,8 @@ vwc_wm_new=vwc_wm[:]
 #shift first 100 days of growing season (April 9-July 31) back by 20 days
 vwc_wm_new[0:214]=np.array(vwc_wm[30:(30+214)])
 
-##drying in repeated timeseries (August-End of Growing Season)
-vwc_wm_new[214:]=np.array(vwc_wm_new[214:])-0.0
+##drying in repeated timeseries (June-August)
+vwc_wm_new[165:258]=np.array(vwc_wm_new[165:258])*0.9
 
 
 
@@ -2557,10 +2929,7 @@ maxairtemp_dy_smooth=yy_sg
 
 
 #smooth vwc data
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
-from scipy.signal import savgol_filter
-import numpy as np
+
 
 data = np.array([vwc_dm,vwc_mm,vwc_wm])
 vwc_average=np.average(data, axis=0)
@@ -2833,7 +3202,7 @@ xx = np.linspace(x.min(),x.max(), 365)
 
 # interpolate + smooth
 itp = interp1d(x,y, kind='linear')
-window_size, poly_order = 51, 5
+window_size, poly_order = 31, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -2856,7 +3225,7 @@ xx = np.linspace(x.min(),x.max(), 365)
 
 # interpolate + smooth
 itp = interp1d(x,y, kind='linear')
-window_size, poly_order = 51, 5
+window_size, poly_order = 31, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -2878,7 +3247,7 @@ xx = np.linspace(x.min(),x.max(), 365)
 
 # interpolate + smooth
 itp = interp1d(x,y, kind='linear')
-window_size, poly_order = 51, 5
+window_size, poly_order = 71, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -2948,7 +3317,7 @@ xx = np.linspace(x.min(),x.max(), 365)
 
 # interpolate + smooth
 itp = interp1d(x,y, kind='linear')
-window_size, poly_order = 51, 5
+window_size, poly_order = 31, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
 fig, ax = plt.subplots(figsize=(7, 4))
@@ -3130,6 +3499,19 @@ for x in na_mm_dy_smooth:
 for x in na_wm_dy_smooth:
     if x<0.0:
         na_wm_dy_smooth[na_wm_dy_smooth.tolist().index(x)]=0.0
+        
+#cannot have negative leaf nitrogen content
+for x in na_dm:
+    if x<0.0:
+        na_dm[na_dm.tolist().index(x)]=0.0
+
+for x in na_mm:
+    if x<0.0:
+        na_mm[na_mm.tolist().index(x)]=0.0
+
+for x in na_wm:
+    if x<0.0:
+        na_wm[na_wm.tolist().index(x)]=0.0
 
 
 #cannot have negative leaf nitrogen content
@@ -3143,10 +3525,10 @@ for x in na_smooth:
 
 
 
-axA.plot(range(len(na_dy_smooth)),na_dy_smooth,color='red',linewidth=10.0,alpha=0.5,label="Hot, Dry Year: 2012") 
-axA.plot(range(len(na_smooth)),na_smooth,color='blue',linewidth=10.0,alpha=0.5,label="Normal Year: 2013")   
+axA.plot(range(len(vwc_dy_smooth)),vwc_dy_smooth,color='red',linewidth=10.0,alpha=0.5,label="Hot, Dry Year: 2012") 
+axA.plot(range(len(vwc_smooth)),vwc_smooth,color='blue',linewidth=10.0,alpha=0.5,label="Normal Year: 2013")   
 axA.legend()
 
    
 
-fig1.savefig('na_twoyears.png') 
+fig1.savefig('vwc_twoyears.png') 

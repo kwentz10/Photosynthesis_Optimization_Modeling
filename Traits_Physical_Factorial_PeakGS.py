@@ -178,7 +178,8 @@ for ii in range(len(const_params)):
         
     
         A_tot+=[A[0]]
-    
+        
+print A_tot
 
 
             
