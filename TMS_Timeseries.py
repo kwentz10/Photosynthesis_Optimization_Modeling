@@ -725,16 +725,16 @@ for ii in range(len(const_params)):
     axF.plot(days, tot_wue_wm_avg2[0], 'b-',linewidth=10,alpha=0.5, label="Normal Year: 2013")
     axF.plot(days, tot_wue_wm_avg2[1], 'r-',linewidth=10,alpha=0.5, label="Extended Summer Year: 2012")    
 
-    axF.legend()
+    axF.legend(loc="upper left")
 
 ###------------------------------------------------------######    
     
 
     #dry meadow A
 
-    axG.plot(days, tot_A_dm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm))
-    axG.plot(days, tot_A_dm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm_dy))    
-    axG.plot(days, tot_A_dm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n " %Decimal(A_tot_dm_dy_constN))
+    axG.plot(days, tot_A_dm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%d gCO2/m2\n " %(sum((np.array(tot_A_dm_avg2[0])*3600*6)/1000000.*44.)))
+    axG.plot(days, tot_A_dm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%d gCO2/m2\n " %(sum((np.array(tot_A_dm_avg2[1])*3600*6)/1000000.*44.)))
+    axG.plot(days, tot_A_dm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%d gCO2/m2\n " %(sum((np.array(tot_A_dm_avg2[2])*3600*6)/1000000.*44.)))
 
 #    axG.fill_between(days, 0, tot_A_dm_avg2[0],alpha=0.3,color='blue')
 #    axG.fill_between(days, 0, tot_A_dm_avg2[1],alpha=0.3,color='red')
@@ -742,23 +742,23 @@ for ii in range(len(const_params)):
     
     #moist meadow A 
  
-    axH.plot(days, tot_A_mm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm))
-    axH.plot(days, tot_A_mm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm_dy))    
-    axH.plot(days, tot_A_mm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_mm_dy_constN))
+    axH.plot(days, tot_A_mm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%d gCO2/m2\n" %(sum((np.array(tot_A_mm_avg2[0])*3600*6)/1000000.*44.)))
+    axH.plot(days, tot_A_mm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%d gCO2/m2\n" %(sum((np.array(tot_A_mm_avg2[1])*3600*6)/1000000.*44.)))  
+    axH.plot(days, tot_A_mm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%d gCO2/m2\n" %(sum((np.array(tot_A_mm_avg2[2])*3600*6)/1000000.*44.)))
  
 #    axH.fill_between(days, 0, tot_A_mm_avg2[0],alpha=0.3,color='blue')
 #    axH.fill_between(days, 0, tot_A_mm_avg2[1],alpha=0.3,color='red')
-    axH.legend()
+    axH.legend(loc="upper left")
     
     #wet meadow A 
 
 
-    axI.plot(days, tot_A_wm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm))
-    axI.plot(days, tot_A_wm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm_dy)) 
-    axI.plot(days, tot_A_wm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%.1E \n" %Decimal(A_tot_wm_dy_constN)) 
+    axI.plot(days, tot_A_wm_avg2[0], 'b-',linewidth=10,alpha=0.5,label="Normal Year: 2013 \nCumulative Assimilation=%d gCO2/m2\n" %(sum((np.array(tot_A_wm_avg2[0])*3600*6)/1000000.*44.)))
+    axI.plot(days, tot_A_wm_avg2[1], 'r-',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nHigher Foliar Nitrogen \nCumulative Assimilation=%d gCO2/m2\n" %(sum((np.array(tot_A_wm_avg2[1])*3600*6)/1000000.*44.)))
+    axI.plot(days, tot_A_wm_avg2[2], 'r--',linewidth=10,alpha=0.5,label="Extended Summer Year: 2012\nConstant Foliar Nitrogen \nCumulative Assimilation=%d  gCO2/m2\n" %(sum((np.array(tot_A_wm_avg2[2])*3600*6)/1000000.*44.)))
 #    axI.fill_between(days, 0, tot_A_wm_avg2[0],alpha=0.3,color='blue')
 #    axI.fill_between(days, 0, tot_A_wm_avg2[1],alpha=0.3,color='red')
-    axI.legend()
+    axI.legend(loc="upper left")
 
 ###------------------------------------------------------######   
 #

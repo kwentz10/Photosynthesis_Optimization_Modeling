@@ -3038,7 +3038,7 @@ yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 na_dy_smooth=yy_sg
 
 
-#--------------Parameter Inputs-----------------------#
+#--------------Parameter Inputs By Meadow-----------------------#
 
 
 
@@ -3205,10 +3205,10 @@ itp = interp1d(x,y, kind='linear')
 window_size, poly_order = 31, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
-fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
-ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
-plt.legend(loc='best')
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
 
 vwc_dm_smooth=yy_sg
 
@@ -3228,10 +3228,10 @@ itp = interp1d(x,y, kind='linear')
 window_size, poly_order = 31, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
-fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
-ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
-plt.legend(loc='best')
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
 
 vwc_dm_dy_smooth=yy_sg
 
@@ -3273,10 +3273,10 @@ itp = interp1d(x,y, kind='linear')
 window_size, poly_order = 51, 5
 yy_sg = savgol_filter(itp(xx), window_size, poly_order)
 
-fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
-ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
-plt.legend(loc='best')
+#fig, ax = plt.subplots(figsize=(7, 4))
+#ax.plot(x, y, 'r.', label= 'Unsmoothed curve')
+#ax.plot(xx, yy_sg, 'k', label= "Smoothed curve")
+#plt.legend(loc='best')
 
 vwc_mm_dy_smooth=yy_sg
 
@@ -3525,10 +3525,10 @@ for x in na_smooth:
 
 
 
-axA.plot(range(len(vwc_dy_smooth)),vwc_dy_smooth,color='red',linewidth=10.0,alpha=0.5,label="Hot, Dry Year: 2012") 
-axA.plot(range(len(vwc_smooth)),vwc_smooth,color='blue',linewidth=10.0,alpha=0.5,label="Normal Year: 2013")   
+axA.plot(range(len(vwc_wm_dy_smooth)),vwc_dm_dy_smooth,color='red',linewidth=10.0,alpha=0.5,label="Hot, Dry Year: 2012") 
+axA.plot(range(len(vwc_wm_dy_smooth)),vwc_dm_smooth,color='blue',linewidth=10.0,alpha=0.5,label="Normal Year: 2013")   
 axA.legend()
 
    
 
-fig1.savefig('vwc_twoyears.png') 
+#fig1.savefig('vwc_twoyears.png') 

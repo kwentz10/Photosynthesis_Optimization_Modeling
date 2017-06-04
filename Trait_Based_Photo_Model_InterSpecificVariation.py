@@ -86,9 +86,9 @@ for ii in range(len(const_params)):
     #put in correct ax value (e.g. axA, axB)
     fig1,axA = plt.subplots(figsize=(30,15))
     
-    axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=36, fontname='Times New Roman')
+    axA.set_ylabel('NUE (umol CO2/g N s)',fontsize=28, fontname='Times New Roman')
     axA.set_ylim([0,5])
-    axA.set_title('NUE for Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axA.set_title('NUE in Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
     
     #--figure 2--#
@@ -97,7 +97,7 @@ for ii in range(len(const_params)):
     fig2,axB = plt.subplots(figsize=(15,15))
 
     #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
-    axB.set_ylabel('gsw (mol H2O/m2s)',fontsize=36, fontname='Times New Roman')
+    axB.set_ylabel('gsw (mol H2O/m2s)',fontsize=28, fontname='Times New Roman')
     #axA.set_xlim([0,20])
     #axA.set_ylim([0,10])
     axB.set_title('Plant Communities vs. Stomatal Conductance', fontname='Times New Roman',fontsize=36,fontweight='bold')
@@ -109,10 +109,10 @@ for ii in range(len(const_params)):
     fig4,axD = plt.subplots(figsize=(15,15))
 
     #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
-    axD.set_ylabel('Assimilation (umol CO2/m2s)',fontsize=36, fontname='Times New Roman')
+    axD.set_ylabel('Assimilation (umol CO2/m2s)',fontsize=28, fontname='Times New Roman')
     #axA.set_xlim([0,20])
     #axA.set_ylim([0,10])
-    axD.set_title('Plant Communities vs. Assimilation', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axD.set_title('Assimilation in Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
   
     #--figure 5--#
@@ -121,7 +121,7 @@ for ii in range(len(const_params)):
     fig5,axE = plt.subplots(figsize=(15,15))
 
     #axA.set_xlabel('Plant Communities',fontsize=20, fontname='Times New Roman')
-    axE.set_ylabel('Evapotranspiration (mmol H2O/m2s)',fontsize=36, fontname='Times New Roman')
+    axE.set_ylabel('Evapotranspiration (mmol H2O/m2s)',fontsize=28, fontname='Times New Roman')
     #axA.set_xlim([0,20])
     #axA.set_ylim([0,10])
     axE.set_title('Plant Communities vs. Evapotranspiration', fontname='Times New Roman',fontsize=36,fontweight='bold')
@@ -132,7 +132,7 @@ for ii in range(len(const_params)):
     #put in correct ax value (e.g. axA, axB)
     fig6,axF = plt.subplots(figsize=(15,15))
 
-    axF.set_xlabel('NUE (umol CO2/g N s)',fontsize=36, fontname='Times New Roman')
+    axF.set_xlabel('NUE (umol CO2/g N s)',fontsize=28, fontname='Times New Roman')
     axF.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=36, fontname='Times New Roman')
     axF.set_xlim([0,5])
     axF.set_ylim([0,5])
@@ -141,21 +141,21 @@ for ii in range(len(const_params)):
     #--figure 8--#
     fig8,axG = plt.subplots(figsize=(15,15))
 
-    axG.set_xlabel('VPD (cmol H2O/mol air)',fontsize=36, fontname='Times New Roman')
+    axG.set_xlabel('VPD (cmol H2O/mol air)',fontsize=28, fontname='Times New Roman')
    
-    axG.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=36, fontname='Times New Roman')
+    axG.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=28, fontname='Times New Roman')
 #    axG.set_xlim([0,9])
 #    axG.set_ylim([0,3])
-    axG.set_title('VPD vs. WUE for all Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axG.set_title('VPD vs. WUE in Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
     
     #-----figure 7----#
     
     fig7,axH = plt.subplots(figsize=(30,15))
     
-    axH.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=36, fontname='Times New Roman')
+    axH.set_ylabel('WUE (umol CO2/mmol H2O)',fontsize=28, fontname='Times New Roman')
     axH.set_ylim([0,5])
-    axH.set_title('WUE for Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
+    axH.set_title('WUE in Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=36,fontweight='bold')
 
 
 
@@ -196,9 +196,9 @@ for ii in range(len(const_params)):
     #put in correct ax value (e.g. axA, axB)
     fig11,axS = plt.subplots(figsize=(15,15))
 
-    axS.set_xlabel('Assimilation (umol CO2/m2s)',fontsize=30, fontname='Times New Roman')
-    axS.set_ylabel('Stomatal Conductance (mol CO2/m2s)',fontsize=30, fontname='Times New Roman')
-    axS.set_title('Assimilation vs. Stomatal Conductance for all Plant Communities', fontname='Times New Roman',fontsize=30,fontweight='bold')
+    axS.set_xlabel('Assimilation (umol CO2/m2s)',fontsize=28, fontname='Times New Roman')
+    axS.set_ylabel('Stomatal Conductance (mol CO2/m2s)',fontsize=28, fontname='Times New Roman')
+    axS.set_title('Assimilation vs. Stomatal Conductance in Alpine Tundra Plant Communities', fontname='Times New Roman',fontsize=30,fontweight='bold')
  
     #---------------Initialize Arrays for Each Meadow---------------#
         
@@ -597,7 +597,7 @@ for ii in range(len(const_params)):
     
     axA.set_xticks([1,2,3])
     axA.set_xticklabels(['Dry Meadow','Moist Meadow','Wet Meadow'],fontname='Times New Roman')
-    rcParams['xtick.labelsize']=24   
+    rcParams['xtick.labelsize']=28   
 
     
     #nue boxplot specs
@@ -627,7 +627,7 @@ for ii in range(len(const_params)):
     
     axH.set_xticks([1,2,3])
     axH.set_xticklabels(['Dry Meadow','Moist Meadow','Wet Meadow'],fontname='Times New Roman')
-    rcParams['xtick.labelsize']=24   
+    rcParams['xtick.labelsize']=28   
 
  
     #wue boxplot specs    
@@ -667,7 +667,7 @@ for ii in range(len(const_params)):
 
     axB.set_xticks([1,2,3])
     axB.set_xticklabels(['Dry Meadow','Moist Meadow','Wet Meadow'],fontname='Times New Roman')
-    rcParams['xtick.labelsize']=24   
+    rcParams['xtick.labelsize']=28   
     
     #gsw boxplot specs
     for box in gsw_bp['boxes']:
@@ -698,7 +698,7 @@ for ii in range(len(const_params)):
 
     axD.set_xticks([1,2,3])
     axD.set_xticklabels(['Dry Meadow','Moist Meadow','Wet Meadow'],fontname='Times New Roman')
-    rcParams['xtick.labelsize']=24   
+    rcParams['xtick.labelsize']=28   
 
 #        axD.plot([1,2,3,4,5],[np.mean(A_f),np.mean(A_d),np.mean(A_m),np.mean(A_w),np.mean(A_s)],'-',color='purple')
     
@@ -736,7 +736,7 @@ for ii in range(len(const_params)):
 
     axE.set_xticks([1,2,3])
     axE.set_xticklabels(['Dry Meadow','Moist Meadow','Wet Meadow'],fontname='Times New Roman')
-    rcParams['xtick.labelsize']=24   
+    rcParams['xtick.labelsize']=28   
 
 #    axE.plot([1,2,3,4,5],[np.mean(E_f),np.mean(E_d),np.mean(E_m),np.mean(E_w),np.mean(E_s)],'-k')
     
@@ -782,7 +782,7 @@ for ii in range(len(const_params)):
     #axF.plot([np.mean(nue_f),np.mean(nue_d),np.mean(nue_m),np.mean(nue_w),np.mean(nue_s)],[np.mean(wue_f),np.mean(wue_d),np.mean(wue_m),np.mean(wue_w),np.mean(wue_s)])
 
     #axF.tick_params(axis='x', labelsize=25)
-    axF.tick_params(axis='y', labelsize=16)
+#    axF.tick_params(axis='y', labelsize=16)
     
 
 #---------------Regression Plot Assimilation vs. Stomatal Conductance---------------#   
@@ -791,11 +791,13 @@ for ii in range(len(const_params)):
     axS.scatter(A_d+A_m+A_w,gs_d+gs_m+gs_w,edgecolors='black',facecolors='black',marker='o',s=50)
 #    axF.plot([np.mean(nue_d),np.mean(nue_m),np.mean(nue_w)],[np.mean(wue_d),np.mean(wue_m),np.mean(wue_w)],color='black')
     
-    axS.plot(np.unique(A_d+A_m+A_w), np.poly1d(np.polyfit(A_d+A_m+A_w, gs_d+gs_m+gs_w, 1))(np.unique(A_d+A_m+A_w)),color='black')
+    axS.plot(np.unique(A_d+A_m+A_w), np.poly1d(np.polyfit(A_d+A_m+A_w, gs_d+gs_m+gs_w, 1))(np.unique(A_d+A_m+A_w)),color='black',linewidth=6)
     #axF.plot([np.mean(nue_f),np.mean(nue_d),np.mean(nue_m),np.mean(nue_w),np.mean(nue_s)],[np.mean(wue_f),np.mean(wue_d),np.mean(wue_m),np.mean(wue_w),np.mean(wue_s)])
 
-    axS.tick_params(axis='x', labelsize=16)
-    axS.tick_params(axis='y', labelsize=16)
+    axS.set_ylim([0,0.55])
+    axS.set_xlim([0,25])
+#    axS.tick_params(axis='x', labelsize=16)
+#    axS.tick_params(axis='y', labelsize=16)
 
 
 
@@ -811,6 +813,7 @@ for ii in range(len(const_params)):
     
     axG.plot(np.array(new_x), func(np.array(new_x), *popt), 'k-', label='fit',linewidth=6)
     axG.scatter(xdata,ydata,edgecolors='black',facecolors='black',marker='o',s=50)
+
 #    #axG.plot([np.mean(vpd_d),np.mean(vpd_m),np.mean(vpd_w)],[np.mean(wue_d),np.mean(wue_m),np.mean(wue_w)],color=color[xx])
 #    axG.plot(np.unique(vpd_d+vpd_m+vpd_w), np.poly1d(np.polyfit(vpd_d+vpd_m+vpd_w, wue_d+wue_m+wue_w, 1))(np.unique(vpd_d+vpd_m+vpd_w)),color='black')
 #    axG.legend()
@@ -824,18 +827,67 @@ for ii in range(len(const_params)):
 #        plt.pause(0.00000001)
 #        plt.ion()
 
-    
+    axA.tick_params(axis='y', labelsize=20)
+#    axA.yaxis.label.set_color('red')
+
+
+
+    axB.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
+
+
+    axE.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
+ 
+
+#    axA2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axA2.yaxis.label.set_color('blue')
+#
+#    axB2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axB2.yaxis.label.set_color('blue')    
+#    
+#    axC2.tick_params(axis='y', labelsize=20,colors='blue')
+#    axC2.yaxis.label.set_color('blue')   
+
+    axD.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')
+
+
+
+    axE.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
+
+
+    axF.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
+
+
+    axG.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')
+    axG.tick_params(axis='x', pad=15,labelsize=20)
+
+
+    axH.tick_params(axis='y', labelsize=20)
+#    axB.yaxis.label.set_color('red')  
+
+
+    axS.tick_params(axis='y', labelsize=20)
+#    axC.yaxis.label.set_color('red')  
+    axS.tick_params(axis='x', pad=15,labelsize= 20)
+
+
+
 #---------------Finalize Figure---------------#    
 
     ##---Legend---##
     #axA.legend(bbox_to_anchor=(1, 1), loc='left', prop={'size':15})
 
     ##---Save Figure--##
-#    fig1.savefig('NUE.png') 
-#    fig7.savefig('WUE.png')
-#    fig4.savefig('Assimilation.png')
+    fig1.savefig('NUE.png') 
+    fig7.savefig('WUE.png')
+    fig4.savefig('Assimilation.png')
 #    fig6.savefig('NUE_vs_WUE.png')
     fig8.savefig('VPD_vs_WUE.png')
 #    fig9.savefig('NUE_tms.png')
 #    fig10.savefig('WUE_tms.png')
-#    fig11.savefig('A_vs_gsw.png')
+    fig11.savefig('A_vs_gsw.png')
