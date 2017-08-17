@@ -244,7 +244,8 @@ for ii in range(len(const_params)):
  #dry meadow
     tot_nue_dm_avg2=[]
     tot_wue_dm_avg2=[]
-    tot_A_dm_avg2=[]    
+    tot_A_dm_avg2=[]   
+    tot_E_dm_avg2=[]
     tot_nue_dm_min2=[]
     tot_wue_dm_min2=[]
     tot_A_dm_min2=[]    
@@ -311,6 +312,7 @@ for ii in range(len(const_params)):
         tot_nue_dm_avg=[]
         tot_wue_dm_avg=[]
         tot_A_dm_avg=[]    
+        tot_E_dm_avg=[]
         tot_nue_dm_min=[]
         tot_wue_dm_min=[]
         tot_A_dm_min=[]    
@@ -480,11 +482,12 @@ for ii in range(len(const_params)):
                     
                         tl=surtemp_dm[xxx][time]+t_diff
         
+                        z=0.2
                         
                         #---------------Photosynthesis Function---------------#
                     
                         #alter this line of code for when implementing different photosynthesis functions
-                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_dm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_dm[xxx][time])
+                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_dm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_dm[xxx][time],z)
          
                    
                         #test to make sure wue and nue are positive at not 'nan'
@@ -520,10 +523,12 @@ for ii in range(len(const_params)):
                     
                         tl=surtemp_mm[xxx][time]+t_diff
                         
+                        
+                        z=0.3
                         #---------------Photosynthesis Function---------------#
                     
                         #alter this line of code for when implementing different photosynthesis functions
-                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_mm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_mm[xxx][time])
+                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_mm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_mm[xxx][time],z)
          
                    
                         #test to make sure wue and nue are positive at not 'nan'
@@ -564,10 +569,12 @@ for ii in range(len(const_params)):
                     
                         tl=surtemp_wm[xxx][time]+t_diff                
                         
+                        
+                        z=0.4
                         #---------------Photosynthesis Function---------------#
                     
                         #alter this line of code for when implementing different photosynthesis functions
-                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_wm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_wm[xxx][time])
+                        wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_wm[xxx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_wm[xxx][time],z)
          
                    
                         #test to make sure wue and nue are positive at not 'nan'
@@ -595,6 +602,7 @@ for ii in range(len(const_params)):
             tot_nue_dm_avg+=[np.mean(nue_d)]
             tot_wue_dm_avg+=[np.mean(wue_d)]
             tot_A_dm_avg+=[np.mean(A_d)]
+            tot_E_dm_avg+=[np.mean(E_d)]            
             tot_nue_dm_min+=[np.min(nue_d)]
             tot_wue_dm_min+=[np.min(wue_d)]
             tot_A_dm_min+=[np.min(A_d)]
@@ -633,6 +641,7 @@ for ii in range(len(const_params)):
         tot_nue_dm_avg2+=[tot_nue_dm_avg]
         tot_wue_dm_avg2+=[tot_wue_dm_avg]
         tot_A_dm_avg2+=[tot_A_dm_avg]
+        tot_E_dm_avg2+=[tot_E_dm_avg]
         tot_nue_dm_min2+=[tot_nue_dm_min]
         tot_wue_dm_min2+=[tot_wue_dm_min]
         tot_A_dm_min2+=[tot_A_dm_min]

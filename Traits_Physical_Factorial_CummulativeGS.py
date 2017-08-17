@@ -59,7 +59,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 #Import combinations of variable parameters 
-from Traits_Physical_Factorial_Inputs import leaf_params
+from uncertain_params import monte_carlo
 
 #Import photosynthesis model
 from Photosynthesis_Model import photo_bound_meso_eqstom as photo
@@ -69,7 +69,7 @@ from photo_functions import pa_con_atmfrac
 
 
 #import timeseries of vwc and temp
-from time_dep_params import surtemp_dm, surtemp_mm, surtemp_wm, vwc_dm, vwc_mm, vwc_wm, na_dm, na_mm, na_wm
+from time_dep_params import surtemp_dm, surtemp_wm, vwc_dm, vwc_wm, na_dm_min_inter,na_wm_min_inter,na_dm_max_inter,na_wm_max_inter
 
 
 #---------------Determine if I Want to Keep Any of the Variable Parameters Constant---------------#
@@ -181,68 +181,84 @@ for ii in range(len(const_params)):
 
     #-----which timeseries should I use--based on factorial meadow type---#
     
-    na_type=[na_dm, na_mm, na_wm,na_dm, na_mm, na_wm,na_dm, na_mm, na_wm]
-    vwc_type=[vwc_dm,vwc_dm,vwc_dm,vwc_mm,vwc_mm,vwc_mm,vwc_wm,vwc_wm,vwc_wm]
-    temp_type=[surtemp_dm,surtemp_dm,surtemp_dm,surtemp_mm,surtemp_mm,surtemp_mm,surtemp_wm,surtemp_wm,surtemp_wm]
+    na_min=[na_dm_min_inter, na_dm_min_inter, na_wm_min_inter, na_wm_min_inter]
+    na_max=[na_dm_max_inter, na_dm_max_inter, na_wm_max_inter, na_wm_max_inter]
 
+    vwc_type=[vwc_dm,vwc_dm,vwc_wm,vwc_wm]
+    temp_type=[surtemp_dm,surtemp_dm,surtemp_wm,surtemp_wm]
 
+    
     A_tot_all=[]
+    
+    chl_mean=[[395.7132],[475.8913],[395.7132],[475.8913]]
+    chl_sd=[[24.410199999999975],[29.185099999999977],[24.410199999999975],[29.185099999999977]]
+    dia_mean=[[1.6/100.],[3.0/100.],[1.6/100.],[3.0/100.]]
+    dia_sd=[[0.9/100.0],[1.2/100.0],[0.9/100.0],[1.2/100.0]]
+    ht_mean=[[9.183549],[19.98519],[9.183549],[19.98519]]
+    ht_sd=[[1.5],[3.1],[1.5],[3.1]]
+    
+    depth=[0.2,0.2,0.2,0.4,0.4,0.4]
+    
 
 #---------------Import Variable Parameter Arrays from Leaf Parameter File---------------#
-    
-    for xx in range(len(leaf_params)):
-        for key,val in leaf_params[xx].items():
-            exec(key + '=val')
-
-            
-                             
-        #set variable parameters constant if I specify this above
-        if 'na' in const_params[ii]:
-            na=na_c
-        if 'dia' in const_params[ii]:
-            dia=dia_c
-        if 'chl' in const_params[ii]:
-            chl=chl_c
-        if 'ht' in const_params[ii]:
-            ht=ht_c
-
-        
+    for iii in range(len(chl_mean)):
         A_tot=0
-        
-        for time in range(len(surtemp_dm)):
-
-
-      
-            #------calculate vapor pressure-----#
-            pa_v=611*np.exp((17.27*temp_type[xx][time])/(temp_type[xx][time]+237.3)) #saturation vapor pressure of air (Pa)
-            ea_str=pa_con_atmfrac(pa_v,3528) #saturation vapor pressure of air (Pa-->umol h20/mol air)
-            ea=rh*ea_str #vapor pressure (umol h2O/mol air)                
-
-
-            #correct for leaf temperatures using leaf height
-   
-            t_diff=18-0.4*ht
-        
-            tl=temp_type[xx][time]+t_diff                
+        for time in range(129):
+            params=monte_carlo(chl_mean[iii], chl_sd[iii], dia_mean[iii], dia_sd[iii], [na_min[iii][time]], [na_max[iii][time]], ht_mean[iii], ht_sd[iii])        
+            A_day=[]
+            for xx in range(len(params)):
+                for yy in range(len(params[xx])):
+                    for key,val in params[xx][yy].items():
+                        exec(key + '=val')
+                                 
+                    #set variable parameters constant if I specify this above
+                    if 'na' in const_params[ii]:
+                        na=na_c
+                    if 'dia' in const_params[ii]:
+                        dia=dia_c
+                    if 'chl' in const_params[ii]:
+                        chl=chl_c
+                    if 'ht' in const_params[ii]:
+                        ht=ht_c
             
-            #---------------Photosynthesis Function---------------#
+              
+                    #------calculate vapor pressure-----#
+                    pa_v=611*np.exp((17.27*temp_type[iii][time])/(temp_type[iii][time]+237.3)) #saturation vapor pressure of air (Pa)
+                    ea_str=pa_con_atmfrac(pa_v,3528) #saturation vapor pressure of air (Pa-->umol h20/mol air)
+                    ea=rh*ea_str #vapor pressure (umol h2O/mol air)                
         
-            #alter this line of code for when implementing different photosynthesis functions
-            wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na_type[xx][time], qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_type[xx][time])
- 
-       
-            #test to make sure wue and nue are positive at not 'nan'
-            if wue[0]==-999 and nue[0]==-999:
+        
+                    #correct for leaf temperatures using leaf height
            
-                continue                                
-            
-            if np.isnan(A[0]):
-                A[0]=0.0
-
-            A_tot+=(A[0]*3600*6)/1000000.*44.
+                    t_diff=18-0.4*ht
                 
-       
+                    tl=temp_type[iii][time]+t_diff      
+                    
+                    z=depth[iii]
+                    
+                    #---------------Photosynthesis Function---------------#
+                
+                    #alter this line of code for when implementing different photosynthesis functions
+                    wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc,dd =photo(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc_type[iii][time],z)
+         
+               
+                    #test to make sure wue and nue are positive at not 'nan'
+                    if wue[0]==-999 and nue[0]==-999:
+                   
+                        continue                                
+                    
+                    if np.isnan(A[0]):
+                        A[0]=0.0
+                    
+                    A_day+=[(A[0]*3600*6)/1000000.*44.]
+                
+
+            A_tot+=np.mean(A_day)
+
+                
+            
         A_tot_all+=[A_tot]
+        print A_tot_all
 
         
         

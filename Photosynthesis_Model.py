@@ -893,7 +893,7 @@ def photo_bound_meso(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR, s,tl,ea
     
 #############------Photosynthesis Model 4------#############
 
-def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc):
+def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,tl,ea,chl,ij,kc25,ko25,o,ca,rh,m,a,frnr,flnr,ra,jm,g0,b,dia,u,q,vwc_min,vwc_max,vwc,z):
 
     
     if all(ij>1.0):
@@ -914,35 +914,38 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     ##---Temperature Effects on Parameters---##
 
     if tl<=0.0:
-        nue=[0.0]
-        wue=[0.0]
-        A=[0.0]
-        E=[0.0]
-        cs=[0.0]
-        ci=[0.0]
-        gsw=[0.0]
-        gs=[0.0]
-        gbw=[0.0]
-        gb=[0.0]
-        gm=[0.0]
-        cc=[0.0]
-        dd=[0.0]
+        nue=0.0
+        wue=0.0
+        A=0.0
+        E=0.0
+        cs=0.0
+        ci=0.0
+        gsw=0.0
+        gs=0.0
+        gbw=0.0
+        gb=0.0
+        gm=0.0
+        cc=0.0
+        dd=0.0
+        
+
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
 
     if math.isnan(tl):
-        nue=[np.nan]
-        wue=[np.nan]
-        A=[np.nan]
-        E=[np.nan]
-        cs=[np.nan]
-        ci=[np.nan]
-        gsw=[np.nan]
-        gs=[np.nan]
-        gbw=[np.nan]
-        gb=[np.nan]
-        gm=[np.nan]
-        cc=[np.nan]
-        dd=[np.nan]
+        nue=np.nan
+        wue=np.nan
+        A=np.nan
+        E=np.nan
+        cs=np.nan
+        ci=np.nan
+        gsw=np.nan
+        gs=np.nan
+        gbw=np.nan
+        gb=np.nan
+        gm=np.nan
+        cc=np.nan
+        dd=np.nan
+        
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd 
         
     #calculated parameters due to temperature
@@ -957,35 +960,38 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     #below I removed the vwc constraint on photosynthesis because it is not a leaf trait
  
     if math.isnan(vwc):
-        nue=[np.nan]
-        wue=[np.nan]
-        A=[np.nan]
-        E=[np.nan]
-        cs=[np.nan]
-        ci=[np.nan]
-        gsw=[np.nan]
-        gs=[np.nan]
-        gbw=[np.nan]
-        gb=[np.nan]
-        gm=[np.nan]
-        cc=[np.nan]
-        dd=[np.nan]
+        nue=np.nan
+        wue=np.nan
+        A=np.nan
+        E=np.nan
+        cs=np.nan
+        ci=np.nan
+        gsw=np.nan
+        gs=np.nan
+        gbw=np.nan
+        gb=np.nan
+        gm=np.nan
+        cc=np.nan
+        dd=np.nan
+        
+            
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd    
     
     if vwc<=vwc_min:
-        nue=[0.0]
-        wue=[0.0]
-        A=[0.0]
-        E=[0.0]
-        cs=[0.0]
-        ci=[0.0]
-        gsw=[0.0]
-        gs=[0.0]
-        gbw=[0.0]
-        gb=[0.0]
-        gm=[0.0]
-        cc=[0.0]
-        dd=[0.0]
+        nue=0.0
+        wue=0.0
+        A=0.0
+        E=0.0
+        cs=0.0
+        ci=0.0
+        gsw=0.0
+        gs=0.0
+        gbw=0.0
+        gb=0.0
+        gm=0.0
+        cc=0.0
+        dd=0.0
+            
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
     
     if vwc>=vwc_max:
@@ -993,24 +999,29 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     elif vwc<vwc_max:
         Wfac=((vwc-vwc_min)/(vwc_max-vwc_min))**q
     
+    Wfac=1
     
+   
+#    Wfac=1.0
     vmax=Wfac*vmax1
     jmax=Wfac*jmax1
 
     if vmax<=0:
-        nue=[0.0]
-        wue=[0.0]
-        A=[0.0]
-        E=[0.0]
-        cs=[0.0]
-        ci=[0.0]
-        gsw=[0.0]
-        gs=[0.0]
-        gbw=[0.0]
-        gb=[0.0]
-        gm=[0.0]
-        cc=[0.0]
-        dd=[0.0]
+        nue=0.0
+        wue=0.0
+        A=0.0
+        E=0.0
+        cs=0.0
+        ci=0.0
+        gsw=0.0
+        gs=0.0
+        gbw=0.0
+        gb=0.0
+        gm=0.0
+        cc=0.0
+        dd=0.0
+        
+
         return wue, nue, A, E, cs, ci, gsw, gs, gbw,gb,gm,cc,dd
         
     
@@ -1039,7 +1050,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     #Solve for Assimilation Using Cubic Equation
     
     #constants
-    gbw=(27.0)/(200.0*np.sqrt(dia/u)) #26 is from: PV=nRT; n/V=P/RT; g(mol/m2s)=g(m/s)*P/RT (mol/m3); @ atm pressure at 25C, g(mol/m2s)=0.04g(mm/s)
+    gbw=(27.0)/(200.0*np.sqrt(dia[0]/u)) #26 is from: PV=nRT; n/V=P/RT; g(mol/m2s)=g(m/s)*P/RT (mol/m3); @ atm pressure at 25C, g(mol/m2s)=0.04g(mm/s)
     gb=b*gbw
     
     C1=(-a*m*rh*gb)+(a*g0)+gb
@@ -1125,6 +1136,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     for i in range(len(roots_pos)):
         A_l+=[np.min(roots_pos[i])]
                          
+   
     ##---Determine Rate-Limiting Assimilation---##
     A=[]
     for i in range(len(A_r)):
@@ -1136,8 +1148,15 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
             A+=[A_l[i]] #both light and rubisco limited         
     
     
+    ##---Find Maximum Assimilation---##
+    Scalar=0.11*na+0.03 
+    A_max=Scalar*26.0
     
+    if A[0]>A_max:
+        A=[A_max]
+#        print A
 
+        
     ##---Solve for Stomatal Conductance to Water---##
     cs=ca-(A/gb) #stomatal co2 (umol CO2/mol)
     gsw=(m*A*rh/cs)+g0 #stomatal conductance to water (mol H2O/m2s) #make array from list
@@ -1158,7 +1177,22 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
     
     ##---Solve for Evapotranspiration---##
     E=gsw*dd #(umol H2O/m2s)
+    
 
+    ##---Make Sure that Transpiration is Not Higher than VWC---##
+    vwc_avail=vwc-vwc_min
+    vwc_avail_m2=vwc_avail*z*1000.0
+    E_L_m2=E[0]*(10.0**-6)*(1.0/55.6)*(60.0)*(60.0)*(12.0)
+    
+
+    if vwc_avail_m2<E_L_m2:
+#        print A
+        E_L_m2_mod=vwc_avail_m2
+        E=[E_L_m2_mod*(1/((10.0**-6)*(1.0/55.6)*(60.0)*(60.0)*(12.0)))]
+        gsw=E/dd
+        A=(gsw-g0)/(m*rh/cs)
+#        print A, '\n'
+#        print '\n'
     
     #---------------Test for Nan or Negative Values---------------#       
     
@@ -1168,7 +1202,7 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
         if np.isnan(A[xxx]):
             print "A array contains nan values"
             return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
-        if A[xxx]<0.0:
+        if A[xxx]==0.0:
             print "A array contains negative values"
             return neg_vals[0],neg_vals[1],neg_vals[2],neg_vals[3],neg_vals[4],neg_vals[5],neg_vals[6],neg_vals[7],neg_vals[8],neg_vals[9],neg_vals[10],neg_vals[11],neg_vals[12]
         if np.isnan(gsw[xxx]):
@@ -1189,5 +1223,24 @@ def photo_bound_meso_eqstom(tk_25,ekc,eko,etau,ev,ej,toptv,toptj,na, qeff, PAR,t
 
     wue=A/E*1000.0 #multiply by 1000 to get from umol CO2/umol H20 to umol CO2/mmol H20
     nue=A/na   
-    
+
+  
+    if isinstance(wue, np.ndarray):
+        wue=wue[0]
+
+    if isinstance(nue, np.ndarray):
+        nue=nue[0]
+
+    if isinstance(A, np.ndarray):
+        A=A[0]        
+
+    if isinstance(wue, list):
+        wue=wue[0]
+
+    if isinstance(nue, list):
+        nue=nue[0]
+
+    if isinstance(A, list):
+        A=A[0]       
+        
     return wue, nue, A, E, cs, ci, gsw, gs, gbw, gb, gm, cc, dd    
